@@ -19,8 +19,8 @@ program Game {
   
 
 
-  game.addVisualCharacter(personaje)
-  game.addVisual(enemigoComun)
+  /* game.addVisualCharacter(personaje)
+  game.addVisual(enemigoComun) */
 
 
   const tick = game.tick(500, { enemigoComun.perseguir() }, false)
@@ -28,10 +28,16 @@ program Game {
 
 
   game.onCollideDo(enemigoComun, { elemento => personaje.perderVida() })
-  ggame.onCollideDo(personaje, { elemento =>
-    if (elemento == caja) {
-      personaje.retroceder()
-   }
+
+  const caminantes = [personaje, enemigoComun]
+
+  
+  caminantes.forEach({ c => game.addVisual(c) })
+
+  caminantes.forEach({ c =>
+    game.onCollideDo(c, { obstaculo =>
+      c.retroceder()
+    })
   })
   game.start()
 
