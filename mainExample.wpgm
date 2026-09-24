@@ -2,6 +2,13 @@ import wollok.game.*
 import personaje.personaje.*
 import enemigos.enemigoComun.*
 
+
+object caja {
+  var property position = game.center()
+  method image() = "caja.png"
+  
+}
+
 program Game {
  // Nombre del juego
   game.title("Ejemplo")
@@ -22,7 +29,9 @@ program Game {
 
   game.onCollideDo(enemigoComun, { elemento => personaje.perderVida() })
   ggame.onCollideDo(personaje, { elemento =>
-    elemento.chocarCon(personaje)
+    if (elemento == caja) {
+      personaje.retroceder()
+   }
   })
   game.start()
 
