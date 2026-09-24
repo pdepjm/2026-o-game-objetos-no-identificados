@@ -5,7 +5,14 @@ object enemigoComun {
   // Nombre de la imagen
   method image() = "enemigoComun.png"
 
+  method retroceder() {
+    position = ultimaPosicion
+  }
 
+  method guardarPosicion() {
+    ultimaPosicion = position
+  }
+}
   method perseguir() {
     const objetivo = personaje.position()
 
