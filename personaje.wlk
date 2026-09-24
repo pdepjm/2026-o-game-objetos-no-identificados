@@ -12,6 +12,14 @@ object personaje {
     game.say(self, "Ahora, mi cantidad de vidas es: " + vidas)
   }
 
+method retroceder() {
+    position = ultimaPosicion
+  }
+
+  method guardarPosicion() {
+    ultimaPosicion = position
+  }
+}
 
 }
 
