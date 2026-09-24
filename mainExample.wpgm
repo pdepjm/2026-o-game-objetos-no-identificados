@@ -9,8 +9,7 @@ program Game {
   game.height(-)
   game.width(-)
   game.cellSize(-)
-
-
+  
 
 
   game.addVisualCharacter(personaje)
@@ -22,8 +21,9 @@ program Game {
 
 
   game.onCollideDo(enemigoComun, { elemento => personaje.perderVida() })
-
-
+  ggame.onCollideDo(personaje, { elemento =>
+    elemento.chocarCon(personaje)
+  })
   game.start()
 
 }
