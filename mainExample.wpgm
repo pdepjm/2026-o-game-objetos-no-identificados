@@ -1,44 +1,16 @@
 import wollok.game.*
-import personaje.personaje.*
-import enemigos.enemigoComun.*
+import example.*
 
-
-object caja {
-  var property position = game.center()
-  method image() = "caja.png"
-  
-}
 
 program Game {
- // Nombre del juego
+  // Nombre del juego
   game.title("Ejemplo")
   // Definir proporciones
   game.height(-)
   game.width(-)
   game.cellSize(-)
-  
 
+  miJuego.iniciar()
 
-  /* game.addVisualCharacter(personaje)
-  game.addVisual(enemigoComun) */
-
-
-  const tick = game.tick(500, { enemigoComun.perseguir() }, false)
-  tick.start()
-
-
-  game.onCollideDo(enemigoComun, { elemento => personaje.perderVida() })
-
-  const caminantes = [personaje, enemigoComun]
-
-  
-  caminantes.forEach({ c => game.addVisual(c) })
-
-  caminantes.forEach({ c =>
-    game.onCollideDo(c, { obstaculo =>
-      c.retroceder()
-    })
-  })
   game.start()
-
 }
