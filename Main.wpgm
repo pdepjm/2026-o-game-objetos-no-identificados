@@ -1,14 +1,13 @@
 import wollok.game.*
-import example.*
+import logicaJuego.*
 
-
-program Game {
+program main {
   // Nombre del juego
   game.title("Ejemplo")
   // Definir proporciones
-  game.height(-)
-  game.width(-)
-  game.cellSize(-)
+  game.height(1000)
+  game.width(1000)
+  game.cellSize(1)
 
   miJuego.iniciar()
 

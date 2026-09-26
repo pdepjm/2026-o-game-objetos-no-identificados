@@ -2,6 +2,7 @@ import personaje.*
 class EnemigoComun {
   var property position
   var ultimaPosicion = position
+  var vida = 100
 
   // Nombre de la imagen
   method image() = "enemigoComun.png"
@@ -26,6 +27,12 @@ class EnemigoComun {
   }
 
   method reaccionarAColision(elemento) {
-  self.retroceder()
+    self.retroceder()
   }
+
+  method recibirDanio(){
+    vida = vida-25
+  }
+
+  method esAtacable() = true
 }
