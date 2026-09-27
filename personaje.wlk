@@ -1,4 +1,5 @@
 import enemigos.*
+import logicaJuego.*
 object personaje {
   // Cambiar posicion
   var property position = game.center()
@@ -9,8 +10,11 @@ object personaje {
 
 
   method perderVidas() {
-    vidas = vidas - 1
+    vidas = (vidas - 1).max(0)
     game.say(self, "Ahora, mi cantidad de vidas es: " + vidas)
+    if(vidas == 0){
+      miJuego.terminarJuego()
+    }
   }
 
   method retroceder() {
@@ -36,6 +40,9 @@ object personaje {
     const enemigo = elementos.findOrElse({ elemento => elemento.esAtacable()}, {null})
     if (enemigo != null) {
       enemigo.recibirDanio()
+      if(enemigo.estaMuerto()){
+        miJuego.eliminarEnemigo(enemigo)
+      }
     }
   }
 
