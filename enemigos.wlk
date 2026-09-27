@@ -35,4 +35,6 @@ class EnemigoComun {
   }
 
   method esAtacable() = true
+
+  method estaMuerto() = vida <= 0
 }

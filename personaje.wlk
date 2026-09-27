@@ -40,6 +40,9 @@ object personaje {
     const enemigo = elementos.findOrElse({ elemento => elemento.esAtacable()}, {null})
     if (enemigo != null) {
       enemigo.recibirDanio()
+      if(enemigo.estaMuerto()){
+        miJuego.eliminarEnemigo(enemigo)
+      }
     }
   }
 

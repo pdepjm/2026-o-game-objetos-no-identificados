@@ -35,4 +35,11 @@ object miJuego {
     game.say(self, "Has perdido")
     game.stop()
   }
+
+    method eliminarEnemigo(enemigo) {
+    game.removeVisual(enemigo)
+    enemigos.remove(enemigo)
+  }
+
+  
 }
