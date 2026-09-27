@@ -22,7 +22,7 @@ object personaje {
   }
 
   method reaccionarAColision(elemento) {
-    if (elemento.className() == EnemigoComun) {
+    if (elemento.className() == "EnemigoComun") {
       self.perderVidas()
     } 
     else 
@@ -39,21 +39,22 @@ object personaje {
     }
   }
 
-  method moverArriba(){
-    if ( position.y() < game.height() - 1) position = position.up(1)
-    
+  method mover(nuevaPosicion) {
+    self.guardarPosicion()
+    // Limita el movimiento dentro de la grilla visible
+    if (nuevaPosicion.x().between(1, game.width() - 2) && 
+        nuevaPosicion.y().between(1, game.height() - 2)) {
+      position = nuevaPosicion
+    }
   }
 
-  method moverAbajo(){
-     if (position.y() > 0) position = position.down(1)
-  }
-
-  method moverIzquierda(){
-     if (position.x() > 0) position = position.left(1)
-  }
-
-  method moverDerecha(){
-     if (position.x() < game.width() - 1) position = position.right(1)
+  method recibirDano(cantidad) {
+    vidas = (vidas - cantidad).max(0)
+    game.say(self, "¡Ouch! Vida: " + vidas)
+    if (vidas == 0) {
+      game.say(self, "¡Has sido derrotado!")
+      // Mostrar pantalla fin de juego\
+    }
   }
 
 }

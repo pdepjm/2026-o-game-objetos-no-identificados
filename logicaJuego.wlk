@@ -21,10 +21,10 @@ object miJuego {
       game.onCollideDo(entidad, { elemento => entidad.reaccionarAColision(elemento) })
     })
 
-    keyboard.w().whilePressedDo({personaje.moverArriba()}, 5)
-    keyboard.a().whilePressedDo({personaje.moverIzquierda()}, 5)
-    keyboard.s().whilePressedDo({personaje.moverAbajo()}, 5)
-    keyboard.d().whilePressedDo({personaje.moverDerecha()}, 5)
+    keyboard.w().whilePressedDo({personaje.mover(personaje.position().up(1))}, 1)
+    keyboard.a().whilePressedDo({personaje.mover(personaje.position().left(1))}, 1)
+    keyboard.s().whilePressedDo({personaje.mover(personaje.position().down(1))}, 1)
+    keyboard.d().whilePressedDo({personaje.mover(personaje.position().right(1))}, 1)
   
     game.onClickDo({posicion => personaje.atacarEn(posicion)})
 

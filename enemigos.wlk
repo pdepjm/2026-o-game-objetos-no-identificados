@@ -16,14 +16,14 @@ class EnemigoComun {
   }
 
   method perseguir() {
-    self.guardarPosicion()
-
     const objetivo = personaje.position()
 
+    // Movimiento paso a paso buscando al jugador
     if (position.x() < objetivo.x()) position = position.right(1)
-    if (position.x() > objetivo.x()) position = position.left(1)
+    else if (position.x() > objetivo.x()) position = position.left(1)
+
     if (position.y() < objetivo.y()) position = position.up(1)
-    if (position.y() > objetivo.y()) position = position.down(1)
+    else if (position.y() > objetivo.y()) position = position.down(1)
   }
 
   method reaccionarAColision(elemento) {
