@@ -3,6 +3,7 @@ import personaje.*
 import enemigos.*
 
 object miJuego {
+  // posicion provisional
   const enemigos = [
     new EnemigoComun(position = game.at(3, 5)),
     new EnemigoComun(position = game.at(7, 2)),
@@ -28,5 +29,10 @@ object miJuego {
   
     game.onClickDo({posicion => personaje.atacarEn(posicion)})
 
+  }
+
+  method terminarJuego(){
+    game.say(self, "Has perdido")
+    game.stop()
   }
 }
