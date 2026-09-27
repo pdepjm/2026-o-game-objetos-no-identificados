@@ -1,14 +1,18 @@
 import wollok.game.*
 import logicaJuego.*
+import personaje.*
+import enemigos.*
 
 program main {
   // Nombre del juego
-  game.title("Ejemplo")
-  // Definir proporciones
-  game.height(1000)
-  game.width(1000)
-  game.cellSize(1)
+  game.title("Sala 1 de ejecución")
 
+  // Definir proporciones
+  game.height(14)
+  game.width(20)
+  game.cellSize(50)
+  game.boardGround("mapaSala1.png")
+  
   miJuego.iniciar()
 
   game.start()

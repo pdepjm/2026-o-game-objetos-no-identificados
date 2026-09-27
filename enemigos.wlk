@@ -1,11 +1,15 @@
+
 import personaje.*
 class EnemigoComun {
   var property position
   var ultimaPosicion = position
   var vida = 100
+  const property danio = 10
 
   // Nombre de la imagen
-  method image() = "enemigoComun.png"
+  method image() = "laMuerte.png"
+
+  method estaVivo() = vida > 0
 
   method retroceder() {
     position = ultimaPosicion
@@ -34,5 +38,6 @@ class EnemigoComun {
     vida = vida-25
   }
 
+  method esEnemigo() = true
   method esAtacable() = true
 }

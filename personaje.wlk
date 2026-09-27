@@ -1,16 +1,20 @@
 import enemigos.*
+import logicaJuego.*
 object personaje {
   // Cambiar posicion
   var property position = game.center()
   var ultimaPosicion = position
   // Nombre de la imagen
-  method image() = "personaje.png"
+  method image() = "personajeCaballero.png"
   var vidas = 3
 
 
   method perderVidas() {
-    vidas = vidas - 1
+    vidas = (vidas - 1).max(0)
     game.say(self, "Ahora, mi cantidad de vidas es: " + vidas)
+    if(vidas == 0){
+      miJuego.terminarJuego()
+    }
   }
 
   method retroceder() {
@@ -57,5 +61,3 @@ object personaje {
   }
 
 }
-
-
