@@ -2,6 +2,7 @@ import wollok.game.*
 import personaje.*
 import enemigos.*
 import puerta.*
+import salas.*
 
 object miJuego {
   // posicion provisional
@@ -9,7 +10,11 @@ object miJuego {
 
   var salaActual= sala1
  
-
+  var enemigos = [
+    new Enemigo(position = game.at(1, 2)),
+    new Enemigo(position = game.at(3, 4)),
+    new Enemigo(position = game.at(5, 6))
+  ]
 
 
   method entrarA(sala) {
@@ -21,11 +26,11 @@ object miJuego {
 
 
   method iniciar() {
-    const entidades = [personaje] + salaActual.enemigos
+    const entidades = [personaje] + enemigos
     self.entrarA(sala1)
     entidades.forEach({ entidad => game.addVisual(entidad) })
 
-    game.tick(500, { salaActual.enemigos.forEach({ enemigo => enemigo.perseguir() }) }, false).start()
+    game.tick(500, { enemigos.forEach({ enemigo => enemigo.perseguir() }) }, false).start()
 
 
     entidades.forEach({ entidad => game.onCollideDo(entidad, { elemento => entidad.reaccionarAColision(elemento) })
@@ -47,13 +52,8 @@ object miJuego {
 
   method eliminarEnemigo(enemigo) {
     game.removeVisual(enemigo)
-<<<<<<< HEAD
-    salaActual.enemigos.remove(enemigo)
-    if (salaActual.enemigos.isEmpty()) puerta.desbloquear()
-=======
     enemigos.remove(enemigo)
     if (enemigos.isEmpty()) puerta.desbloquear()
->>>>>>> a138d42105ac792ff2f64ce82485791258286856
   }
 
   
