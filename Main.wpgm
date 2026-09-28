@@ -5,9 +5,9 @@ program main {
   // Nombre del juego
   game.title("Ejemplo")
   // Definir proporciones
-  game.height(1000)
-  game.width(1000)
-  game.cellSize(1)
+  game.height(20)
+  game.width(12)
+  game.cellSize(50)
 
   miJuego.iniciar()
 
