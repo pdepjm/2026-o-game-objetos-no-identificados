@@ -2,6 +2,7 @@ import wollok.game.*
 import enemigos.*
 import personaje.*
 import puerta.*
+import logicaJuego.*
 
 class Sala {
   var enemigosVivos = []
@@ -53,7 +54,7 @@ object sala1 inherits Sala {
     new Enemigo(position = game.at(5, 12))
   ]
 
-  override method puntoDeEntrada() = game.at(1, 1)
+  override method puntoDeEntrada() = game.at(5, 1)
 
   override method salaSiguiente() = sala2
 }
@@ -70,8 +71,8 @@ object sala2 inherits Sala {
     new Enemigo(position = game.at(2, 15))
   ]
 
-  override method puntoDeEntrada() = game.at(1, 1)
+  override method puntoDeEntrada() = game.at(5, 1)
 
-  // provisional: todavia no existe la sala final, por ahora vuelve a sala1
-  override method salaSiguiente() = sala1
+  
+  override method salaSiguiente() = finDelJuego
 }

@@ -51,15 +51,6 @@ object personaje {
     }
   }
 
-  method recibirDano(cantidad) {
-    vidas = (vidas - cantidad).max(0)
-    game.say(self, "¡Ouch! Vida: " + vidas)
-    if (vidas == 0) {
-      game.say(self, "¡Has sido derrotado!")
-      miJuego.terminarJuego()
-    }
-  }
-
 }
 
 

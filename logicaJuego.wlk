@@ -30,6 +30,14 @@ object miJuego {
     game.onClickDo({ posicion => personaje.atacarEn(posicion) })
   }
 
+  method ganarJuego() {
+    if (!juegoTerminado) {
+      juegoTerminado = true
+      game.say(personaje, "¡Has ganado!")
+      game.schedule(2000, { game.stop() })
+    }
+  }
+
   method terminarJuego() {
     if (!juegoTerminado) {
       juegoTerminado = true
@@ -41,4 +49,13 @@ object miJuego {
   method eliminarEnemigo(enemigo) {
     salaActual.eliminarEnemigo(enemigo)
   }
+}
+
+object finDelJuego {
+  method inicializarse() {
+    game.addVisual(personaje)
+    miJuego.ganarJuego()
+  }
+
+  method enemigosVivos() = []
 }
