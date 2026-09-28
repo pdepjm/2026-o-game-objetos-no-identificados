@@ -6,7 +6,6 @@ class Puerta {
   const destino
   var desbloqueada = false
 
-  // ojo: falta el asset puerta.png en la carpeta assets
   method image() = "puerta.png"
 
   method esAtacable() = false

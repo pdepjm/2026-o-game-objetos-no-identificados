@@ -46,7 +46,7 @@ class Sala {
 object sala1 inherits Sala {
   override method fondo() = "sala1.png"
 
-  // posicion provisional
+  
   override method crearEnemigos() = [
     new Enemigo(position = game.at(4, 5)),
     new Enemigo(position = game.at(8, 7)),
@@ -61,7 +61,7 @@ object sala1 inherits Sala {
 object sala2 inherits Sala {
   override method fondo() = "sala2.png"
 
-  // posicion provisional
+  
   override method crearEnemigos() = [
     new Enemigo(position = game.at(3, 5)),
     new Enemigo(position = game.at(9, 5)),

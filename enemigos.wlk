@@ -6,7 +6,6 @@ class Enemigo {
   var ultimaPosicion = position
   var vida = 100
 
-  // Nombre de la imagen
   method image() = "enemigoComun.png"
 
   method retroceder() {

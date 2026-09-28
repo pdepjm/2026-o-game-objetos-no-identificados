@@ -1,10 +1,9 @@
 import wollok.game.*
 import logicaJuego.*
 object personaje {
-  // Cambiar posicion
   var property position = game.center()
   var ultimaPosicion = position
-  // Nombre de la imagen
+  
   method image() = "personaje.png"
   var vidas = 3
 

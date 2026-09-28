@@ -4,7 +4,7 @@ import logicaJuego.*
 program main {
   // Nombre del juego
   game.title("Ejemplo")
-  // Definir proporciones
+  
   game.height(20)
   game.width(12)
   game.cellSize(50)
