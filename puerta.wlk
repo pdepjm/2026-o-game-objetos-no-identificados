@@ -12,11 +12,11 @@ class puerta {
         colisionable = true
     }
 
-    method reaccionarAColision() {
+    method reaccionarAPuerta() {
         if(colisionable){ 
             miJuego.entrarA(destino)
             
         }
         
-    }
+    }       
 }

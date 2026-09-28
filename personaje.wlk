@@ -31,7 +31,7 @@ object personaje {
       self.perderVidas()
     } 
     else if(elemento.className() == "puerta"){
-      puerta.reaccionarAColision()
+      puerta.reaccionarAPuerta()
     }
     else 
     {
