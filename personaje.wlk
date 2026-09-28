@@ -1,3 +1,4 @@
+import puerta.*
 import enemigos.*
 import logicaJuego.*
 object personaje {
@@ -29,6 +30,9 @@ object personaje {
     if (elemento.className() == "EnemigoComun") {
       self.perderVidas()
     } 
+    else if(elemento.className() == "puerta"){
+      puerta.reaccionarAColision()
+    }
     else 
     {
       self.retroceder()
