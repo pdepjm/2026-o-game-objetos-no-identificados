@@ -1,5 +1,7 @@
 ### [Nombre del juego]
 
-* Integrante 1
-* Integrante 2
-* Etc...
+* Lumbrera Joaquin
+* Graziano Lorenzo
+* Carballo Sara
+* Zupancic Nicola
+* Viña Facundo
