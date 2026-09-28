@@ -39,6 +39,7 @@ object miJuego {
   method eliminarEnemigo(enemigo) {
     game.removeVisual(enemigo)
     enemigos.remove(enemigo)
+    if (enemigos.isEmpty()) puerta.desbloquear()
   }
 
   
