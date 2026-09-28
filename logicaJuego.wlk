@@ -5,9 +5,9 @@ import enemigos.*
 object miJuego {
   // posicion provisional
   const enemigos = [
-    new EnemigoComun(position = game.at(3, 5)),
-    new EnemigoComun(position = game.at(7, 2)),
-    new EnemigoComun(position = game.at(10, 8))
+    new Enemigo(position = game.at(3, 5)),
+    new Enemigo(position = game.at(7, 2)),
+    new Enemigo(position = game.at(10, 8))
   ]
 
   method iniciar() {
@@ -36,7 +36,7 @@ object miJuego {
     game.stop()
   }
 
-    method eliminarEnemigo(enemigo) {
+  method eliminarEnemigo(enemigo) {
     game.removeVisual(enemigo)
     enemigos.remove(enemigo)
   }

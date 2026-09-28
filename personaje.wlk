@@ -60,7 +60,7 @@ object personaje {
     game.say(self, "¡Ouch! Vida: " + vidas)
     if (vidas == 0) {
       game.say(self, "¡Has sido derrotado!")
-      // Mostrar pantalla fin de juego\
+      miJuego.terminarJuego()
     }
   }
 

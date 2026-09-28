@@ -1,5 +1,5 @@
 import personaje.*
-class EnemigoComun {
+class Enemigo {
   var property position
   var ultimaPosicion = position
   var vida = 100
