@@ -15,15 +15,25 @@ class Enemigo {
     ultimaPosicion = position
   }
 
+  method dentroDeLimites(unaPosicion) =
+    unaPosicion.x().between(1, game.width() - 2) &&
+    unaPosicion.y().between(1, game.height() - 2)
+
   method perseguir() {
     const objetivo = personaje.position()
+    var destino = position
 
     // Movimiento paso a paso buscando al jugador
-    if (position.x() < objetivo.x()) position = position.right(1)
-    else if (position.x() > objetivo.x()) position = position.left(1)
+    if (position.x() < objetivo.x()) destino = destino.right(1)
+    else if (position.x() > objetivo.x()) destino = destino.left(1)
 
-    if (position.y() < objetivo.y()) position = position.up(1)
-    else if (position.y() > objetivo.y()) position = position.down(1)
+    if (position.y() < objetivo.y()) destino = destino.up(1)
+    else if (position.y() > objetivo.y()) destino = destino.down(1)
+
+    if (self.dentroDeLimites(destino)) {
+      self.guardarPosicion()
+      position = destino
+    }
   }
 
   method reaccionarAColision(elemento) {
