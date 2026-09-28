@@ -1,5 +1,5 @@
 import enemigos.*
-object sala1 {
+object sala1 inherits sala {
   method fondo() = "sala1.png"
   // posicion provisional
   method enemigos() = [
@@ -10,7 +10,7 @@ object sala1 {
   method puntoDeEntrada() = game.at(1, 1)
 }
 
-object sala2 {
+object sala2 inherits sala {
   method fondo() = "sala2.png"
   // posicion provisional
   method enemigos() = [

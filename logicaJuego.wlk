@@ -47,13 +47,12 @@ object miJuego {
 
   method eliminarEnemigo(enemigo) {
     game.removeVisual(enemigo)
-<<<<<<< HEAD
+
     salaActual.enemigos.remove(enemigo)
     if (salaActual.enemigos.isEmpty()) puerta.desbloquear()
-=======
+
     enemigos.remove(enemigo)
     if (enemigos.isEmpty()) puerta.desbloquear()
->>>>>>> a138d42105ac792ff2f64ce82485791258286856
   }
 
   
