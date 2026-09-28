@@ -48,9 +48,9 @@ object sala1 inherits Sala {
 
   // posicion provisional
   override method crearEnemigos() = [
-    new Enemigo(position = game.at(1, 2)),
-    new Enemigo(position = game.at(3, 4)),
-    new Enemigo(position = game.at(5, 6))
+    new Enemigo(position = game.at(4, 5)),
+    new Enemigo(position = game.at(8, 7)),
+    new Enemigo(position = game.at(5, 12))
   ]
 
   override method puntoDeEntrada() = game.at(1, 1)
@@ -63,11 +63,11 @@ object sala2 inherits Sala {
 
   // posicion provisional
   override method crearEnemigos() = [
-    new Enemigo(position = game.at(1, 2)),
-    new Enemigo(position = game.at(3, 4)),
-    new Enemigo(position = game.at(5, 6)),
-    new Enemigo(position = game.at(7, 8)),
-    new Enemigo(position = game.at(9, 10))
+    new Enemigo(position = game.at(3, 5)),
+    new Enemigo(position = game.at(9, 5)),
+    new Enemigo(position = game.at(5, 9)),
+    new Enemigo(position = game.at(8, 13)),
+    new Enemigo(position = game.at(2, 15))
   ]
 
   override method puntoDeEntrada() = game.at(1, 1)

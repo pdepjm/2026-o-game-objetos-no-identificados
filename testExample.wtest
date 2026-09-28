@@ -1,7 +1,45 @@
+import salas.*
+import personaje.*
+import enemigos.*
+import puerta.*
 
+describe "Personaje" {
+  test "Pierde una vida cuando recibe un ataque" {
+    personaje.perderVidas()
+    assert.equals(2, personaje.vidas)
+  }
+}
 
-describe "group of tests for pepita" {
+describe "Enemigo" {
+  test "Recibe daño" {
+    const enemigo = new Enemigo(position = game.at(5, 5))
+    enemigo.recibirDanio()
+    assert.equals(75, enemigo.vida())
+  }
 
- 
+  test "Muere cuando su vida llega a cero" {
+    const enemigo = new Enemigo(position = game.at(5, 5))
+
+    enemigo.recibirDanio()
+    enemigo.recibirDanio()
+    enemigo.recibirDanio()
+    enemigo.recibirDanio()
+
+    assert.that(enemigo.estaMuerto())
+  }
+}
+
+describe "Puerta" {
+  test "La puerta comienza bloqueada" {
+  const puerta = new Puerta(destino = sala2)
+  assert.notThat(puerta.desbloqueada())
+  }
+}
+
+describe "Sala" {
+  test "La sala comienza con enemigos" {
+    sala1.inicializarse()
+    assert.notThat(sala1.estaLimpia())
+  }
 
 }

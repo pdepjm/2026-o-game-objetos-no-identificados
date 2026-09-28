@@ -2,7 +2,7 @@ import wollok.game.*
 import logicaJuego.*
 
 class Puerta {
-  var property position = game.at((game.width() - 2).div(2), game.height().div(2))
+  var property position = game.at(5, 18)
   const destino
   var desbloqueada = false
 

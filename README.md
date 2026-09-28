@@ -3,5 +3,5 @@
 * Lumbrera Joaquin
 * Graziano Lorenzo
 * Carballo Sara
-* Zupancic Nicola
+* Zupancic Nicolas
 * Viña Facundo
