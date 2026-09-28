@@ -1,5 +1,4 @@
-import puerta.*
-import enemigos.*
+import wollok.game.*
 import logicaJuego.*
 object personaje {
   // Cambiar posicion
@@ -26,18 +25,12 @@ object personaje {
     ultimaPosicion = position
   }
 
+  // cada elemento sabe que le pasa al personaje cuando lo toca (enemigo, puerta, etc.)
   method reaccionarAColision(elemento) {
-    if (elemento.className() == "EnemigoComun") {
-      self.perderVidas()
-    } 
-    else if(elemento.className() == "puerta"){
-      puerta.reaccionarAPuerta()
-    }
-    else 
-    {
-      self.retroceder()
-    }
+    elemento.alColisionarConPersonaje()
   }
+
+  method esAtacable() = false
 
   method atacarEn(posicion) {
     const elementos = game.getObjectsIn(posicion)

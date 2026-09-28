@@ -1,4 +1,6 @@
+import wollok.game.*
 import personaje.*
+
 class Enemigo {
   var property position
   var ultimaPosicion = position
@@ -38,6 +40,10 @@ class Enemigo {
 
   method reaccionarAColision(elemento) {
     self.retroceder()
+  }
+
+  method alColisionarConPersonaje() {
+    personaje.perderVidas()
   }
 
   method recibirDanio(){

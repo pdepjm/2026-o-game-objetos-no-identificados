@@ -1,22 +1,21 @@
+import wollok.game.*
 import logicaJuego.*
-import salas.*
 
+class Puerta {
+  var property position = game.at((game.width() - 2).div(2), game.height().div(2))
+  const destino
+  var desbloqueada = false
 
-class puerta {
-  
-    var posicion = game.at(((game.width()-2)/2), (game.height()/2))
-    var destino 
-    var colisionable  = false  
-    
-    method desbloquear(){
-        colisionable = true
-    }
+  // ojo: falta el asset puerta.png en la carpeta assets
+  method image() = "puerta.png"
 
-    method reaccionarAPuerta() {
-        if(colisionable){ 
-            miJuego.entrarA(destino)
-            
-        }
-        
-    }       
+  method esAtacable() = false
+
+  method desbloquear() {
+    desbloqueada = true
+  }
+
+  method alColisionarConPersonaje() {
+    if (desbloqueada) miJuego.entrarA(destino)
+  }
 }
