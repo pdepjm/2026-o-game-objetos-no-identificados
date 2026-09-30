@@ -6,7 +6,7 @@ object personaje {
   
   method image() = "personaje.png"
   var vidas = 3
-
+  method vidas () = vidas
 
   method perderVidas() {
     vidas = (vidas - 1).max(0)

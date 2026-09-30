@@ -11,6 +11,7 @@ object miJuego {
   method entrarA(sala) {
     game.allVisuals().forEach { visual => game.removeVisual(visual) }
     salaActual = sala
+    game.addVisual(vida)
     salaActual.inicializarse()
   }
 
@@ -58,4 +59,10 @@ object finDelJuego {
   }
 
   method enemigosVivos() = []
+}
+
+
+object vida {
+  method position() = game.at(1,0)
+  method text() = "te quedan: " + personaje.vidas()
 }

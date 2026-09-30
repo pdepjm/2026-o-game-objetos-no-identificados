@@ -8,7 +8,7 @@ program main {
   game.height(20)
   game.width(12)
   game.cellSize(50)
-
+  game.addVisual(vida)
   miJuego.iniciar()
 
   game.start()
