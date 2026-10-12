@@ -1,6 +1,8 @@
 import wollok.game.*
 import personaje.*
 import salas.*
+import estadoFinal.*
+
 
 object miJuego {
   var salaActual = sala1
@@ -19,8 +21,9 @@ object miJuego {
     self.entrarA(sala1)
 
     // los enemigos los define y los guarda cada sala; aca solo se le pregunta a la sala actual
-    game.tick(500, { salaActual.enemigosVivos().forEach({ enemigo => enemigo.perseguir() }) }, false).start()
+    //game.tick(500, { salaActual.enemigosVivos().forEach({ enemigo => enemigo.perseguir() }) }, false).start()
 
+    game.onTick(500, "movimientoEnemigos", { salaActual.enemigosVivos().forEach({enemigo => enemigo.perseguir()})})
     game.onCollideDo(personaje, { elemento => personaje.reaccionarAColision(elemento) })
 
     keyboard.w().whilePressedDo({ personaje.mover(personaje.position().up(1)) }, 150)
@@ -31,20 +34,19 @@ object miJuego {
     game.onClickDo({ posicion => personaje.atacarEn(posicion) })
   }
 
-  method ganarJuego() {
-    if (!juegoTerminado) {
+  method finalizarCon(estadoFinal) {
+    if(!juegoTerminado) {
       juegoTerminado = true
-      game.say(personaje, "¡Has ganado!")
-      game.schedule(2000, { game.stop() })
+      estadoFinal.ejecutar()
     }
   }
 
+  method ganarJuego() {
+    self.finalizarCon(victoria)
+  }
+
   method terminarJuego() {
-    if (!juegoTerminado) {
-      juegoTerminado = true
-      game.say(personaje, "Has perdido")
-      game.schedule(2000, { game.stop() })
-    }
+    self.finalizarCon(derrota)
   }
 
   method eliminarEnemigo(enemigo) {

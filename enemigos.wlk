@@ -1,5 +1,8 @@
 import wollok.game.*
 import personaje.*
+import tablero.*
+import logicaJuego.*
+
 
 class Enemigo {
   var property position
@@ -17,8 +20,7 @@ class Enemigo {
   }
 
   method dentroDeLimites(unaPosicion) =
-    unaPosicion.x().between(1, game.width() - 2) &&
-    unaPosicion.y().between(1, game.height() - 2)
+    tablero.dentroDeLimites(unaPosicion)
 
   method perseguir() {
     const objetivo = personaje.position()
@@ -43,6 +45,14 @@ class Enemigo {
 
   method alColisionarConPersonaje() {
     personaje.perderVidas()
+  }
+
+  method recibirAtaque() {
+    self.recibirDanio()
+
+    if (self.estaMuerto()) {
+      miJuego.eliminarEnemigo(self)
+    }
   }
 
   method recibirDanio(){

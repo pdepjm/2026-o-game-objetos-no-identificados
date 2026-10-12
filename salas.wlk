@@ -3,6 +3,7 @@ import enemigos.*
 import personaje.*
 import puerta.*
 import logicaJuego.*
+import generadorDeMonstruos.*
 
 class Sala {
   var enemigosVivos = []
@@ -48,11 +49,12 @@ object sala1 inherits Sala {
   override method fondo() = "sala1.png"
 
   
-  override method crearEnemigos() = [
-    new Enemigo(position = game.at(4, 5)),
-    new Enemigo(position = game.at(8, 7)),
-    new Enemigo(position = game.at(5, 12))
-  ]
+  override method crearEnemigos() = 
+    generadorDeMonstruos.generarEnemigosEn([
+      game.at(4, 5),
+      game.at(8, 7),
+      game.at(5, 12)
+    ])
 
   override method puntoDeEntrada() = game.at(5, 1)
 
@@ -62,14 +64,14 @@ object sala1 inherits Sala {
 object sala2 inherits Sala {
   override method fondo() = "sala2.png"
 
-  
-  override method crearEnemigos() = [
-    new Enemigo(position = game.at(3, 5)),
-    new Enemigo(position = game.at(9, 5)),
-    new Enemigo(position = game.at(5, 9)),
-    new Enemigo(position = game.at(8, 13)),
-    new Enemigo(position = game.at(2, 15))
-  ]
+  override method crearEnemigos() = 
+    generadorDeMonstruos.generarEnemigosEn([
+      game.at(3, 5),
+      game.at(9, 5),
+      game.at(5, 9),
+      game.at(8, 13),
+      game.at(2, 15)
+    ])
 
   override method puntoDeEntrada() = game.at(5, 1)
 
