@@ -9,20 +9,25 @@ object personaje {
   const inventario = []
   
   method image() = "personaje.png"
-  var vidas = 3
-  method vidas () = vidas
+  var vidaMaxima = 3
+  var vidaActual = 3
+  method vidaActual () = vidaActual
 
-  method perderVidas() {
-    vidas = (vidas - 1).max(0)
-    game.say(self, "Ahora, mi cantidad de vidas es: " + vidas)
-    if(vidas == 0){
+  method perderVidaActual() {
+    vidaActual = (vidaActual - 1).max(0)
+    game.say(self, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
+    if(vidaActual == 0){
       miJuego.terminarJuego()
     }
   }
 
-  method recuperarVidas(cantidad){
-    vidas = (vidas + cantidad).max(3)
-    game.say(self, "Ahora, mi cantidad de vidas es: " + vidas)
+  method recuperarvidaActual(cantidad){
+    vidaActual = (vidaActual + cantidad).max(vidaMaxima)
+    game.say(self, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
+  }
+
+  method aumentarvidaActual(cantidad){
+    vidaMaxima = cantidad
   }
 
   method retroceder() {

@@ -4,6 +4,6 @@ import enemigos.*
 object generadorDeMonstruos {
   method generarEnemigosEn(posiciones) =
     posiciones.map({ posicion =>
-      new Enemigo(position = posicion)
+      new EnemigoComun(position = posicion)
     })
 }

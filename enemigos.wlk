@@ -46,7 +46,7 @@ class Enemigo {
   }
 
   method alColisionarConPersonaje() {
-    personaje.perderVidas()
+    personaje.perderVidaActual()
   }
 
   method recibirAtaque() {
@@ -74,7 +74,7 @@ class EnemigoComun inherits Enemigo{
 }
 
 class ClonMalvado inherits Enemigo{
-  override method vidaInicial() = personaje.vidas() * personaje.dañoActual()
+  override method vidaInicial() = personaje.vidaActual() * personaje.dañoActual()
 
   override method image() = "clonMalvado.png"
 }

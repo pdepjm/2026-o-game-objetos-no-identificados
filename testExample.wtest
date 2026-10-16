@@ -5,20 +5,20 @@ import puerta.*
 
 describe "Personaje" {
   test "Pierde una vida cuando recibe un ataque" {
-    personaje.perderVidas()
-    assert.equals(2, personaje.vidas)
+    personaje.perderVidaActual()
+    assert.equals(2, personaje.vidaActual)
   }
 }
 
 describe "Enemigo" {
   test "Recibe daño" {
-    const enemigo = new Enemigo(position = game.at(5, 5))
+    const enemigo = new EnemigoComun(position = game.at(5, 5))
     enemigo.recibirDanio()
     assert.equals(75, enemigo.vida())
   }
 
   test "Muere cuando su vida llega a cero" {
-    const enemigo = new Enemigo(position = game.at(5, 5))
+    const enemigo = new EnemigoComun(position = game.at(5, 5))
 
     enemigo.recibirDanio()
     enemigo.recibirDanio()

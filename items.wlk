@@ -12,6 +12,8 @@ class PocionDeVida{
     }
 }
 
+
+
 object armaMejorada{
     const dañoDelArma = 50
 
@@ -25,4 +27,3 @@ object armaMejorada{
     }
 
 }
-
