@@ -7,9 +7,11 @@ import logicaJuego.*
 class Enemigo {
   var property position
   var ultimaPosicion = position
-  var vida = 100
+  var vida = self.vidaInicial()
 
-  method image() = "enemigoComun.png"
+  method image()
+
+  method vidaInicial()
 
   method retroceder() {
     position = ultimaPosicion
@@ -56,10 +58,24 @@ class Enemigo {
   }
 
   method recibirDanio(){
-    vida = vida-25
+    vida = vida - personaje.dañoActual()
   }
 
   method esAtacable() = true
 
   method estaMuerto() = vida <= 0
 }
+
+class EnemigoComun inherits Enemigo{
+  override method vidaInicial() = 100
+
+  override method image() = "enemigoComun.png"
+
+}
+
+class ClonMalvado inherits Enemigo{
+  override method vidaInicial() = personaje.vidas() * personaje.dañoActual()
+
+  override method image() = "clonMalvado.png"
+}
+
