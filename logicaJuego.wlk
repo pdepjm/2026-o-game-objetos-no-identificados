@@ -66,5 +66,5 @@ object finDelJuego {
 
 object vida {
   method position() = game.at(1,0)
-  method text() = "te quedan: " + personaje.vidas()
+  method text() = "te quedan: " + personaje.vidaActual()
 }

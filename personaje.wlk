@@ -12,6 +12,7 @@ object personaje {
   var vidaMaxima = 3
   var vidaActual = 3
   method vidaActual () = vidaActual
+  method vidaMaxima () = vidaMaxima
 
   method perderVidaActual() {
     vidaActual = (vidaActual - 1).max(0)
@@ -26,7 +27,7 @@ object personaje {
     game.say(self, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
   }
 
-  method aumentarvidaActual(cantidad){
+  method aumentarvidaMaxima(cantidad){
     vidaMaxima = cantidad
   }
 
