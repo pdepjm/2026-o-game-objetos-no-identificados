@@ -21,8 +21,7 @@ class Enemigo {
     ultimaPosicion = position
   }
 
-  method dentroDeLimites(unaPosicion) =
-    tablero.dentroDeLimites(unaPosicion)
+  method dentroDeLimites(unaPosicion) = tablero.esTransitable(unaPosicion)
 
   method perseguir() {
     const objetivo = personaje.position()

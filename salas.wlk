@@ -4,11 +4,16 @@ import personaje.*
 import puerta.*
 import logicaJuego.*
 import generadorDeMonstruos.*
+import temporizador.*
+import obstaculos.*
+import paredes.*
 
 class Sala {
   var enemigosVivos = []
   // se crea en inicializarse(), asi cada vez que se entra la puerta arranca bloqueada
   var puerta = null
+
+  method tiempoLimite()   // cada sala define sus segundos
 
   // cada sala define esto
   method fondo()
@@ -16,8 +21,15 @@ class Sala {
   method puntoDeEntrada()
   method salaSiguiente()
 
+  // cada sala define sus paredes internas (por defecto, ninguna)
+  method paredes() = []
+
   method inicializarse() {
+    temporizador.iniciar(self.tiempoLimite()) // cada sala define su tiempo limite
     game.boardGround(self.fondo())
+
+// las paredes van primero para que queden debajo de enemigos y personaje
+    paredes.construir(self.paredes())
 
     enemigosVivos = self.crearEnemigos()
     enemigosVivos.forEach { enemigo =>
@@ -47,8 +59,12 @@ class Sala {
 
 object sala1 inherits Sala {
   override method fondo() = "sala1.png"
+  override method tiempoLimite() = 20  // 20 segundos para limpiar la sala
 
-  
+  override method paredes() =
+    paredes.horizontal(1, 6, 9) +
+    paredes.horizontal(4, game.width() - 2, 14)
+
   override method crearEnemigos() = 
     generadorDeMonstruos.generarEnemigosEn([
       game.at(4, 5),
@@ -63,6 +79,11 @@ object sala1 inherits Sala {
 
 object sala2 inherits Sala {
   override method fondo() = "sala2.png"
+  override method tiempoLimite() = 25 // segundos
+
+override method paredes() =
+    paredes.vertical(6, 2, 11) +
+    paredes.horizontal(1, 5, 14)
 
   override method crearEnemigos() = 
     generadorDeMonstruos.generarEnemigosEn([

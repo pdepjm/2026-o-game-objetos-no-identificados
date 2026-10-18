@@ -62,8 +62,7 @@ object personaje {
 
   method mover(nuevaPosicion) {
     self.guardarPosicion()
-    // Limita el movimiento dentro de la grilla visible
-    if (tablero.dentroDeLimites(nuevaPosicion)) {
+    if (tablero.esTransitable(nuevaPosicion)) {
       position = nuevaPosicion
     }
   }

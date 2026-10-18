@@ -8,7 +8,7 @@ class PocionDeVida{
 
     //si agregamos mas personajes esto debe recuperar a PersonajeActual
     method recuperarPersonaje(){ 
-        personaje.recuperarvidaActual(cantidadDeRecuperacion)
+        personaje.recuperarVidaActual(cantidadDeRecuperacion)
     }
 }
 
@@ -17,7 +17,7 @@ object armadura{
     const proteccion = 4
 
     method alColisionarConPersonaje(){
-        personaje.aumentarvidaMaxima(proteccion)
+        personaje.aumentarVidaMaxima(proteccion)
     }
     
 }

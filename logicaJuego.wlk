@@ -2,6 +2,7 @@ import wollok.game.*
 import personaje.*
 import salas.*
 import estadoFinal.*
+import temporizador.*
 
 
 object miJuego {
@@ -13,17 +14,23 @@ object miJuego {
   method entrarA(sala) {
     game.allVisuals().forEach { visual => game.removeVisual(visual) }
     salaActual = sala
-    game.addVisual(vida)
     salaActual.inicializarse()
+    game.addVisual(vida)
+    game.addVisual(temporizador)
   }
+
+  method puedeJugar() = !temporizador.preparando()
 
   method iniciar() {
     self.entrarA(sala1)
+    temporizador.iniciarPreparacion(5)
 
     // los enemigos los define y los guarda cada sala; aca solo se le pregunta a la sala actual
     //game.tick(500, { salaActual.enemigosVivos().forEach({ enemigo => enemigo.perseguir() }) }, false).start()
-
-    game.onTick(500, "movimientoEnemigos", { salaActual.enemigosVivos().forEach({enemigo => enemigo.perseguir()})})
+    game.onTick(500, "movimientoEnemigos", {
+       if (self.puedeJugar()) salaActual.enemigosVivos().forEach({enemigo => enemigo.perseguir()})
+     })
+    game.onTick(1000, "timerSala", { temporizador.pasarSegundo() })
     game.onCollideDo(personaje, { elemento => personaje.reaccionarAColision(elemento) })
 
     keyboard.w().whilePressedDo({ personaje.mover(personaje.position().up(1)) }, 150)
@@ -56,6 +63,7 @@ object miJuego {
 
 object finDelJuego {
   method inicializarse() {
+    temporizador.detener()
     game.addVisual(personaje)
     miJuego.ganarJuego()
   }
