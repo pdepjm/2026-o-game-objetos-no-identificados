@@ -9,6 +9,8 @@ class Enemigo {
   var ultimaPosicion = position
   var vida = self.vidaInicial()
 
+  method vida() = vida
+
   method image()
 
   method vidaInicial()

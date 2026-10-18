@@ -3,6 +3,9 @@ import salas.*
 import personaje.*
 import enemigos.*
 import puerta.*
+import paredes.*
+import logicaJuego.*
+import temporizador.*
 
 describe "Personaje" {
   test "Pierde una vida cuando recibe un ataque" {
@@ -48,5 +51,122 @@ describe "Sala" {
   test "La sala comienza con enemigos" {
     sala1.inicializarse()
     assert.notThat(sala1.estaLimpia())
+  }
+}
+
+describe "Paredes" {
+  method initialize() {
+game.width(15)
+    game.height(20)
+  }
+
+  // el bloqueo de celdas
+  test "Una pared interna bloquea su celda y no las vecinas" {
+    paredes.construir(paredes.horizontal(3, 5, 9))
+    assert.that(paredes.bloquea(game.at(4, 9)))
+    assert.notThat(paredes.bloquea(game.at(4, 10)))
+  }
+}
+
+describe "Movimiento" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    personaje.position(game.at(5, 5))
+  }
+
+  // el personaje contra una pared
+  test "El personaje no atraviesa una pared interna" {
+    paredes.construir(paredes.horizontal(6, 6, 5))
+    personaje.mover(game.at(6, 5))
+    assert.equals(game.at(5, 5), personaje.position())
+  }
+
+  // el enemigo contra una pared
+  test "El enemigo no atraviesa una pared interna" {
+    paredes.construir(paredes.horizontal(6, 6, 5))
+    const enemigo = new EnemigoComun(position = game.at(5, 5))
+    personaje.position(game.at(8, 5))
+    enemigo.perseguir()
+    assert.notEquals(game.at(6, 5), enemigo.position())
+  }
+}
+
+describe "Flujo del juego" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+  }
+
+  // puerta + sala limpia
+  test "Al limpiar la sala la puerta lleva a la sala siguiente" {
+    miJuego.entrarA(sala1)
+    sala1.enemigosVivos().copy().forEach({ e => miJuego.eliminarEnemigo(e) })
+    sala1.puerta().alColisionarConPersonaje()
+    assert.equals(sala2, miJuego.salaActual())
+  }
+
+  // puerta bloqueada
+  test "La puerta bloqueada no cambia de sala" {
+    miJuego.entrarA(sala1)
+    sala1.puerta().alColisionarConPersonaje()
+    assert.equals(sala1, miJuego.salaActual())
+  }
+
+  // derrota + reinicio
+  test "Tras perder, reiniciar vuelve a sala1 con el personaje restaurado" {
+    miJuego.entrarA(sala1)
+    miJuego.terminarJuego()
+    assert.notThat(miJuego.puedeJugar())
+    miJuego.reiniciar()
+    assert.equals(sala1, miJuego.salaActual())
+    assert.equals(3, personaje.vidaActual())
+    assert.that(temporizador.preparando())
+  }
+}
+
+describe "Temporizador" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+  }
+
+  // el reloj de la sala
+  test "Cada segundo descuenta uno del tiempo mientras hay enemigos" {
+    miJuego.entrarA(sala1)
+    temporizador.pasarSegundo()
+    assert.equals("tiempo: " + (sala1.tiempoLimite() - 1), temporizador.text())
+  }
+
+  // derrota por tiempo
+  test "Al llegar el tiempo a cero el juego termina" {
+    miJuego.entrarA(sala1)
+    sala1.tiempoLimite().times({ i => temporizador.pasarSegundo() })
+    assert.notThat(miJuego.puedeJugar())
+  }
+
+  // cuenta regresiva inicial
+  test "Durante la preparacion no se puede jugar y al terminar si" {
+    miJuego.entrarA(sala1)
+    temporizador.iniciarPreparacion(2)
+    assert.notThat(miJuego.puedeJugar())
+    2.times({ i => temporizador.pasarSegundo() })
+    assert.that(miJuego.puedeJugar())
+  }
+}
+
+describe "Combate" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    game.addVisual(personaje)
+  }
+
+  // derrota por vidas
+  test "Si los enemigos le quitan todas las vidas el juego termina" {
+    const enemigo = new EnemigoComun(position = game.at(5, 5))
+    3.times({ i => enemigo.alColisionarConPersonaje() })
+    assert.equals(0, personaje.vidaActual())
+    assert.notThat(miJuego.puedeJugar())
   }
 }

@@ -6,6 +6,8 @@ class Puerta {
   const destino
   var desbloqueada = false
 
+  method desbloqueada() = desbloqueada
+
   method image() = "puerta.png"
 
   method esAtacable() = false
