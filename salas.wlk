@@ -7,6 +7,8 @@ import generadorDeMonstruos.*
 import temporizador.*
 import obstaculos.*
 import paredes.*
+import items.*
+
 
 class Sala {
   var enemigosVivos = []
@@ -24,6 +26,9 @@ class Sala {
   // cada sala define sus paredes internas (por defecto, ninguna)
   method paredes() = []
 
+  // cada sala define sus items del piso (por defecto, ninguno)
+  method crearItems() = []
+
   method inicializarse() {
     temporizador.iniciar(self.tiempoLimite()) // cada sala define su tiempo limite
     game.boardGround(self.fondo())
@@ -39,6 +44,11 @@ class Sala {
 
     puerta = new Puerta(destino = self.salaSiguiente())
     game.addVisual(puerta)
+
+    if (self.estaLimpia()) puerta.desbloquear()
+
+    self.crearItems().forEach { item => game.addVisual(item) }
+
 
     game.addVisual(personaje)
     personaje.position(self.puntoDeEntrada())
@@ -97,5 +107,77 @@ override method paredes() =
   override method puntoDeEntrada() = game.at(5, 1)
 
   
+  override method salaSiguiente() = sala3
+}
+
+
+// sala con el item de balas cazafantasmas. La pared tiene un unico hueco (x = 5) y el item esta
+// justo ahi: para llegar a la puerta hay que pasar por encima, asi que no se puede esquivar.
+object sala3 inherits Sala {
+  override method fondo() = "sala1.png"
+  override method tiempoLimite() = 30  // sin enemigos el reloj no corre
+
+  override method paredes() =
+    paredes.horizontal(1, 4, 10) +
+    paredes.horizontal(6, 10, 10)
+
+  override method crearEnemigos() = []
+
+  override method crearItems() = [
+    new ItemMunicion(bala = balaCazaFantasmas, image = "itemCazaFantasmas.png", position = game.at(5, 10))
+  ]
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala4
+}
+
+// sala de fantasmas: solo mueren con balas cazafantasmas (tecla B para cambiar de bala)
+object sala4 inherits Sala {
+  override method fondo() = "sala2.png"
+  override method tiempoLimite() = 30
+
+  override method crearEnemigos() =
+    [game.at(3, 6), game.at(8, 9), game.at(5, 14)].map({ posicion =>
+      new Fantasma(position = posicion)
+    })
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala5
+}
+
+// sala con el item de balas de plata (misma idea que sala3)
+object sala5 inherits Sala {
+  override method fondo() = "sala1.png"
+  override method tiempoLimite() = 30  // sin enemigos el reloj no corre
+
+  override method paredes() =
+    paredes.horizontal(1, 4, 10) +
+    paredes.horizontal(6, 10, 10)
+
+  override method crearEnemigos() = []
+
+  override method crearItems() = [
+    new ItemMunicion(bala = balaPlata, image = "itemPlata.png", position = game.at(5, 10))
+  ]
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala6
+}
+
+// sala de hombres lobo: con balas de plata reciben el daño completo
+object sala6 inherits Sala {
+  override method fondo() = "sala2.png"
+  override method tiempoLimite() = 40
+
+  override method crearEnemigos() =
+    [game.at(3, 7), game.at(8, 12)].map({ posicion =>
+      new HombreLobo(position = posicion)
+    })
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
   override method salaSiguiente() = finDelJuego
 }

@@ -9,6 +9,11 @@ class Enemigo {
   var ultimaPosicion = position
   var vida = self.vidaInicial()
 
+  method danioBase(base) = base
+  method danioDeBalaComun(base) = self.danioBase(base)
+  method danioDeBalaPlata(base) = self.danioBase(base)
+  method danioDeBalaCazaFantasmas(base) = 0
+
   method vida() = vida
 
   method image()
@@ -50,16 +55,17 @@ class Enemigo {
     personaje.perderVidaActual()
   }
 
-  method recibirAtaque() {
-    self.recibirDanio()
+  method recibirAtaque(bala) {
+    self.recibirDanio(bala)
 
     if (self.estaMuerto()) {
       miJuego.eliminarEnemigo(self)
     }
   }
 
-  method recibirDanio(){
-    vida = vida - personaje.dañoActual()
+
+  method recibirDanio(bala){
+    vida = vida - bala.danioContra(self, personaje.danioActual())
   }
 
   method esAtacable() = true
@@ -69,14 +75,31 @@ class Enemigo {
 
 class EnemigoComun inherits Enemigo{
   override method vidaInicial() = 100
-
+  
   override method image() = "enemigoComun.png"
 
 }
 
 class ClonMalvado inherits Enemigo{
-  override method vidaInicial() = personaje.vidaActual() * personaje.dañoActual()
+  override method vidaInicial() = personaje.vidaActual() * personaje.danioActual()
 
   override method image() = "clonMalvado.png"
 }
 
+class HombreLobo inherits Enemigo {
+  override method vidaInicial() = 150
+
+  override method image() = "hombreLobo.png"
+
+  override method danioDeBalaComun(base) = base / 2
+}
+
+class Fantasma inherits Enemigo {
+  override method vidaInicial() = 50
+
+  override method image() = "fantasma.png"
+
+  override method danioBase(base) = 0
+
+  override method danioDeBalaCazaFantasmas(danio) = danio
+}

@@ -1,18 +1,37 @@
 import wollok.game.*
 import logicaJuego.*
 import tablero.*
+import items.*
+
 
 object personaje {
   var property position = game.center()
   var ultimaPosicion = position
-  var property dañoActual = 25
+  var property danioActual = 25
   const inventario = []
+  const municiones = [balaComun]
+
   
   method image() = "personaje.png"
   var vidaMaxima = 3
   var vidaActual = 3
   method vidaActual () = vidaActual
   method vidaMaxima () = vidaMaxima
+
+  method municionActual() = municiones.first()
+
+  method cambiarMunicion() {
+    const actual = municiones.first()
+    municiones.remove(actual)
+    municiones.add(actual)
+  }
+
+  method adquirirMunicion(bala) {
+    if (!municiones.contains(bala)) {
+      municiones.add(bala)
+      game.say(self, "Conseguí balas: " + bala.nombre())
+    }
+  }
 
   method perderVidaActual() {
     vidaActual = (vidaActual - 1).max(0)
@@ -56,7 +75,7 @@ object personaje {
   method atacarEn(posicion) {
     const objetivo = self.encontrarObjetivoEn(posicion)
     if (objetivo != null) {
-      objetivo.recibirAtaque()
+      objetivo.recibirAtaque(self.municionActual())
     }
   }
 
@@ -75,7 +94,7 @@ object personaje {
 method reiniciar() {
     vidaMaxima = 3
     vidaActual = 3
-    dañoActual = 25
+    danioActual = 25
     inventario.clear()
   }
 

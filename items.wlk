@@ -23,15 +23,44 @@ object armadura{
 }
 
 object armaMejorada{
-    const dañoDelArma = 50
+    const danioDelArma = 50
 
     method alColisionarConPersonaje(){
         personaje.agregarObjeto("Arma Mejorada")
-        self.mejorarDañoPersonaje()
+        self.mejorarDanioPersonaje()
     }
 
-    method mejorarDañoPersonaje(){
-        personaje.dañoActual(dañoDelArma)
+    method mejorarDanioPersonaje(){
+        personaje.danioActual(danioDelArma)
     }
 
 }
+
+class ItemMunicion {
+    var property position
+    const bala
+    const property image
+
+    method esAtacable() = false
+
+    method alColisionarConPersonaje() {
+        personaje.adquirirMunicion(bala)
+        game.removeVisual(self)
+    }
+}
+
+object balaComun{
+    method nombre() = "Común"
+    method danioContra(enemigo, base) = enemigo.danioDeBalaComun(base)
+}
+
+object balaPlata{
+  method nombre() = "Plata"
+  method danioContra(enemigo, base) = enemigo.danioDeBalaPlata(base)
+}
+
+object balaCazaFantasmas{
+  method nombre() = "Caza Fantasmas"
+  method danioContra(enemigo, base) = enemigo.danioDeBalaCazaFantasmas(base)
+}
+

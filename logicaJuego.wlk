@@ -3,7 +3,7 @@ import personaje.*
 import salas.*
 import estadoFinal.*
 import temporizador.*
-
+import items.*
 
 object miJuego {
   var salaActual = sala1
@@ -17,6 +17,7 @@ object miJuego {
     salaActual.inicializarse()
     game.addVisual(vida)
     game.addVisual(temporizador)
+    game.addVisual(municionEquipada)
   }
 
   method puedeJugar() = !temporizador.preparando() && !juegoTerminado
@@ -37,6 +38,7 @@ object miJuego {
     keyboard.a().whilePressedDo({ personaje.mover(personaje.position().left(1)) }, 150)
     keyboard.s().whilePressedDo({ personaje.mover(personaje.position().down(1)) }, 150)
     keyboard.d().whilePressedDo({ personaje.mover(personaje.position().right(1)) }, 150)
+    keyboard.b().onPressDo({personaje.cambiarMunicion()})
     keyboard.r().onPressDo({ self.reiniciar() }) // reinicia el juego si se perdió
     game.onClickDo({ posicion => personaje.atacarEn(posicion) })
   }
@@ -86,4 +88,9 @@ object finDelJuego {
 object vida {
   method position() = game.at(1,0)
   method text() = "te quedan: " + personaje.vidaActual()
+}
+
+object municionEquipada {
+  method position() = game.at(8,0)
+  method text() = "bala: " + personaje.municionActual().nombre()
 }
