@@ -22,12 +22,12 @@ object personaje {
     }
   }
 
-  method recuperarvidaActual(cantidad){
+  method recuperarVidaActual(cantidad){
     vidaActual = (vidaActual + cantidad).max(vidaMaxima)
     game.say(self, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
   }
 
-  method aumentarvidaMaxima(cantidad){
+  method aumentarVidaMaxima(cantidad){
     vidaMaxima = cantidad
   }
 
