@@ -71,6 +71,14 @@ object personaje {
     inventario.add(objeto)
   }
 
+// reinicia los atributos del personaje a los valores iniciales
+method reiniciar() {
+    vidaMaxima = 3
+    vidaActual = 3
+    dañoActual = 25
+    inventario.clear()
+  }
+
 }
 
 

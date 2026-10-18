@@ -19,7 +19,7 @@ object miJuego {
     game.addVisual(temporizador)
   }
 
-  method puedeJugar() = !temporizador.preparando()
+  method puedeJugar() = !temporizador.preparando() && !juegoTerminado
 
   method iniciar() {
     self.entrarA(sala1)
@@ -37,13 +37,24 @@ object miJuego {
     keyboard.a().whilePressedDo({ personaje.mover(personaje.position().left(1)) }, 150)
     keyboard.s().whilePressedDo({ personaje.mover(personaje.position().down(1)) }, 150)
     keyboard.d().whilePressedDo({ personaje.mover(personaje.position().right(1)) }, 150)
-
+    keyboard.r().onPressDo({ self.reiniciar() }) // reinicia el juego si se perdió
     game.onClickDo({ posicion => personaje.atacarEn(posicion) })
+  }
+
+// reicia el juego si se perdió la partida
+method reiniciar() {
+   if (juegoTerminado) {
+     juegoTerminado = false
+      personaje.reiniciar()
+      self.entrarA(sala1)
+      temporizador.iniciarPreparacion(5)
+    }
   }
 
   method finalizarCon(estadoFinal) {
     if(!juegoTerminado) {
       juegoTerminado = true
+      temporizador.detener()
       estadoFinal.ejecutar()
     }
   }

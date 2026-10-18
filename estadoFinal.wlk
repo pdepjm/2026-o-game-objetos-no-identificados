@@ -10,6 +10,18 @@ class EstadoFinal {
     game.schedule(2000, { game.stop() })
     }
 }
+object pantallaFinal {
+    var mensaje = ""
+
+    method position() = game.center()
+    method text() = mensaje
+    method esAtacable() = false
+
+    method mostrar(texto) {
+        mensaje = texto
+        game.addVisual(self)
+    }
+}
 
 object victoria {
     method ejecutar() {
@@ -19,6 +31,6 @@ object victoria {
 
 object derrota {
     method ejecutar() {
-        new EstadoFinal(mensaje = "Has perdido").ejecutar()
+        pantallaFinal.mostrar("Has perdido. Presioná R para reiniciar")
     }
 }
