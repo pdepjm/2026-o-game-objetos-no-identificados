@@ -1,9 +1,12 @@
 import personaje.*
+
+//los objetos como armas y armaduras tienen rarezas: Comun, Raro, Epico
 class PocionDeVida{
     const cantidadDeRecuperacion = 1
 
     method alColisionarConPersonaje(){
         self.recuperarPersonaje()
+        game.removeVisual(self)
     }
 
     //si agregamos mas personajes esto debe recuperar a PersonajeActual
@@ -13,21 +16,32 @@ class PocionDeVida{
 }
 
 //armadura añade mas vidas base
-object armadura{
-    const proteccion = 4
+class Armadura{
+    var property position = game.at(5, 10)
+    const rareza
+    const proteccion
+    const image = "armadura.png"
+
+    
+    
 
     method alColisionarConPersonaje(){
         personaje.aumentarVidaMaxima(proteccion)
+        game.removeVisual(self)
     }
-    
+
 }
 
-object armaMejorada{
-    const danioDelArma = 50
+class Arma{
+    var property position = game.at(5, 10)
+    const rareza
+    const danioDelArma
+    const image = "arma.png"
 
     method alColisionarConPersonaje(){
         personaje.agregarObjeto("Arma Mejorada")
         self.mejorarDanioPersonaje()
+        game.removeVisual(self)
     }
 
     method mejorarDanioPersonaje(){
@@ -36,7 +50,19 @@ object armaMejorada{
 
 }
 
-class ItemMunicion {
+object baulDePremios{
+    // al limpiar una sala otorgara un objeto de la lista
+    // al crear una sala se usara override method crearItems() = [baulDePremios.otorgarPremio()]
+    const premiosComunes = [new Armadura(rareza = "Comun", proteccion = 4), new Arma(rareza = "Comun", danioDelArma = 50)]
+    const premiosRaros = []
+    const premiosEpicos = []
+
+    method otorgarPremio(premios){
+        premios.anyOne()
+    }
+}
+
+class ItemMunicion{
     var property position
     const bala
     const property image
