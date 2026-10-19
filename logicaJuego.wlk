@@ -18,6 +18,7 @@ object miJuego {
     game.addVisual(vida)
     game.addVisual(temporizador)
     game.addVisual(municionEquipada)
+    game.addVisual(contadorEnemigos)
   }
 
   method puedeJugar() = !temporizador.preparando() && !juegoTerminado
@@ -93,4 +94,9 @@ object vida {
 object municionEquipada {
   method position() = game.at(8,0)
   method text() = "bala: " + personaje.municionActual().nombre()
+}
+
+object contadorEnemigos {
+  method position() = game.at(3, 0)
+  method text() = "enemigos: " + miJuego.salaActual().enemigosVivos().size()   // <-- CAMBIO
 }
