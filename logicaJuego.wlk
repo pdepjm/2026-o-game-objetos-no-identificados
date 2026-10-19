@@ -34,10 +34,10 @@ object miJuego {
     game.onTick(1000, "timerSala", { temporizador.pasarSegundo() })
     game.onCollideDo(personaje, { elemento => personaje.reaccionarAColision(elemento) })
 
-    keyboard.w().whilePressedDo({ personaje.mover(personaje.position().up(1)) }, 150)
-    keyboard.a().whilePressedDo({ personaje.mover(personaje.position().left(1)) }, 150)
-    keyboard.s().whilePressedDo({ personaje.mover(personaje.position().down(1)) }, 150)
-    keyboard.d().whilePressedDo({ personaje.mover(personaje.position().right(1)) }, 150)
+    keyboard.w().whilePressedDo({ personaje.mover(personaje.position().up(1)) }, 75)
+    keyboard.a().whilePressedDo({ personaje.mover(personaje.position().left(1)) }, 75)
+    keyboard.s().whilePressedDo({ personaje.mover(personaje.position().down(1)) }, 75)
+    keyboard.d().whilePressedDo({ personaje.mover(personaje.position().right(1)) }, 75)
     keyboard.b().onPressDo({personaje.cambiarMunicion()})
     keyboard.r().onPressDo({ self.reiniciar() }) // reinicia el juego si se perdió
     game.onClickDo({ posicion => personaje.atacarEn(posicion) })

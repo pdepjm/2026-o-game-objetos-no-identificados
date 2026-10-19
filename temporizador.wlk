@@ -1,5 +1,6 @@
 import wollok.game.*
 import logicaJuego.*
+import obstaculos.*
 
 object temporizador {
   var tiempoRestante = 0
@@ -42,4 +43,15 @@ object temporizador {
       if (tiempoRestante == 0) miJuego.terminarJuego()
     }
   }
+
+// lo llaman los obstaculos al ser pisados
+  method sumarSegundos(segundos) {
+    tiempoRestante = tiempoRestante + segundos
+  }
+
+  method restarSegundos(segundos) {
+    tiempoRestante = (tiempoRestante - segundos).max(0)
+    if (tiempoRestante == 0) miJuego.terminarJuego()
+  }
+
 }

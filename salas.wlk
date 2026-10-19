@@ -8,6 +8,7 @@ import temporizador.*
 import obstaculos.*
 import paredes.*
 import items.*
+import tablero.*
 
 
 class Sala {
@@ -17,7 +18,7 @@ class Sala {
 
   method tiempoLimite()   // cada sala define sus segundos
 
-  // cada sala define esto
+  // cada sala define estos métodos
   method fondo()
   method crearEnemigos()
   method puntoDeEntrada()
@@ -28,6 +29,9 @@ class Sala {
 
   // cada sala define sus items del piso (por defecto, ninguno)
   method crearItems() = []
+
+  // cada sala define sus obstaculos del piso (por defecto, ninguno)
+  method crearObstaculos() = []
 
   method inicializarse() {
     temporizador.iniciar(self.tiempoLimite()) // cada sala define su tiempo limite
@@ -48,7 +52,7 @@ class Sala {
     if (self.estaLimpia()) puerta.desbloquear()
 
     self.crearItems().forEach { item => game.addVisual(item) }
-
+    self.crearObstaculos().forEach { obstaculo => game.addVisual(obstaculo) }
 
     game.addVisual(personaje)
     personaje.position(self.puntoDeEntrada())
@@ -82,6 +86,19 @@ object sala1 inherits Sala {
       game.at(5, 12)
     ])
 
+  override method crearObstaculos() = [
+    new RelojDeArena(segundos = 5, position = game.at(2, 3)),
+    new RelojRoto(segundos = 4, position = game.at(9, 10)),
+    new CharcoDeBarro(segundos = 5, position = game.at(6, 3)),
+    new PistaDeVelocidad(segundos = 5, position = game.at(7, 10)),
+    new CharcoDeBarro(segundos = 5, position = game.at(5, 16))
+  ]+
+    trampas.pinchosHorizontal(2, 4, 7) +
+    trampas.pinchosVertical(9, 3, 5) +
+    trampas.pinchosHorizontal(7, 9, 12) +
+    trampas.pinchosHorizontal(3, 4, 17) +
+    trampas.pinchosHorizontal(6, 7, 17)
+
   override method puntoDeEntrada() = game.at(5, 1)
 
   override method salaSiguiente() = sala2
@@ -103,6 +120,20 @@ override method paredes() =
       game.at(8, 13),
       game.at(2, 15)
     ])
+
+   override method crearObstaculos() = [
+    new RelojDeArena(segundos = 8, position = game.at(9, 9)),
+    new RelojRoto(segundos = 6, position = game.at(3, 12)),
+    new Maldicion(segundos = 6, position = game.at(8, 3)),
+    new CharcoDeBarro(segundos = 6, position = game.at(2, 8)),
+    new PistaDeVelocidad(segundos = 5, position = game.at(10, 10)),
+    new Maldicion(segundos = 6, position = game.at(5, 16))
+  ] +
+    trampas.pinchosVertical(4, 6, 8) +
+    trampas.pinchosHorizontal(7, 9, 7) +
+    trampas.pinchosHorizontal(7, 8, 11) +
+    trampas.pinchosVertical(4, 16, 18) +
+    trampas.pinchosVertical(6, 16, 18)
 
   override method puntoDeEntrada() = game.at(5, 1)
 
