@@ -1,8 +1,13 @@
 import personaje.*
+import wollok.game.*
 
 //los objetos como armas y armaduras tienen rarezas: Comun, Raro, Epico
 class PocionDeVida{
+    var property position = game.at(5, 10)
     const cantidadDeRecuperacion = 1
+
+    method image() = "pocionDeVida.png"
+    method esAtacable() = false
 
     method alColisionarConPersonaje(){
         self.recuperarPersonaje()
