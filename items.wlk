@@ -1,3 +1,4 @@
+import wollok.game.*
 import personaje.*
 
 //los objetos como armas y armaduras tienen rarezas: Comun, Raro, Epico
