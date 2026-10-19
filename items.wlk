@@ -18,14 +18,15 @@ class PocionDeVida{
 //armadura añade mas vidas base
 class Armadura{
     var property position = game.at(5, 10)
-    const rareza
+    const property rareza
     const proteccion
-    const image = "armadura.png"
+    const property image = "armadura.png"
 
     
     
 
     method alColisionarConPersonaje(){
+        personaje.agregarObjeto("Armadura " + rareza)
         personaje.aumentarVidaMaxima(proteccion)
         game.removeVisual(self)
     }
@@ -34,12 +35,12 @@ class Armadura{
 
 class Arma{
     var property position = game.at(5, 10)
-    const rareza
+    const property rareza
     const danioDelArma
-    const image = "arma.png"
+    const property image = "arma.png"
 
     method alColisionarConPersonaje(){
-        personaje.agregarObjeto("Arma Mejorada")
+        personaje.agregarObjeto("Arma " + rareza)
         self.mejorarDanioPersonaje()
         game.removeVisual(self)
     }
@@ -52,14 +53,13 @@ class Arma{
 
 object baulDePremios{
     // al limpiar una sala otorgara un objeto de la lista
-    // al crear una sala se usara override method crearItems() = [baulDePremios.otorgarPremio()]
+    // al crear una sala se usara override method crearItems(premiosComunes) = [baulDePremios.otorgarPremio()]
     const premiosComunes = [new Armadura(rareza = "Comun", proteccion = 4), new Arma(rareza = "Comun", danioDelArma = 50)]
     const premiosRaros = []
     const premiosEpicos = []
 
-    method otorgarPremio(premios){
-        premios.anyOne()
-    }
+    method otorgarPremio(premios) = premios.anyOne()
+    
 }
 
 class ItemMunicion{
