@@ -7,6 +7,9 @@ import paredes.*
 import logicaJuego.*
 import temporizador.*
 import items.*
+import tablero.*
+import estadoFinal.*
+import generadorDeMonstruos.*
 
 describe "Personaje" {
   test "Pierde una vida cuando recibe un ataque" {
@@ -169,5 +172,87 @@ describe "Combate" {
     3.times({ i => enemigo.alColisionarConPersonaje() })
     assert.equals(0, personaje.vidaActual())
     assert.notThat(miJuego.puedeJugar())
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Personaje: municiones, vida y movimiento
+// ---------------------------------------------------------------------------
+describe "Personaje: municiones, vida y movimiento" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    game.addVisual(personaje)
+  }
+
+  test "Cambiar de municion recorre las balas que tiene de forma ciclica" {
+    personaje.adquirirMunicion(balaPlata)
+    personaje.cambiarMunicion()
+    assert.equals(balaPlata, personaje.municionActual())
+    personaje.cambiarMunicion()
+    assert.equals(balaComun, personaje.municionActual())
+  }
+
+  test "Adquirir dos veces la misma municion no la duplica" {
+    personaje.adquirirMunicion(balaPlata)
+    personaje.adquirirMunicion(balaPlata)
+    personaje.cambiarMunicion()
+    personaje.cambiarMunicion()
+    // si estuviera duplicada, la actual seguiria siendo la de plata
+    assert.equals(balaComun, personaje.municionActual())
+  }
+
+  test "La vida del personaje nunca baja de cero" {
+    5.times({ i => personaje.perderVidaActual() })
+    assert.equals(0, personaje.vidaActual())
+  }
+
+  test "Retroceder devuelve al personaje a la posicion anterior" {
+    personaje.position(game.at(5, 5))
+    personaje.mover(game.at(6, 5))
+    assert.equals(game.at(6, 5), personaje.position())
+    personaje.retroceder()
+    assert.equals(game.at(5, 5), personaje.position())
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Items: cada uno reacciona distinto al colisionar con el personaje (polimorfismo)
+// ---------------------------------------------------------------------------
+describe "Items" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    game.addVisual(personaje)
+  }
+
+  test "La pocion de vida recupera vida al colisionar" {
+    2.times({ i => personaje.perderVidaActual() })
+    personaje.reaccionarAColision(new PocionDeVida())
+    assert.equals(2, personaje.vidaActual())
+  }
+
+  test "La armadura aumenta la vida maxima y permite curarse por encima de la original" {
+    personaje.reaccionarAColision(armadura)
+    assert.equals(7, personaje.vidaMaxima())
+    personaje.recuperarVidaActual(10)
+    assert.equals(7, personaje.vidaActual())
+  }
+
+  test "El arma mejorada aumenta el danio que le hace el personaje a los enemigos" {
+    const enemigo = new EnemigoComun(position = game.at(5, 5))
+    personaje.reaccionarAColision(armaMejorada)
+    assert.equals(50, personaje.danioActual())
+    enemigo.recibirDanio(balaComun)
+    assert.equals(50, enemigo.vida())
+  }
+
+  test "Un item de municion le da la bala al personaje y desaparece del tablero" {
+    const item = new ItemMunicion(bala = balaPlata, image = "itemPlata.png", position = game.at(3, 3))
+    game.addVisual(item)
+    personaje.reaccionarAColision(item)
+    assert.notThat(game.allVisuals().contains(item))
+    personaje.cambiarMunicion()
+    assert.equals(balaPlata, personaje.municionActual())
   }
 }

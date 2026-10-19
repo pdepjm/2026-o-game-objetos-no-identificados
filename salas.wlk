@@ -11,7 +11,7 @@ import items.*
 import tablero.*
 
 
-class Sala {
+class Sala{
   var enemigosVivos = []
   // se crea en inicializarse(), asi cada vez que se entra la puerta arranca bloqueada
   var puerta = null
@@ -71,7 +71,7 @@ class Sala {
   }
 }
 
-object sala1 inherits Sala {
+object sala1 inherits Sala{
   override method fondo() = "sala1.png"
   override method tiempoLimite() = 20  // 20 segundos para limpiar la sala
 
@@ -104,7 +104,7 @@ object sala1 inherits Sala {
   override method salaSiguiente() = sala2
 }
 
-object sala2 inherits Sala {
+object sala2 inherits Sala{
   override method fondo() = "sala2.png"
   override method tiempoLimite() = 25 // segundos
 
@@ -144,7 +144,7 @@ override method paredes() =
 
 // sala con el item de balas cazafantasmas. La pared tiene un unico hueco (x = 5) y el item esta
 // justo ahi: para llegar a la puerta hay que pasar por encima, asi que no se puede esquivar.
-object sala3 inherits Sala {
+object sala3 inherits Sala{
   override method fondo() = "sala1.png"
   override method tiempoLimite() = 30  // sin enemigos el reloj no corre
 
@@ -164,7 +164,7 @@ object sala3 inherits Sala {
 }
 
 // sala de fantasmas: solo mueren con balas cazafantasmas (tecla B para cambiar de bala)
-object sala4 inherits Sala {
+object sala4 inherits Sala{
   override method fondo() = "sala2.png"
   override method tiempoLimite() = 30
 
@@ -179,7 +179,7 @@ object sala4 inherits Sala {
 }
 
 // sala con el item de balas de plata (misma idea que sala3)
-object sala5 inherits Sala {
+object sala5 inherits Sala{
   override method fondo() = "sala1.png"
   override method tiempoLimite() = 30  // sin enemigos el reloj no corre
 
@@ -199,7 +199,7 @@ object sala5 inherits Sala {
 }
 
 // sala de hombres lobo: con balas de plata reciben el daño completo
-object sala6 inherits Sala {
+object sala6 inherits Sala{
   override method fondo() = "sala2.png"
   override method tiempoLimite() = 40
 
