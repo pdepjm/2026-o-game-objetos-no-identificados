@@ -10,6 +10,7 @@ import items.*
 import tablero.*
 import estadoFinal.*
 import generadorDeMonstruos.*
+import obstaculos.*
 
 describe "Personaje" {
   test "Pierde una vida cuando recibe un ataque" {
@@ -233,7 +234,7 @@ describe "Items" {
   }
 
   test "La armadura aumenta la vida maxima y permite curarse por encima de la original" {
-    personaje.reaccionarAColision(armadura)
+    personaje.reaccionarAColision(new Armadura(rareza = "Comun", proteccion = 4))
     assert.equals(7, personaje.vidaMaxima())
     personaje.recuperarVidaActual(10)
     assert.equals(7, personaje.vidaActual())
@@ -241,7 +242,7 @@ describe "Items" {
 
   test "El arma mejorada aumenta el danio que le hace el personaje a los enemigos" {
     const enemigo = new EnemigoComun(position = game.at(5, 5))
-    personaje.reaccionarAColision(armaMejorada)
+    personaje.reaccionarAColision(new Arma(rareza = "Comun", danioDelArma = 50))
     assert.equals(50, personaje.danioActual())
     enemigo.recibirDanio(balaComun)
     assert.equals(50, enemigo.vida())
@@ -254,5 +255,182 @@ describe "Items" {
     assert.notThat(game.allVisuals().contains(item))
     personaje.cambiarMunicion()
     assert.equals(balaPlata, personaje.municionActual())
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Tipos de enemigos: polimorfismo en recibir daño según tipo de bala
+// ---------------------------------------------------------------------------
+describe "Tipos de enemigos" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    game.addVisual(personaje)
+    personaje.reiniciar()
+  }
+
+  test "El fantasma es inmune a la bala comun" {
+    const fantasma = new Fantasma(position = game.at(5, 5))
+    game.addVisual(fantasma)
+    fantasma.recibirDanio(balaComun)
+    assert.equals(50, fantasma.vida())
+  }
+
+  test "El fantasma es inmune a la bala de plata" {
+    const fantasma = new Fantasma(position = game.at(5, 5))
+    game.addVisual(fantasma)
+    fantasma.recibirDanio(balaPlata)
+    assert.equals(50, fantasma.vida())
+  }
+
+  test "El fantasma recibe danio de la bala cazafantasmas" {
+    const fantasma = new Fantasma(position = game.at(5, 5))
+    game.addVisual(fantasma)
+    fantasma.recibirDanio(balaCazaFantasmas)
+    assert.equals(25, fantasma.vida())
+  }
+
+  test "El hombre lobo recibe menos danio con bala comun" {
+    personaje.danioActual(50)
+    const lobo = new HombreLobo(position = game.at(5, 5))
+    game.addVisual(lobo)
+    lobo.recibirDanio(balaComun)
+    // bala comun contra lobo = 50 / 2 = 25, vida = 150 - 25 = 125
+    assert.equals(125, lobo.vida())
+  }
+
+  test "El hombre lobo recibe danio completo con bala de plata" {
+    const lobo = new HombreLobo(position = game.at(5, 5))
+    game.addVisual(lobo)
+    lobo.recibirDanio(balaPlata)
+    // bala plata contra lobo = 25, vida = 150 - 25 = 125
+    assert.equals(125, lobo.vida())
+  }
+
+  test "El clon malvado tiene vida basada en las estadisticas del personaje" {
+    const clon = new ClonMalvado(position = game.at(5, 5))
+    // vida = personaje.vidaActual() * personaje.danioActual() = 3 * 25 = 75
+    assert.equals(75, clon.vida())
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Obstáculos: cada tipo aplica un efecto distinto (polimorfismo)
+// ---------------------------------------------------------------------------
+describe "Obstaculos" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    game.addVisual(personaje)
+    personaje.reiniciar()
+  }
+
+  test "Los pinchos le quitan una vida al personaje" {
+    const pincho = new Pinchos(position = game.at(3, 3))
+    game.addVisual(pincho)
+    pincho.aplicarEfecto()
+    assert.equals(2, personaje.vidaActual())
+  }
+
+  test "La maldicion hace que el personaje reciba el doble de danio" {
+    personaje.maldecir(10)
+    personaje.perderVidaActual()
+    // danioPorGolpe = 2 cuando esta maldito, vida = 3 - 2 = 1
+    assert.equals(1, personaje.vidaActual())
+  }
+
+  test "Un obstaculo desaparece del tablero al ser pisado" {
+    const reloj = new RelojDeArena(segundos = 5, position = game.at(3, 3))
+    game.addVisual(reloj)
+    reloj.alColisionarConPersonaje()
+    assert.notThat(game.allVisuals().contains(reloj))
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Efectos de velocidad del personaje
+// ---------------------------------------------------------------------------
+describe "Efectos de velocidad" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    game.addVisual(personaje)
+    personaje.reiniciar()
+  }
+
+  test "El personaje normal necesita 2 ticks por paso" {
+    assert.equals(2, personaje.ticksPorPaso())
+  }
+
+  test "Al ralentizarse necesita 4 ticks por paso" {
+    personaje.ralentizar(10)
+    assert.equals(4, personaje.ticksPorPaso())
+  }
+
+  test "Al acelerarse necesita 1 tick por paso" {
+    personaje.acelerar(10)
+    assert.equals(1, personaje.ticksPorPaso())
+  }
+
+  test "Lentitud y aceleracion juntas se cancelan" {
+    personaje.ralentizar(10)
+    personaje.acelerar(10)
+    assert.equals(2, personaje.ticksPorPaso())
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Ataque del personaje
+// ---------------------------------------------------------------------------
+describe "Ataque del personaje" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    game.addVisual(personaje)
+    personaje.reiniciar()
+  }
+
+  test "El personaje ataca a un enemigo en la posicion indicada" {
+    const enemigo = new EnemigoComun(position = game.at(6, 5))
+    game.addVisual(enemigo)
+    personaje.atacarEn(game.at(6, 5))
+    assert.equals(75, enemigo.vida())
+  }
+
+  test "Atacar una posicion sin enemigo no produce efecto" {
+    personaje.atacarEn(game.at(10, 10))
+    assert.equals(3, personaje.vidaActual())
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Tablero: limites del area de juego
+// ---------------------------------------------------------------------------
+describe "Tablero" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    game.addVisual(personaje)
+    personaje.reiniciar()
+  }
+
+  test "Una posicion central es transitable" {
+    assert.that(tablero.esTransitable(game.at(5, 5)))
+  }
+
+  test "El borde del tablero no es transitable" {
+    assert.notThat(tablero.esTransitable(game.at(0, 0)))
+  }
+
+  test "El personaje no puede moverse fuera de los limites del tablero" {
+    personaje.position(game.at(1, 5))
+    personaje.mover(game.at(0, 5))
+    assert.equals(game.at(1, 5), personaje.position())
+  }
+
+  test "El personaje puede moverse dentro de los limites del tablero" {
+    personaje.position(game.at(5, 5))
+    personaje.mover(game.at(6, 5))
+    assert.equals(game.at(6, 5), personaje.position())
   }
 }

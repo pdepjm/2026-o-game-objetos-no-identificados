@@ -53,13 +53,14 @@ class Arma{
 
 object baulDePremios{
     // al limpiar una sala otorgara un objeto de la lista
-    // al crear una sala se usara override method crearItems(premiosComunes) = [baulDePremios.otorgarPremio()]
+    // al crear una sala se usara override method crearItems() = [baulDePremios.otorgarPremio()]
     const premiosComunes = [new Armadura(rareza = "Comun", proteccion = 4), new Arma(rareza = "Comun", danioDelArma = 50)]
     const premiosRaros = []
     const premiosEpicos = []
 
-    method otorgarPremio(premios) = premios.anyOne()
-    
+    method otorgarPremio() = premiosComunes.anyOne()
+    method otorgarPremioRaro() = premiosRaros.anyOne()
+    method otorgarPremioEpico() = premiosEpicos.anyOne()
 }
 
 class ItemMunicion{
