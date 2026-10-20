@@ -27,8 +27,7 @@ class Armadura{
     const proteccion
     const property image = "armadura.png"
 
-    
-    
+    method esAtacable() = false
 
     method alColisionarConPersonaje(){
         personaje.agregarObjeto("Armadura " + rareza)
@@ -43,6 +42,8 @@ class Arma{
     const property rareza
     const danioDelArma
     const property image = "arma.png"
+
+    method esAtacable() = false
 
     method alColisionarConPersonaje(){
         personaje.agregarObjeto("Arma " + rareza)
