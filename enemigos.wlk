@@ -8,6 +8,7 @@ class Enemigo {
   var property position
   var ultimaPosicion = position
   var vida = self.vidaInicial()
+  method danioAlPersonaje() = 1
 
   method danioBase(base) = base
   method danioDeBalaComun(base) = self.danioBase(base)
@@ -52,7 +53,7 @@ class Enemigo {
   }
 
   method alColisionarConPersonaje() {
-    personaje.perderVidaActual()
+    personaje.perderVidaActual(self.danioAlPersonaje())
   }
 
   method recibirAtaque(bala) {
@@ -102,4 +103,16 @@ class Fantasma inherits Enemigo {
   override method danioBase(base) = 0
 
   override method danioDeBalaCazaFantasmas(danio) = danio
+}
+
+
+//JEFES
+
+class HombreLoboJefe inherits HombreLobo {
+  override method vidaInicial() = 250
+  override method danioAlPersonaje() = 2
+
+  override method image() = "hombreLoboJefe.png"
+
+  override method danioDeBalaComun(base) = base / 2
 }

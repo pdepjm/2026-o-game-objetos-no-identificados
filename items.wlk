@@ -28,8 +28,7 @@ class Armadura{
     const proteccion
     const property image = "armadura.png"
 
-    
-    
+    method esAtacable() = false
 
     method alColisionarConPersonaje(){
         personaje.agregarObjeto("Armadura " + rareza)
@@ -45,6 +44,8 @@ class Arma{
     const danioDelArma
     const property image = "arma.png"
 
+    method esAtacable() = false
+
     method alColisionarConPersonaje(){
         personaje.agregarObjeto("Arma " + rareza)
         self.mejorarDanioPersonaje()
@@ -58,17 +59,22 @@ class Arma{
 }
 
 object baulDePremios{
-    // al limpiar una sala otorgara un objeto de la lista
-    // al crear una sala se usara override method crearItems() = [baulDePremios.otorgarPremio()]
-    const premiosComunes = [new Armadura(rareza = "Comun", proteccion = 4), new Arma(rareza = "Comun", danioDelArma = 50)]
-    const premiosRaros = []
-    const premiosEpicos = []
+    var premios = self.premiosIniciales()
 
-    method otorgarPremio() = premiosComunes.anyOne()
-    method otorgarPremioRaro() = premiosRaros.anyOne()
-    method otorgarPremioEpico() = premiosEpicos.anyOne()
+    method premiosIniciales() = [
+        new Armadura(rareza = "Comun", proteccion = 4), 
+        new Arma(rareza = "Comun", danioDelArma = 50)
+    ]
+
+    // por ahora los objetos se otorgaran una vez por cada rareza, asi que no hay riesgo a que la lista este vacia cuando quiera otorgar un objeto
+    method otorgarPremio(rareza){
+    const premioDeLaSala = premios.filter({ premio => premio.rareza() == rareza }).anyOne()
+    premios.remove(premioDeLaSala)
+    return premioDeLaSala
+    }
+
+    method reiniciarPremios() { premios = self.premiosIniciales() }
 }
-
 class ItemMunicion{
     var property position
     const bala
@@ -88,7 +94,7 @@ object balaComun{
 }
 
 object balaPlata{
-  method nombre() = "Plata"
+  method nombre() = "de Plata"
   method danioContra(enemigo, base) = enemigo.danioDeBalaPlata(base)
 }
 

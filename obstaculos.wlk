@@ -6,6 +6,7 @@ import personaje.*
 // Cada tipo de obstaculo solo tiene que decir su imagen y su efecto.
 class Obstaculo {
   var property position
+  method danioAlPersonaje() = 1
 
   method image()
 
@@ -48,7 +49,7 @@ class Pinchos inherits Obstaculo {
   override method image() = "pinchos.png"
 
   override method aplicarEfecto() {
-    personaje.perderVidaActual()
+    personaje.perderVidaActual(self.danioAlPersonaje())
   }
 }
 

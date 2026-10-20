@@ -15,13 +15,13 @@ import obstaculos.*
 describe "Personaje" {
   test "Pierde una vida cuando recibe un ataque" {
     game.addVisual(personaje)
-    personaje.perderVidaActual()
+    personaje.perderVidaActual(1)
     assert.equals(2, personaje.vidaActual())
   }
 
   test "Al recuperar vida no supera la vida máxima" {
     game.addVisual(personaje)
-    personaje.perderVidaActual()
+    personaje.perderVidaActual(1)
     personaje.recuperarVidaActual(5)
     assert.equals(3, personaje.vidaActual())
   }
@@ -204,7 +204,7 @@ describe "Personaje: municiones, vida y movimiento" {
   }
 
   test "La vida del personaje nunca baja de cero" {
-    5.times({ i => personaje.perderVidaActual() })
+    5.times({ i => personaje.perderVidaActual(1) })
     assert.equals(0, personaje.vidaActual())
   }
 
@@ -228,7 +228,7 @@ describe "Items" {
   }
 
   test "La pocion de vida recupera vida al colisionar" {
-    2.times({ i => personaje.perderVidaActual() })
+    2.times({ i => personaje.perderVidaActual(1) })
     personaje.reaccionarAColision(new PocionDeVida())
     assert.equals(2, personaje.vidaActual())
   }
@@ -261,7 +261,7 @@ describe "Items" {
     personaje.reiniciar()
     miJuego.entrarA(sala1)
     const antes = game.allVisuals().size()
-    2.times({ i => personaje.perderVidaActual() })
+    2.times({ i => personaje.perderVidaActual(1) })
     assert.equals(antes + 1, game.allVisuals().size())
   }
 
@@ -343,7 +343,7 @@ describe "Obstaculos" {
 
   test "La maldicion hace que el personaje reciba el doble de danio" {
     personaje.maldecir(10)
-    personaje.perderVidaActual()
+    personaje.perderVidaActual(1)
     // danioPorGolpe = 2 cuando esta maldito, vida = 3 - 2 = 1
     assert.equals(1, personaje.vidaActual())
   }
