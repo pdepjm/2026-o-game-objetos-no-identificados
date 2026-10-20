@@ -32,6 +32,9 @@ class Sala{
 
   // cada sala define sus obstaculos del piso (por defecto, ninguno)
   method crearObstaculos() = []
+
+
+  var itemsDeLaSala = []
   
   // lugares donde puede aparecer la pocion de vida; una sala puede sobrescribirlo con override
   method posicionesParaPocion() = [
@@ -46,7 +49,7 @@ class Sala{
     temporizador.iniciar(self.tiempoLimite()) // cada sala define su tiempo limite
     game.boardGround(self.fondo())
 
-// las paredes van primero para que queden debajo de enemigos y personaje
+    // las paredes van primero para que queden debajo de enemigos y personaje
     paredes.construir(self.paredes())
 
     enemigosVivos = self.crearEnemigos()
@@ -60,7 +63,8 @@ class Sala{
 
     if (self.estaLimpia()) puerta.desbloquear()
 
-    self.crearItems().forEach { item => game.addVisual(item) }
+    itemsDeLaSala = self.crearItems()
+    itemsDeLaSala.forEach { item => game.addVisual(item) }
     self.crearObstaculos().forEach { obstaculo => game.addVisual(obstaculo) }
 
     game.addVisual(personaje)
@@ -80,7 +84,9 @@ class Sala{
     if (self.estaLimpia()) puerta.desbloquear()
   }
 
-method aparecerPocionDeVida() {
+  method itemsAgarrados() = itemsDeLaSala.all({ item => !game.hasVisual(item) })
+
+  method aparecerPocionDeVida() {
     const libres = self.posicionesParaPocion().filter({ posicion => game.getObjectsIn(posicion).isEmpty() })
     if (!libres.isEmpty()) game.addVisual(new PocionDeVida(position = libres.anyOne()))
   }
@@ -222,14 +228,10 @@ object sala5 inherits Sala{
   override method salaSiguiente() = sala6
 }
 
-// SALA 6: sala con bala de plata. El item esta en el unico hueco de la pared, no se puede esquivar.
+// SALA 6: sala con bala de plata.
 object sala6 inherits Sala{
   override method fondo() = "sala2.png"
   override method tiempoLimite() = 30  // sin enemigos el reloj no corre
-
-  override method paredes() =
-    paredes.horizontal(1, 4, 10) +
-    paredes.horizontal(6, 10, 10)
 
   override method crearEnemigos() = []
 
@@ -273,7 +275,7 @@ object sala7 inherits Sala{
   override method salaSiguiente() = sala8
 }
 
-// SALA 8: sala con objeto comun (sin paredes ni obstaculos)
+// SALA 8: sala con objeto comun
 object sala8 inherits Sala{
   override method fondo() = "sala2.png"
   override method tiempoLimite() = 30  // sin enemigos el reloj no corre

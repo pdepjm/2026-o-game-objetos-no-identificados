@@ -17,6 +17,6 @@ class Puerta {
   }
 
   method alColisionarConPersonaje() {
-    if (desbloqueada) miJuego.entrarA(destino)
+    if (desbloqueada && miJuego.salaActual().itemsAgarrados()) miJuego.entrarA(destino)
   }
 }
