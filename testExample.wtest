@@ -256,6 +256,15 @@ describe "Items" {
     personaje.cambiarMunicion()
     assert.equals(balaPlata, personaje.municionActual())
   }
+
+  test "Al quedar con 1 vida aparece una pocion en la sala" {
+    personaje.reiniciar()
+    miJuego.entrarA(sala1)
+    const antes = game.allVisuals().size()
+    2.times({ i => personaje.perderVidaActual() })
+    assert.equals(antes + 1, game.allVisuals().size())
+  }
+
 }
 
 // ---------------------------------------------------------------------------

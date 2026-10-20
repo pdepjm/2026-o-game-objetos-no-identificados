@@ -46,6 +46,8 @@ object personaje {
     game.say(self, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
     if(vidaActual == 0){
       miJuego.terminarJuego()
+    } else if (vidaActual == 1) {
+      miJuego.salaActual().aparecerPocionDeVida()
     }
   }
 
@@ -102,10 +104,12 @@ object personaje {
     }
   }
 
-  method mover(nuevaPosicion) {
-    self.guardarPosicion()
-    if (tablero.esTransitable(nuevaPosicion)) {
-      position = nuevaPosicion
+    method mover(nuevaPosicion) {
+    if (miJuego.puedeJugar()) {
+      self.guardarPosicion()
+      if (tablero.esTransitable(nuevaPosicion)) {
+        position = nuevaPosicion
+      }
     }
   }
 

@@ -32,6 +32,15 @@ class Sala{
 
   // cada sala define sus obstaculos del piso (por defecto, ninguno)
   method crearObstaculos() = []
+  
+  // lugares donde puede aparecer la pocion de vida; una sala puede sobrescribirlo con override
+  method posicionesParaPocion() = [
+    game.at(2, 2),
+    game.at(10, 2),
+    game.at(2, 12),
+    game.at(8, 16),
+    game.at(10, 17)
+  ]
 
   method inicializarse() {
     temporizador.iniciar(self.tiempoLimite()) // cada sala define su tiempo limite
@@ -56,6 +65,7 @@ class Sala{
 
     game.addVisual(personaje)
     personaje.position(self.puntoDeEntrada())
+    if (personaje.vidaActual() == 1) self.aparecerPocionDeVida()
   }
 
   method enemigosVivos() = enemigosVivos
@@ -69,11 +79,19 @@ class Sala{
     enemigosVivos.remove(enemigo)
     if (self.estaLimpia()) puerta.desbloquear()
   }
+
+method aparecerPocionDeVida() {
+    const libres = self.posicionesParaPocion().filter({ posicion => game.getObjectsIn(posicion).isEmpty() })
+    if (!libres.isEmpty()) game.addVisual(new PocionDeVida(position = libres.anyOne()))
+  }
+
+  
+
 }
 
 object sala1 inherits Sala{
   override method fondo() = "sala1.png"
-  override method tiempoLimite() = 20  // 20 segundos para limpiar la sala
+  override method tiempoLimite() = 40  // 40 segundos para limpiar la sala
 
   override method paredes() =
     paredes.horizontal(1, 6, 9) +
@@ -87,11 +105,12 @@ object sala1 inherits Sala{
     ])
 
   override method crearObstaculos() = [
-    new RelojDeArena(segundos = 5, position = game.at(2, 3)),
+    new RelojDeArena(segundos = 5, position = game.at(2, 18)),
     new RelojRoto(segundos = 4, position = game.at(9, 10)),
     new CharcoDeBarro(segundos = 5, position = game.at(6, 3)),
     new PistaDeVelocidad(segundos = 5, position = game.at(7, 10)),
     new CharcoDeBarro(segundos = 5, position = game.at(5, 16))
+    
   ]+
     trampas.pinchosHorizontal(2, 4, 7) +
     trampas.pinchosVertical(9, 3, 5) +
@@ -106,7 +125,7 @@ object sala1 inherits Sala{
 
 object sala2 inherits Sala{
   override method fondo() = "sala2.png"
-  override method tiempoLimite() = 25 // segundos
+  override method tiempoLimite() = 50 // segundos
 
 override method paredes() =
     paredes.vertical(6, 2, 11) +
