@@ -161,45 +161,70 @@ override method paredes() =
 }
 
 
-// sala con el item de balas cazafantasmas. La pared tiene un unico hueco (x = 5) y el item esta
-// justo ahi: para llegar a la puerta hay que pasar por encima, asi que no se puede esquivar.
+
+// SALA 3: 2 comunes, 2 hombres lobo
 object sala3 inherits Sala{
   override method fondo() = "sala1.png"
-  override method tiempoLimite() = 30  // sin enemigos el reloj no corre
+  override method tiempoLimite() = 50
 
   override method paredes() =
-    paredes.horizontal(1, 4, 10) +
-    paredes.horizontal(6, 10, 10)
+    paredes.horizontal(1, 7, 8) +
+    paredes.horizontal(4, 10, 13)
 
-  override method crearEnemigos() = []
-
-  override method crearItems() = [
-    new ItemMunicion(bala = balaCazaFantasmas, image = "itemCazaFantasmas.png", position = game.at(5, 10))
+  override method crearEnemigos() = [
+    new EnemigoComun(position = game.at(3, 5)),
+    new EnemigoComun(position = game.at(9, 4)),
+    new HombreLobo(position = game.at(8, 10)),
+    new HombreLobo(position = game.at(2, 16))
   ]
+
+  override method crearObstaculos() = [
+    new RelojDeArena(segundos = 5, position = game.at(2, 3)),
+    new CharcoDeBarro(segundos = 5, position = game.at(9, 9)),
+    new RelojRoto(segundos = 4, position = game.at(2, 11)),
+    new PistaDeVelocidad(segundos = 5, position = game.at(8, 16))
+  ] +
+    trampas.pinchosHorizontal(1, 2, 13)
 
   override method puntoDeEntrada() = game.at(5, 1)
 
   override method salaSiguiente() = sala4
 }
 
-// sala de fantasmas: solo mueren con balas cazafantasmas (tecla B para cambiar de bala)
+
+// SALA 4: 3 hombres lobo
 object sala4 inherits Sala{
   override method fondo() = "sala2.png"
-  override method tiempoLimite() = 30
+  override method tiempoLimite() = 40
 
-  override method crearEnemigos() =
-    [game.at(3, 6), game.at(8, 9), game.at(5, 14)].map({ posicion =>
-      new Fantasma(position = posicion)
-    })
+  override method crearEnemigos() = [
+    new HombreLobo(position = game.at(3, 7)),
+    new HombreLobo(position = game.at(8, 9)),
+    new HombreLobo(position = game.at(5, 14))
+  ]
 
   override method puntoDeEntrada() = game.at(5, 1)
 
   override method salaSiguiente() = sala5
 }
 
-// sala con el item de balas de plata (misma idea que sala3)
+// SALA 5: sala abierta con 1 HombreLoboJefe
 object sala5 inherits Sala{
   override method fondo() = "sala1.png"
+  override method tiempoLimite() = 45
+
+  override method crearEnemigos() = [
+    new HombreLoboJefe(position = game.at(5, 12))
+  ]
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala6
+}
+
+// SALA 6: sala con bala de plata. El item esta en el unico hueco de la pared, no se puede esquivar.
+object sala6 inherits Sala{
+  override method fondo() = "sala2.png"
   override method tiempoLimite() = 30  // sin enemigos el reloj no corre
 
   override method paredes() =
@@ -212,20 +237,207 @@ object sala5 inherits Sala{
     new ItemMunicion(bala = balaPlata, image = "itemPlata.png", position = game.at(5, 10))
   ]
 
+  override method crearObstaculos() = [
+    new RelojDeArena(segundos = 5, position = game.at(2, 4)),
+    new CharcoDeBarro(segundos = 5, position = game.at(8, 5)),
+    new RelojRoto(segundos = 4, position = game.at(9, 14)),
+    new PistaDeVelocidad(segundos = 5, position = game.at(2, 14))
+  ] +
+    trampas.pinchosHorizontal(3, 4, 16)
+
   override method puntoDeEntrada() = game.at(5, 1)
 
-  override method salaSiguiente() = sala6
+  override method salaSiguiente() = sala7
 }
 
-// sala de hombres lobo: con balas de plata reciben el daño completo
-object sala6 inherits Sala{
+
+// SALA 7: 2 comunes, 2 hombres lobo
+object sala7 inherits Sala{
+  override method fondo() = "sala1.png"
+  override method tiempoLimite() = 50
+
+  override method paredes() =
+    paredes.vertical(4, 2, 10) +
+    paredes.vertical(7, 9, 17)
+
+  override method crearEnemigos() = [
+    new EnemigoComun(position = game.at(2, 6)),
+    new EnemigoComun(position = game.at(9, 5)),
+    new HombreLobo(position = game.at(6, 13)),
+    new HombreLobo(position = game.at(2, 15))
+  ]
+
+  override method crearObstaculos() = [
+    new RelojDeArena(segundos = 6, position = game.at(10, 3)),
+    new RelojRoto(segundos = 5, position = game.at(2, 9)),
+    new Maldicion(segundos = 6, position = game.at(9, 12)),
+    new CharcoDeBarro(segundos = 5, position = game.at(5, 6))
+  ] +
+    trampas.pinchosVertical(10, 13, 16) +
+    trampas.pinchosHorizontal(1, 2, 12)
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala8
+}
+
+// SALA 8: sala con objeto comun (sin paredes ni obstaculos)
+object sala8 inherits Sala{
+  override method fondo() = "sala2.png"
+  override method tiempoLimite() = 30  // sin enemigos el reloj no corre
+
+  override method crearEnemigos() = []
+
+  override method crearItems() = [baulDePremios.otorgarPremio("Comun")]
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala9
+}
+
+// SALA 9: 3 comunes, 2 hombres lobo
+object sala9 inherits Sala{
+  override method fondo() = "sala1.png"
+  override method tiempoLimite() = 60
+
+  override method paredes() =
+    paredes.horizontal(1, 4, 7) +
+    paredes.horizontal(7, 10, 12) +
+    paredes.vertical(8, 14, 17)
+
+  override method crearEnemigos() = [
+    new EnemigoComun(position = game.at(3, 4)),
+    new EnemigoComun(position = game.at(8, 4)),
+    new EnemigoComun(position = game.at(6, 10)),
+    new HombreLobo(position = game.at(2, 10)),
+    new HombreLobo(position = game.at(9, 15))
+  ]
+
+  override method crearObstaculos() = [
+    new RelojDeArena(segundos = 6, position = game.at(10, 2)),
+    new RelojRoto(segundos = 5, position = game.at(9, 9)),
+    new Maldicion(segundos = 6, position = game.at(2, 14)),
+    new CharcoDeBarro(segundos = 5, position = game.at(5, 15))
+  ] +
+    trampas.pinchosHorizontal(5, 6, 12)
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala10
+}
+
+// SALA 10: sala abierta con 2 comunes y 1 clon malvado
+object sala10 inherits Sala{
+  override method fondo() = "sala2.png"
+  override method tiempoLimite() = 45
+
+  override method crearEnemigos() = [
+    new EnemigoComun(position = game.at(3, 8)),
+    new EnemigoComun(position = game.at(8, 8)),
+    new ClonMalvado(position = game.at(5, 14))
+  ]
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala11
+}
+
+// SALA 11: sala que otorga la bala antifantasmas
+object sala11 inherits Sala{
+  override method fondo() = "sala1.png"
+  override method tiempoLimite() = 30  // sin enemigos el reloj no corre
+
+  override method crearEnemigos() = []
+
+  override method crearItems() = [
+    new ItemMunicion(bala = balaCazaFantasmas, image = "itemCazaFantasmas.png", position = game.at(5, 10))
+  ]
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala12
+}
+
+// SALA 12: 4 fantasmas (solo mueren con balas cazafantasmas, tecla B para cambiar de bala)
+object sala12 inherits Sala{
   override method fondo() = "sala2.png"
   override method tiempoLimite() = 40
 
   override method crearEnemigos() =
-    [game.at(3, 7), game.at(8, 12)].map({ posicion =>
-      new HombreLobo(position = posicion)
+    [game.at(3, 6), game.at(8, 7), game.at(2, 13), game.at(9, 14)].map({ posicion =>
+      new Fantasma(position = posicion)
     })
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala13
+}
+
+// SALA 13: 2 comunes, 2 fantasmas
+object sala13 inherits Sala{
+  override method fondo() = "sala1.png"
+  override method tiempoLimite() = 55
+
+  override method paredes() =
+    paredes.horizontal(2, 10, 8) +
+    paredes.horizontal(1, 9, 14)
+
+  override method crearEnemigos() = [
+    new EnemigoComun(position = game.at(3, 4)),
+    new EnemigoComun(position = game.at(8, 11)),
+    new Fantasma(position = game.at(6, 5)),
+    new Fantasma(position = game.at(4, 16))
+  ]
+
+  override method crearObstaculos() = [
+    new RelojDeArena(segundos = 6, position = game.at(9, 3)),
+    new CharcoDeBarro(segundos = 5, position = game.at(2, 6)),
+    new RelojRoto(segundos = 5, position = game.at(5, 11)),
+    new PistaDeVelocidad(segundos = 5, position = game.at(10, 16))
+  ] +
+    trampas.pinchosHorizontal(1, 1, 11)
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala14
+}
+
+// SALA 14: 2 comunes, 1 fantasma y 1 hombre lobo
+object sala14 inherits Sala{
+  override method fondo() = "sala2.png"
+  override method tiempoLimite() = 70
+
+  override method paredes() =
+    paredes.vertical(3, 2, 9) +
+    paredes.vertical(8, 10, 17) +
+    paredes.horizontal(4, 6, 13)
+
+  override method crearEnemigos() = [
+    new EnemigoComun(position = game.at(6, 4)),
+    new EnemigoComun(position = game.at(2, 12)),
+    new Fantasma(position = game.at(5, 10)),
+    new HombreLobo(position = game.at(5, 16))
+  ]
+
+  override method crearObstaculos() = [
+    new RelojDeArena(segundos = 8, position = game.at(1, 3)),
+    new RelojRoto(segundos = 6, position = game.at(9, 8)),
+    new Maldicion(segundos = 6, position = game.at(6, 7)),
+    new CharcoDeBarro(segundos = 6, position = game.at(2, 16))
+  ] +
+    trampas.pinchosVertical(10, 13, 16)
+
+  override method puntoDeEntrada() = game.at(5, 1)
+
+  override method salaSiguiente() = sala15
+}
+
+// SALA 15: sala final, al cruzar la puerta se gana el juego
+object sala15 inherits Sala{
+  override method fondo() = "sala1.png"
+  override method tiempoLimite() = 30
+
+  override method crearEnemigos() = []
 
   override method puntoDeEntrada() = game.at(5, 1)
 
