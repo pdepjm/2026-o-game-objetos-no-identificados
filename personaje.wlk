@@ -11,7 +11,6 @@ object personaje {
   var property danioActual = 25
   const inventario = []
   const municiones = [balaComun]
-
   
   method image() = "personaje.png"
   var vidaMaxima = 3
@@ -41,8 +40,8 @@ object personaje {
     }
   }
 
-  method perderVidaActual() {
-    vidaActual = (vidaActual - self.danioPorGolpe()).max(0)
+  method perderVidaActual(cantidad) {
+    vidaActual = (vidaActual - self.danioPorGolpe(cantidad)).max(0)
     game.say(self, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
     if(vidaActual == 0){
       miJuego.terminarJuego()
@@ -52,7 +51,7 @@ object personaje {
   }
 
   // daño que recibe por cada golpe: 1 normal, 2 si esta maldito
-  method danioPorGolpe() = if (maldiciones > 0) 2 else 1
+  method danioPorGolpe(cantidad) = if (maldiciones > 0) cantidad * 2 else cantidad
 
   // lo llama la Maldicion al ser pisada; dura la cantidad de segundos indicada
   method maldecir(segundos) {
@@ -158,6 +157,8 @@ method reiniciar() {
     aceleraciones = 0
     ticksParaMoverse = 0
     inventario.clear()
+    municiones.clear()
+    municiones.add(balaComun)
   }
 
 }

@@ -57,15 +57,19 @@ class Arma{
 }
 
 object baulDePremios{
-    // al limpiar una sala otorgara un objeto de la lista
-    // al crear una sala se usara override method crearItems() = [baulDePremios.otorgarPremio()]
-    const premiosComunes = [new Armadura(rareza = "Comun", proteccion = 4), new Arma(rareza = "Comun", danioDelArma = 50)]
-    const premiosRaros = []
-    const premiosEpicos = []
+    // al limpiar una sala especial, la siguiente otorgara un objeto de la lista
+    // al crear una sala se usara override method crearItems() = [baulDePremios.otorgarPremio(rareza)]
+    const premios = [
+        new Armadura(rareza = "Comun", proteccion = 4), 
+        new Arma(rareza = "Comun", danioDelArma = 50)
+    ]
 
-    method otorgarPremio() = premiosComunes.anyOne()
-    method otorgarPremioRaro() = premiosRaros.anyOne()
-    method otorgarPremioEpico() = premiosEpicos.anyOne()
+    // por ahora los objetos se otorgaran una vez por cada rareza, asi que no hay riesgo a que la lista este vacia cuando quiera otorgar un objeto
+    method otorgarPremio(rareza){
+    const premioDeLaSala = premios.filter({ premio => premio.rareza() == rareza }).anyOne()
+    premios.remove(premioDeLaSala)
+    return premioDeLaSala
+    }
 }
 
 class ItemMunicion{
@@ -87,7 +91,7 @@ object balaComun{
 }
 
 object balaPlata{
-  method nombre() = "Plata"
+  method nombre() = "de Plata"
   method danioContra(enemigo, base) = enemigo.danioDeBalaPlata(base)
 }
 
