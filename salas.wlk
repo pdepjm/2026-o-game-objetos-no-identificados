@@ -237,14 +237,6 @@ object sala6 inherits Sala{
     new ItemMunicion(bala = balaPlata, image = "itemPlata.png", position = game.at(5, 10))
   ]
 
-  override method crearObstaculos() = [
-    new RelojDeArena(segundos = 5, position = game.at(2, 4)),
-    new CharcoDeBarro(segundos = 5, position = game.at(8, 5)),
-    new RelojRoto(segundos = 4, position = game.at(9, 14)),
-    new PistaDeVelocidad(segundos = 5, position = game.at(2, 14))
-  ] +
-    trampas.pinchosHorizontal(3, 4, 16)
-
   override method puntoDeEntrada() = game.at(5, 1)
 
   override method salaSiguiente() = sala7
@@ -318,8 +310,8 @@ object sala9 inherits Sala{
     new RelojRoto(segundos = 5, position = game.at(9, 9)),
     new Maldicion(segundos = 6, position = game.at(2, 14)),
     new CharcoDeBarro(segundos = 5, position = game.at(5, 15))
-  ] +
-    trampas.pinchosHorizontal(5, 6, 12)
+  ] 
+    
 
   override method puntoDeEntrada() = game.at(5, 1)
 
