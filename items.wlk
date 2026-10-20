@@ -58,9 +58,9 @@ class Arma{
 }
 
 object baulDePremios{
-    // al limpiar una sala especial, la siguiente otorgara un objeto de la lista
-    // al crear una sala se usara override method crearItems() = [baulDePremios.otorgarPremio(rareza)]
-    const premios = [
+    var premios = self.premiosIniciales()
+
+    method premiosIniciales() = [
         new Armadura(rareza = "Comun", proteccion = 4), 
         new Arma(rareza = "Comun", danioDelArma = 50)
     ]
@@ -71,8 +71,9 @@ object baulDePremios{
     premios.remove(premioDeLaSala)
     return premioDeLaSala
     }
-}
 
+    method reiniciarPremios() { premios = self.premiosIniciales() }
+}
 class ItemMunicion{
     var property position
     const bala

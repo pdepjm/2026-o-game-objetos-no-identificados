@@ -156,6 +156,7 @@ method reiniciar() {
     lentitudes = 0
     aceleraciones = 0
     ticksParaMoverse = 0
+    baulDePremios.reiniciarPremios()
     inventario.clear()
     municiones.clear()
     municiones.add(balaComun)
