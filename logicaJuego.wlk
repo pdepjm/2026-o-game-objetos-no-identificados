@@ -25,7 +25,6 @@ object miJuego {
 
   method iniciar() {
     self.entrarA(sala1)
-    temporizador.iniciarPreparacion(5)
 
     // los enemigos los define y los guarda cada sala; aca solo se le pregunta a la sala actual
     //game.tick(500, { salaActual.enemigosVivos().forEach({ enemigo => enemigo.perseguir() }) }, false).start()
@@ -50,7 +49,6 @@ method reiniciar() {
      juegoTerminado = false
       personaje.reiniciar()
       self.entrarA(sala1)
-      temporizador.iniciarPreparacion(5)
     }
   }
 

@@ -33,6 +33,8 @@ class Sala{
   // cada sala define sus obstaculos del piso (por defecto, ninguno)
   method crearObstaculos() = []
 
+// cada sala puede cambiar cuantos segundos dura la preparacion (por defecto, 5)   // <-- NUEVO
+  method segundosDePreparacion() = 5
 
   var itemsDeLaSala = []
   
@@ -47,6 +49,7 @@ class Sala{
 
   method inicializarse() {
     temporizador.iniciar(self.tiempoLimite()) // cada sala define su tiempo limite
+    temporizador.iniciarPreparacion(self.segundosDePreparacion())
     game.boardGround(self.fondo())
 
     // las paredes van primero para que queden debajo de enemigos y personaje

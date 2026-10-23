@@ -1,6 +1,5 @@
 import wollok.game.*
 import personaje.*
-import wollok.game.*
 
 //los objetos como armas y armaduras tienen rarezas: Comun, Raro, Epico
 class PocionDeVida{

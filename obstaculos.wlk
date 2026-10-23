@@ -1,6 +1,7 @@
 import wollok.game.*
 import temporizador.*
 import personaje.*
+import velocidad.*
 
 // Clase base: define lo que tienen en común todos los obstaculos.
 // Cada tipo de obstaculo solo tiene que decir su imagen y su efecto.
@@ -84,7 +85,7 @@ class CharcoDeBarro inherits Obstaculo {
   override method image() = "charcoDeBarro.png"
 
   override method aplicarEfecto() {
-    personaje.ralentizar(segundos)
+    controlDeVelocidad.ralentizar(segundos) 
   }
 }
 
@@ -96,6 +97,6 @@ class PistaDeVelocidad inherits Obstaculo {
   override method image() = "pistaDeVelocidad.png"
 
   override method aplicarEfecto() {
-    personaje.acelerar(segundos)
+    controlDeVelocidad.acelerar(segundos) 
   }
 }

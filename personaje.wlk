@@ -3,6 +3,7 @@ import logicaJuego.*
 import tablero.*
 import items.*
 import obstaculos.*
+import velocidad.*
 
 
 object personaje {
@@ -16,11 +17,7 @@ object personaje {
   var vidaMaxima = 3
   var vidaActual = 3
   var maldiciones = 0  // cuantas maldiciones activas tiene (si pisa dos seguidas no se acumulan, el daño sigue siendo el doble)
-  // efectos de velocidad activos (si pisa dos seguidos del mismo tipo no se acumulan)
-  var lentitudes = 0
-  var aceleraciones = 0
-  // cuenta regresiva de latidos hasta el proximo paso
-  var ticksParaMoverse = 0
+
 
   method vidaActual () = vidaActual
   method vidaMaxima () = vidaMaxima
@@ -103,46 +100,25 @@ object personaje {
     }
   }
 
-    method mover(nuevaPosicion) {
+      method mover(nuevaPosicion) {
     if (miJuego.puedeJugar()) {
       self.guardarPosicion()
-      if (tablero.esTransitable(nuevaPosicion)) {
-        position = nuevaPosicion
-      }
+      controlDeVelocidad.mover(self.direccionHacia(nuevaPosicion)) 
     }
   }
 
-  // cada cuantos latidos (de 75 ms) da un paso: 2 normal, 1 rapido, 4 lento
-  // si tiene los dos efectos a la vez, se cancelan y va a velocidad normal
-  method ticksPorPaso() =
-    if (lentitudes > 0 && aceleraciones == 0) 4
-    else if (aceleraciones > 0 && lentitudes == 0) 1
-    else 2
+  // diferencia entre donde estoy y el destino
+  method direccionHacia(destino) = game.at(destino.x() - position.x(), destino.y() - position.y())
 
-  // lo llama el CharcoDeBarro al ser pisado
-  method ralentizar(segundos) {
-    lentitudes = lentitudes + 1
-    game.say(self, "¡Barro! Me muevo más lento")
-    game.schedule(segundos * 1000, { self.terminarLentitud() })
+  // da un paso de una casilla en esa direccion, si nada lo bloquea
+  method avanzar(direccion) {
+    const destino = game.at(position.x() + direccion.x(), position.y() + direccion.y())
+    if (tablero.esTransitable(destino)) {
+      position = destino
+    }
   }
 
-  method terminarLentitud() {
-    lentitudes = (lentitudes - 1).max(0)
-    if (lentitudes == 0) game.say(self, "Salí del barro")
-  }
-
-  // lo llama la PistaDeVelocidad al ser pisada
-  method acelerar(segundos) {
-    aceleraciones = aceleraciones + 1
-    game.say(self, "¡Voy más rápido!")
-    game.schedule(segundos * 1000, { self.terminarAceleracion() })
-  }
-
-  method terminarAceleracion() {
-    aceleraciones = (aceleraciones - 1).max(0)
-    if (aceleraciones == 0) game.say(self, "Se me pasó la velocidad")
-  }
-
+  
   method agregarObjeto(objeto){
     inventario.add(objeto)
   }
@@ -153,9 +129,7 @@ method reiniciar() {
     vidaActual = 3
     danioActual = 25
     maldiciones = 0
-    lentitudes = 0
-    aceleraciones = 0
-    ticksParaMoverse = 0
+    controlDeVelocidad.reiniciar() 
     baulDePremios.reiniciarPremios()
     inventario.clear()
     municiones.clear()

@@ -20,7 +20,7 @@ object temporizador {
   // lo llama miJuego una sola vez, al iniciar la partida
   method iniciarPreparacion(segundos) {
     segundosDePreparacion = segundos
-    preparando = true
+    preparando = segundos > 0 
   }
 
   // lo llama cada sala al entrar

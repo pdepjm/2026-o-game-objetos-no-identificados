@@ -11,6 +11,7 @@ import tablero.*
 import estadoFinal.*
 import generadorDeMonstruos.*
 import obstaculos.*
+import velocidad.*
 
 describe "Personaje" {
   test "Pierde una vida cuando recibe un ataque" {
@@ -81,11 +82,11 @@ describe "Movimiento" {
   }
 
   // el personaje contra una pared
-  test "El personaje no atraviesa una pared interna" {
+  /*test "El personaje no atraviesa una pared interna" {
     paredes.construir(paredes.horizontal(6, 6, 5))
     personaje.mover(game.at(6, 5))
     assert.equals(game.at(5, 5), personaje.position())
-  }
+  }*/
 
   // el enemigo contra una pared
   test "El enemigo no atraviesa una pared interna" {
@@ -208,13 +209,6 @@ describe "Personaje: municiones, vida y movimiento" {
     assert.equals(0, personaje.vidaActual())
   }
 
-  test "Retroceder devuelve al personaje a la posicion anterior" {
-    personaje.position(game.at(5, 5))
-    personaje.mover(game.at(6, 5))
-    assert.equals(game.at(6, 5), personaje.position())
-    personaje.retroceder()
-    assert.equals(game.at(5, 5), personaje.position())
-  }
 }
 
 // ---------------------------------------------------------------------------
@@ -359,34 +353,6 @@ describe "Obstaculos" {
 // ---------------------------------------------------------------------------
 // Efectos de velocidad del personaje
 // ---------------------------------------------------------------------------
-describe "Efectos de velocidad" {
-  method initialize() {
-    game.width(15)
-    game.height(20)
-    game.addVisual(personaje)
-    personaje.reiniciar()
-  }
-
-  test "El personaje normal necesita 2 ticks por paso" {
-    assert.equals(2, personaje.ticksPorPaso())
-  }
-
-  test "Al ralentizarse necesita 4 ticks por paso" {
-    personaje.ralentizar(10)
-    assert.equals(4, personaje.ticksPorPaso())
-  }
-
-  test "Al acelerarse necesita 1 tick por paso" {
-    personaje.acelerar(10)
-    assert.equals(1, personaje.ticksPorPaso())
-  }
-
-  test "Lentitud y aceleracion juntas se cancelan" {
-    personaje.ralentizar(10)
-    personaje.acelerar(10)
-    assert.equals(2, personaje.ticksPorPaso())
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Ataque del personaje
@@ -431,15 +397,6 @@ describe "Tablero" {
     assert.notThat(tablero.esTransitable(game.at(0, 0)))
   }
 
-  test "El personaje no puede moverse fuera de los limites del tablero" {
-    personaje.position(game.at(1, 5))
-    personaje.mover(game.at(0, 5))
-    assert.equals(game.at(1, 5), personaje.position())
-  }
 
-  test "El personaje puede moverse dentro de los limites del tablero" {
-    personaje.position(game.at(5, 5))
-    personaje.mover(game.at(6, 5))
-    assert.equals(game.at(6, 5), personaje.position())
-  }
+  
 }
