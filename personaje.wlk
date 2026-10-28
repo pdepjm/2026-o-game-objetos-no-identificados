@@ -1,3 +1,4 @@
+import wollok.mirror.*
 import wollok.game.*
 import logicaJuego.*
 import tablero.*
@@ -10,65 +11,41 @@ object personaje {
   var property position = game.center()
   var ultimaPosicion = position
   var property danioActual = 25
-  const inventario = []
-  const municiones = [balaComun]
   
   method image() = "personaje.png"
-  var vidaMaxima = 3
-  var vidaActual = 3
-  var maldiciones = 0  // cuantas maldiciones activas tiene (si pisa dos seguidas no se acumulan, el daño sigue siendo el doble)
 
+  method vidaActual() = vidaPersonaje.actual()
+  method vidaMaxima() = vidaPersonaje.maxima()
 
-  method vidaActual () = vidaActual
-  method vidaMaxima () = vidaMaxima
-
-  method municionActual() = municiones.first()
+  method municionActual() = arsenal.actual()
 
   method cambiarMunicion() {
-    const actual = municiones.first()
-    municiones.remove(actual)
-    municiones.add(actual)
+    arsenal.cambiar()
   }
 
   method adquirirMunicion(bala) {
-    if (!municiones.contains(bala)) {
-      municiones.add(bala)
-      game.say(self, "Conseguí balas: " + bala.nombre())
-    }
+    arsenal.adquirir(bala)
   }
 
   method perderVidaActual(cantidad) {
-    vidaActual = (vidaActual - self.danioPorGolpe(cantidad)).max(0)
-    game.say(self, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
-    if(vidaActual == 0){
-      miJuego.terminarJuego()
-    } else if (vidaActual == 1) {
-      miJuego.salaActual().aparecerPocionDeVida()
-    }
+    vidaPersonaje.perder(cantidad)
   }
-
-  // daño que recibe por cada golpe: 1 normal, 2 si esta maldito
-  method danioPorGolpe(cantidad) = if (maldiciones > 0) cantidad * 2 else cantidad
 
   // lo llama la Maldicion al ser pisada; dura la cantidad de segundos indicada
   method maldecir(segundos) {
-    maldiciones = maldiciones + 1
-    game.say(self, "¡Maldito! Recibo el doble de daño")
-    game.schedule(segundos * 1000, { self.terminarMaldicion() })
+    vidaPersonaje.maldecir(segundos)
   }
 
   method terminarMaldicion() {
-    maldiciones = (maldiciones - 1).max(0)
-    if (maldiciones == 0) game.say(self, "Se me pasó la maldición")
+    vidaPersonaje.terminarMaldicion()
   }
 
   method recuperarVidaActual(cantidad){
-    vidaActual = (vidaActual + cantidad).min(vidaMaxima)
-    game.say(self, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
+    vidaPersonaje.recuperar(cantidad)
   }
 
   method aumentarVidaMaxima(cantidad){
-    vidaMaxima = vidaMaxima + cantidad
+    vidaPersonaje.aumentarMaxima(cantidad)
   }
 
   method retroceder() {
@@ -86,21 +63,11 @@ object personaje {
 
   method esAtacable() = false
 
-  method encontrarObjetivoEn(posicion) {
-  return game.getObjectsIn(posicion).findOrElse(
-    { elemento => elemento.esAtacable() },
-    { null }
-  )
-  }
-
   method atacarEn(posicion) {
-    const objetivo = self.encontrarObjetivoEn(posicion)
-    if (objetivo != null) {
-      objetivo.recibirAtaque(self.municionActual())
-    }
+    combate.atacarEn(posicion, self.municionActual())
   }
 
-      method mover(nuevaPosicion) {
+  method mover(nuevaPosicion) {
     if (miJuego.puedeJugar()) {
       self.guardarPosicion()
       controlDeVelocidad.mover(self.direccionHacia(nuevaPosicion)) 
@@ -118,24 +85,118 @@ object personaje {
     }
   }
 
-  
   method agregarObjeto(objeto){
-    inventario.add(objeto)
+    inventarioPersonaje.agregar(objeto)
   }
 
 // reinicia los atributos del personaje a los valores iniciales
-method reiniciar() {
-    vidaMaxima = 3
-    vidaActual = 3
+  method reiniciar() {
+    vidaPersonaje.reiniciar()
     danioActual = 25
-    maldiciones = 0
     controlDeVelocidad.reiniciar() 
-    baulDePremios.reiniciarPremios()
-    inventario.clear()
-    municiones.clear()
-    municiones.add(balaComun)
+    inventarioPersonaje.reiniciar()
+    arsenal.reiniciar()
   }
 
 }
 
+object arsenal {
+  const municiones = [balaComun]
 
+  method actual() = municiones.first()
+
+  method cambiar() {
+    const actual = municiones.first()
+    municiones.remove(actual)
+    municiones.add(actual)
+  }
+
+  method adquirir(bala) {
+    if(!municiones.contains(bala)) {
+      municiones.add(bala)
+      game.say(personaje, "Conseguí balas: " + bala.nombre())
+    }
+  }
+
+  method reiniciar() {
+    municiones.clear()
+    municiones.add(balaComun)
+  }
+}
+
+object combate {
+  method encontrarObjetivoEn(posicion) =
+    game.getObjectsIn(posicion).findOrElse(
+      {elemento => elemento.esAtacable()}, {null})
+
+  method atacarEn(posicion, municion) {
+    const objetivo = self.encontrarObjetivoEn(posicion)
+    if(objetivo != null) {
+      objetivo.recibirAtaque(municion)
+    }
+  }
+}
+
+object vidaPersonaje {
+  var vidaMaxima = 3
+  var vidaActual = 3
+  var maldiciones = 0
+
+  method actual() = vidaActual
+  method maxima() = vidaMaxima
+
+  method perder(cantidad) {
+    vidaActual = (vidaActual - self.danioPorGolpe(cantidad)).max(0)
+
+    game.say(personaje, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
+
+    if (vidaActual == 0) {
+      miJuego.terminarJuego()
+    } else if (vidaActual == 1) {
+      miJuego.salaActual().aparecerPocionDeVida()
+    }
+  }
+
+  method danioPorGolpe(cantidad) =
+    if (maldiciones > 0) cantidad * 2 else cantidad
+
+  method recuperar(cantidad) {
+    vidaActual = (vidaActual + cantidad).min(vidaMaxima)
+    game.say(personaje, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
+  }
+
+  method aumentarMaxima(cantidad) {
+    vidaMaxima = vidaMaxima + cantidad
+  }
+
+  method maldecir(segundos) {
+    maldiciones = maldiciones + 1
+    game.say(personaje, "¡Maldito! Recibo el doble de daño")
+    game.schedule(segundos * 1000, { self.terminarMaldicion() })
+  }
+
+  method terminarMaldicion() {
+    maldiciones = (maldiciones - 1).max(0)
+    if (maldiciones == 0) {
+      game.say(personaje, "Se me pasó la maldición")
+    }
+  }
+
+  method reiniciar() {
+    vidaMaxima = 3
+    vidaActual = 3
+    maldiciones = 0
+  }
+}
+
+object inventarioPersonaje {
+  const inventario = []
+
+  method agregar(objeto) {
+    inventario.add(objeto)
+  }
+
+  method reiniciar() {
+    inventario.clear()
+  }
+}

@@ -48,6 +48,7 @@ method reiniciar() {
    if (juegoTerminado) {
      juegoTerminado = false
       personaje.reiniciar()
+      baulDePremios.reiniciarPremios()
       self.entrarA(sala1)
     }
   }
