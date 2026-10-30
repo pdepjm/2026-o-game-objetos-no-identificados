@@ -3,7 +3,6 @@ import logicaJuego.*
 
 class Puerta {
   var property position = game.at(5, 18)
-  const destino
   var desbloqueada = false
 
   method desbloqueada() = desbloqueada
@@ -17,6 +16,6 @@ class Puerta {
   }
 
   method alColisionarConPersonaje() {
-    if (desbloqueada && miJuego.salaActual().itemsAgarrados()) miJuego.entrarA(destino)
+    if (desbloqueada && miJuego.salaActual().itemsAgarrados()) miJuego.avanzarSala()
   }
 }

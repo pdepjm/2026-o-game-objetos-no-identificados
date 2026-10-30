@@ -12,6 +12,7 @@ import estadoFinal.*
 import generadorDeMonstruos.*
 import obstaculos.*
 import velocidad.*
+import generadorDeSalas.*
 
 describe "Personaje" {
   test "Pierde una vida cuando recibe un ataque" {
@@ -48,15 +49,16 @@ describe "Enemigo" {
 
 describe "Puerta" {
   test "La puerta comienza bloqueada" {
-    const puerta = new Puerta(destino = sala2)
+    const puerta = new Puerta()
     assert.notThat(puerta.desbloqueada())
   }
 }
 
 describe "Sala" {
   test "La sala comienza con enemigos" {
-    sala1.inicializarse()
-    assert.notThat(sala1.estaLimpia())
+    const sala = generadorDeSalas.generarSala(1)
+    sala.inicializarse()
+    assert.notThat(sala.estaLimpia())
   }
 }
 
@@ -68,9 +70,9 @@ game.width(15)
 
   // el bloqueo de celdas
   test "Una pared interna bloquea su celda y no las vecinas" {
-    paredes.construir(paredes.horizontal(3, 5, 9))
-    assert.that(paredes.bloquea(game.at(4, 9)))
-    assert.notThat(paredes.bloquea(game.at(4, 10)))
+    tablero.construir(paredes.horizontal(3, 5, 9))
+    assert.that(tablero.bloqueada(game.at(4, 9)))
+    assert.notThat(tablero.bloqueada(game.at(4, 10)))
   }
 }
 
@@ -90,7 +92,7 @@ describe "Movimiento" {
 
   // el enemigo contra una pared
   test "El enemigo no atraviesa una pared interna" {
-    paredes.construir(paredes.horizontal(6, 6, 5))
+    tablero.construir(paredes.horizontal(6, 6, 5))
     const enemigo = new EnemigoComun(position = game.at(5, 5))
     personaje.position(game.at(8, 5))
     enemigo.perseguir()
@@ -106,26 +108,32 @@ describe "Flujo del juego" {
 
   // puerta + sala limpia
   test "Al limpiar la sala la puerta lleva a la sala siguiente" {
-    miJuego.entrarA(sala1)
-    sala1.enemigosVivos().copy().forEach({ e => miJuego.eliminarEnemigo(e) })
-    sala1.puerta().alColisionarConPersonaje()
-    assert.equals(sala2, miJuego.salaActual())
+    miJuego.nivelActual(1)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
+
+    const sala = miJuego.salaActual()
+    sala.enemigosVivos().copy().forEach({ e => miJuego.eliminarEnemigo(e) })
+    sala.puerta().alColisionarConPersonaje()
+    assert.equals(2, miJuego.salaActual())
   }
 
   // puerta bloqueada
   test "La puerta bloqueada no cambia de sala" {
-    miJuego.entrarA(sala1)
-    sala1.puerta().alColisionarConPersonaje()
-    assert.equals(sala1, miJuego.salaActual())
+    miJuego.nivelActual(1)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
+
+    const sala = miJuego.salaActual()
+    sala.puerta().alColisionarConPersonaje()
+    assert.equals(1, miJuego.salaActual())
   }
 
   // derrota + reinicio
   test "Tras perder, reiniciar vuelve a sala1 con el personaje restaurado" {
-    miJuego.entrarA(sala1)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
     miJuego.terminarJuego()
     assert.notThat(miJuego.puedeJugar())
     miJuego.reiniciar()
-    assert.equals(sala1, miJuego.salaActual())
+    assert.equals(1, miJuego.salaActual())
     assert.equals(3, personaje.vidaActual())
     assert.that(temporizador.preparando())
   }
@@ -139,21 +147,30 @@ describe "Temporizador" {
 
   // el reloj de la sala
   test "Cada segundo descuenta uno del tiempo mientras hay enemigos" {
-    miJuego.entrarA(sala1)
+    const sala = generadorDeSalas.generarSala(1)
+    miJuego.entrarA(sala)
+
+    5.times({ i => temporizador.pasarSegundo() })
+
+    const tiempoInicial = temporizador.tiempoRestante
     temporizador.pasarSegundo()
-    assert.equals("tiempo: " + (sala1.tiempoLimite() - 1), temporizador.text())
+    assert.equals("tiempo: " + (tiempoInicial - 1), temporizador.text())
   }
 
   // derrota por tiempo
   test "Al llegar el tiempo a cero el juego termina" {
-    miJuego.entrarA(sala1)
-    sala1.tiempoLimite().times({ i => temporizador.pasarSegundo() })
+    const sala = generadorDeSalas.generarSala(1)
+    miJuego.entrarA(sala)
+
+    5.times({ i => temporizador.pasarSegundo() })
+    const tiempoInicial = temporizador.tiempoRestante
+    tiempoInicial.times({ i => temporizador.pasarSegundo() })
     assert.notThat(miJuego.puedeJugar())
   }
 
   // cuenta regresiva inicial
   test "Durante la preparacion no se puede jugar y al terminar si" {
-    miJuego.entrarA(sala1)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
     temporizador.iniciarPreparacion(2)
     assert.notThat(miJuego.puedeJugar())
     2.times({ i => temporizador.pasarSegundo() })
@@ -253,7 +270,8 @@ describe "Items" {
 
   test "Al quedar con 1 vida aparece una pocion en la sala" {
     personaje.reiniciar()
-    miJuego.entrarA(sala1)
+    const sala = generadorDeSalas.generarSala(1)
+    miJuego.entrarA(sala)
     const antes = game.allVisuals().size()
     2.times({ i => personaje.perderVidaActual(1) })
     assert.equals(antes + 1, game.allVisuals().size())
