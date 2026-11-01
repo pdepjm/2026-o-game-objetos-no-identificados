@@ -9,23 +9,26 @@ import items.*
 
 object generadorDeSalas {
 
+  method salas() = [
+    { self.sala1() },
+    { self.sala2() },
+    { self.sala3() },
+    { self.sala4() },
+    { self.sala5() },
+    { self.sala6() },
+    { self.sala7() },
+    { self.sala8() },
+    { self.sala9() },
+    { self.sala10() },
+    { self.sala11() },
+    { self.sala12() },
+    { self.sala13() },
+    { self.sala14() },
+    { self.sala15() }
+  ]
+
   method generarSala(numero) =
-  if (numero == 1) self.sala1()
-  else if (numero == 2) self.sala2()
-  else if (numero == 3) self.sala3()
-  else if (numero == 4) self.sala4()
-  else if (numero == 5) self.sala5()
-  else if (numero == 6) self.sala6()
-  else if (numero == 7) self.sala7()
-  else if (numero == 8) self.sala8()
-  else if (numero == 9) self.sala9()
-  else if (numero == 10) self.sala10()
-  else if (numero == 11) self.sala11()
-  else if (numero == 12) self.sala12()
-  else if (numero == 13) self.sala13()
-  else if (numero == 14) self.sala14()
-  else if (numero == 15) self.sala15()
-  else null
+    self.salas().getOrElse(numero - 1, { null }).apply()
 
   method crearSala(tiempo, fondo, enemigos, paredes, items, obstaculos) =
     new Sala(tiempo = tiempo, fondo = fondo, enemigosIniciales = enemigos,

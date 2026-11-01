@@ -29,7 +29,7 @@ object miJuego {
   method iniciar() {
     nivelActual = 1
     juegoTerminado = false
-
+    
     self.entrarA(generadorDeSalas.generarSala(nivelActual))
 
     game.onTick(500, "movimientoEnemigos", {
