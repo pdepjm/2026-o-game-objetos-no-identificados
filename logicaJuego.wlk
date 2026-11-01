@@ -91,7 +91,7 @@ object miJuego {
     }
   }
 
-  // reicia el juego si se perdió la partida
+    // reicia el juego si se perdió la partida
   method reiniciar() {
    if (juegoTerminado) {
      juegoTerminado = false
