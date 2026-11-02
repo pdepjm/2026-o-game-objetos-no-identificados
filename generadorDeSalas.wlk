@@ -28,7 +28,7 @@ object generadorDeSalas {
   ]
 
   method generarSala(numero) =
-    self.salas().getOrElse(numero - 1, { null }).apply()
+    self.salas().get(numero - 1).apply()
 
   method crearSala(tiempo, fondo, enemigos, paredes, items, obstaculos) =
     new Sala(tiempo = tiempo, fondo = fondo, enemigosIniciales = enemigos,
