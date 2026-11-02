@@ -11,6 +11,8 @@ object personaje {
   var property position = game.center()
   var ultimaPosicion = position
   var property danioActual = 25
+  const distanciaAtaqueInicial = 4
+  var property distanciaAtaque = distanciaAtaqueInicial
   
   method image() = "personaje.png"
 
@@ -63,8 +65,16 @@ object personaje {
 
   method esAtacable() = false
 
+  method modificarDistanciaAtaque(cantidad) {
+    distanciaAtaque = (distanciaAtaque + cantidad).max(0)
+  }
+
+  method puedeAtacarEn(posicion) = position.distance(posicion) <= distanciaAtaque
+
   method atacarEn(posicion) {
-    combate.atacarEn(posicion, self.municionActual())
+    if (self.puedeAtacarEn(posicion)) {
+      combate.atacarEn(posicion, self.municionActual())
+    }
   }
 
   method mover(nuevaPosicion) {
@@ -93,6 +103,7 @@ object personaje {
   method reiniciar() {
     vidaPersonaje.reiniciar()
     danioActual = 25
+    distanciaAtaque = distanciaAtaqueInicial
     controlDeVelocidad.reiniciar() 
     inventarioPersonaje.reiniciar()
     arsenal.reiniciar()

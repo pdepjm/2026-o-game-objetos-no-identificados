@@ -92,6 +92,12 @@ class EnemigoComun inherits Enemigo{
 
 }
 
+class EnemigoRaro inherits EnemigoComun{
+  override method vidaInicial() = 150
+
+  override method image() = "enemigoRaro.png"
+}
+
 class ClonMalvado inherits Enemigo{
   override method vidaInicial() = personaje.vidaActual() * personaje.danioActual()
 
