@@ -85,6 +85,8 @@ object persecucion {
 
 class EnemigoComun inherits Enemigo{
   override method vidaInicial() = 100
+
+  override method danioDeBalaPlata(base) = base / 2
   
   override method image() = "enemigoComun.png"
 

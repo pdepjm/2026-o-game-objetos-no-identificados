@@ -9,14 +9,14 @@ class PocionDeVida{
     method image() = "pocionDeVida.png"
     method esAtacable() = false
 
-    method alColisionarConPersonaje(personajeActual){
-        self.recuperarPersonaje(personajeActual)
+    method alColisionarConPersonaje(){
+        self.recuperarPersonaje()
         game.removeVisual(self)
     }
 
     //si agregamos mas personajes esto debe recuperar a PersonajeActual
-    method recuperarPersonaje(personajeActual){ 
-        personajeActual.recuperarVidaActual(cantidadDeRecuperacion)
+    method recuperarPersonaje(){ 
+        personaje.recuperarVidaActual(cantidadDeRecuperacion)
     }
 }
 
@@ -29,9 +29,9 @@ class Armadura{
 
     method esAtacable() = false
 
-    method alColisionarConPersonaje(personajeActual){
-        personajeActual.agregarObjeto("Armadura " + rareza)
-        personajeActual.aumentarVidaMaxima(proteccion)
+    method alColisionarConPersonaje(){
+        personaje.agregarObjeto("Armadura " + rareza)
+        personaje.aumentarVidaMaxima(proteccion)
         game.removeVisual(self)
     }
 
@@ -45,14 +45,14 @@ class Arma{
 
     method esAtacable() = false
 
-    method alColisionarConPersonaje(personajeActual){
-        personajeActual.agregarObjeto("Arma " + rareza)
-        self.mejorarDanioPersonaje(personajeActual)
+    method alColisionarConPersonaje(){
+        personaje.agregarObjeto("Arma " + rareza)
+        self.mejorarDanioPersonaje()
         game.removeVisual(self)
     }
 
-    method mejorarDanioPersonaje(personajeActual){
-        personajeActual.danioActual(danioDelArma)
+    method mejorarDanioPersonaje(){
+        personaje.danioActual(danioDelArma)
     }
 
 }
@@ -87,8 +87,8 @@ class ItemMunicion{
 
     method esAtacable() = false
 
-    method alColisionarConPersonaje(personajeActual) {
-        personajeActual.adquirirMunicion(bala)
+    method alColisionarConPersonaje() {
+        personaje.adquirirMunicion(bala)
         game.removeVisual(self)
     }
 }
