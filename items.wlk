@@ -41,6 +41,7 @@ class Arma{
     var property position = game.at(5, 10)
     const property rareza
     const danioDelArma
+    const distanciaDelArma
     const property image = "arma.png"
 
     method esAtacable() = false
@@ -48,6 +49,7 @@ class Arma{
     method alColisionarConPersonaje(){
         personaje.agregarObjeto("Arma " + rareza)
         self.mejorarDanioPersonaje()
+        self.mejorarDistanciaPersonaje()
         game.removeVisual(self)
     }
 
@@ -55,6 +57,9 @@ class Arma{
         personaje.danioActual(danioDelArma)
     }
 
+    method mejorarDistanciaPersonaje(){
+        personaje.distanciaAtaque(distanciaDelArma)
+    }
 }
 
 object baulDePremios{
@@ -62,12 +67,12 @@ object baulDePremios{
 
     method premiosIniciales() = [
         new Armadura(rareza = "Comun", proteccion = 4), 
-        new Arma(rareza = "Comun", danioDelArma = 50),
+        new Arma(rareza = "Comun", danioDelArma = 50, distanciaDelArma = 4),
         // Raros
-        new Arma(rareza = "Raro", danioDelArma = 75),
+        new Arma(rareza = "Raro", danioDelArma = 75, distanciaDelArma = 6),
         new Armadura(rareza = "Raro", proteccion = 5),
         // Epicos
-        new Arma(rareza = "Epico", danioDelArma = 80),
+        new Arma(rareza = "Epico", danioDelArma = 80, distanciaDelArma = 8),
         new Armadura(rareza = "Epico", proteccion = 6)
     ]
 
