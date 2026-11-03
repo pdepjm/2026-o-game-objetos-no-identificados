@@ -1,5 +1,6 @@
 import wollok.game.*
 import logicaJuego.*
+import sonidos.*
 
 program main {
   // Nombre del juego
@@ -9,6 +10,7 @@ program main {
   game.width(12)
   game.cellSize(50)
   game.addVisual(vida)
+  game.schedule(500, {sonidos.iniciarMusica()})
   miJuego.iniciar()
 
   game.start()

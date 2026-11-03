@@ -5,6 +5,8 @@ import estadoFinal.*
 import temporizador.*
 import items.*
 import generadorDeSalas.*
+import sonidos.*
+
 
 
 object miJuego {
@@ -106,6 +108,7 @@ object miJuego {
     if(!juegoTerminado) {
       juegoTerminado = true
       temporizador.detener()
+      sonidos.detenerMusica()
       estadoFinal.ejecutar()
     }
   }
