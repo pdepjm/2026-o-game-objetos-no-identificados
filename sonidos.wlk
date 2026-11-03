@@ -4,7 +4,7 @@ object sonidos {
   var musicaFondo = null
 
   method iniciarMusica() {
-    musicaFondo = game.sound("Musica de fondo.mp3")
+    musicaFondo = game.sound("Musica.mp3")
     musicaFondo.shouldLoop(true)
     musicaFondo.play()
   }

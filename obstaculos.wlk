@@ -2,6 +2,8 @@ import wollok.game.*
 import temporizador.*
 import personaje.*
 import velocidad.*
+import sonidos.*
+
 
 // Clase base: define lo que tienen en común todos los obstaculos.
 // Cada tipo de obstaculo solo tiene que decir su imagen y su efecto.
@@ -17,6 +19,7 @@ class Obstaculo {
   method alColisionarConPersonaje() {
     // primero se saca del tablero, asi desaparece al pisarlo
     game.removeVisual(self)
+    sonidos.sonidoObjeto()
     self.aplicarEfecto()
   }
 

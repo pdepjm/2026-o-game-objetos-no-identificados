@@ -6,6 +6,7 @@ import items.*
 import obstaculos.*
 import velocidad.*
 import personaje.*
+import sonidos.*
 
 
 
@@ -41,6 +42,7 @@ object combate {
   method atacarEn(posicion, municion) {
     const objetivo = self.encontrarObjetivoEn(posicion)
     if(objetivo != null) {
+      sonidos.sonidoDisparo()
       objetivo.recibirAtaque(municion)
     }
   }
@@ -56,6 +58,7 @@ object vidaPersonaje {
 
   method perder(cantidad) {
     vidaActual = (vidaActual - self.danioPorGolpe(cantidad)).max(0)
+    sonidos.sonidoDanio()
 
     game.say(personaje, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
 
