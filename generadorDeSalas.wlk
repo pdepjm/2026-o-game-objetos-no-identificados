@@ -106,15 +106,14 @@ object generadorDeSalas {
         trampas.pinchosHorizontal(1, 2, 13)
     )
 
-  // NIVEL 4: tres hombres lobo.
+  // NIVEL 4: 2 hombres lobo.
   method sala4() =
     self.crearSala(40, "sala2.png", generadorDeMonstruos.lobosEn([
-        game.at(3, 7),
         game.at(8, 9),
         game.at(5, 14)
       ]), [], [], [])
 
-  // NIVEL 5: un HombreLoboJefe, como en la configuración original.
+  // NIVEL 5: un HombreLoboJefe
   method sala5() =
     self.crearSala(45, "sala1.png", generadorDeMonstruos.jefeEn(game.at(5, 12)), [], [], [])
 
@@ -242,7 +241,7 @@ object generadorDeSalas {
         generadorDeMonstruos.lobosEn([
           game.at(5, 16)
         ]),
-      paredes.vertical(3, 2, 9) +
+        paredes.vertical(3, 2, 9) +
         paredes.vertical(8, 10, 17) +
         paredes.horizontal(4, 6, 13),
       [],
