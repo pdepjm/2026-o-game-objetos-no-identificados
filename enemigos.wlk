@@ -146,3 +146,12 @@ class HombreLoboJefe inherits HombreLobo {
 
   override method image() = "hombreLoboJefe.png"
 }
+
+class Espectro inherits Fantasma {
+  override method vidaInicial() = 150
+
+  override method danioAlPersonaje() = 3
+
+  override method image() = "espectro.png"
+  
+}

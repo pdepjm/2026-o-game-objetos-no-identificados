@@ -253,7 +253,7 @@ describe "Items" {
 
   test "El arma mejorada aumenta el danio que le hace el personaje a los enemigos" {
     const enemigo = new EnemigoComun(position = game.at(5, 5))
-    personaje.reaccionarAColision(new Arma(rareza = "Comun", danioDelArma = 50))
+    personaje.reaccionarAColision(new Arma(rareza = "Comun", danioDelArma = 50, distanciaDelArma = 4))
     assert.equals(50, personaje.danioActual())
     enemigo.recibirDanio(balaComun)
     assert.equals(50, enemigo.vida())

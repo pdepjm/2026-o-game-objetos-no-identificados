@@ -68,6 +68,7 @@ object baulDePremios{
     method premiosIniciales() = [
         new Armadura(rareza = "Comun", proteccion = 4), 
         new Arma(rareza = "Comun", danioDelArma = 50, distanciaDelArma = 4),
+        new Arma(rareza = "Comun", danioDelArma = 25, distanciaDelArma = 6),
         // Raros
         new Arma(rareza = "Raro", danioDelArma = 75, distanciaDelArma = 6),
         new Armadura(rareza = "Raro", proteccion = 5),
