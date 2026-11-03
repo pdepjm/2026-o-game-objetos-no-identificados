@@ -4,7 +4,7 @@ object sonidos {
   var musicaFondo = null
 
   method iniciarMusica() {
-    musicaFondo = game.sound("musica-fondo.mp3")
+    musicaFondo = game.sound("Musica de fondo.mp3")
     musicaFondo.shouldLoop(true)
     musicaFondo.play()
   }
@@ -20,19 +20,19 @@ object sonidos {
   }
 
   method sonidoDisparo() {
-    self.reproducirSonido("disparo.wav")
+    self.reproducirSonido("Disparo.mp3")
   }
 
   method sonidoDanio() {
-    self.reproducirSonido("danio.wav")
+    self.reproducirSonido("Recibir daño.mp3")
   }
 
   method sonidoObjeto() {
-    self.reproducirSonido("objeto.wav")
+    self.reproducirSonido("Recoger objetos.mp3")
   }
 
   method sonidoVictoria() {
-    self.reproducirSonido("victoria.wav")
+    self.reproducirSonido("Victoria.mp3")
   }
 
   method sonidoDerrota() {
