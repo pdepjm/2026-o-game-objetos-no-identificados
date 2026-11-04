@@ -1,63 +1,54 @@
 import wollok.game.*
 import personaje.*
 
-//los objetos como armas y armaduras tienen rarezas: Comun, Raro, Epico
-class PocionDeVida{
+class Item {
     var property position = game.at(5, 10)
-    const cantidadDeRecuperacion = 1
 
-    method image() = "pocionDeVida.png"
+    method image()
+
     method esAtacable() = false
 
-    method alColisionarConPersonaje(){
-        self.recuperarPersonaje()
+    method alColisionarConPersonaje() {
+        self.aplicarEfecto()
         game.removeVisual(self)
     }
 
-    //si agregamos mas personajes esto debe recuperar a PersonajeActual
-    method recuperarPersonaje(){ 
+    method aplicarEfecto()
+}
+
+//los objetos como armas y armaduras tienen rarezas: Comun, Raro, Epico
+class PocionDeVida inherits Item {
+    const cantidadDeRecuperacion = 1
+
+    override method image() = "pocionDeVida.png"
+
+    override method aplicarEfecto() {
         personaje.recuperarVidaActual(cantidadDeRecuperacion)
     }
 }
 
 //armadura añade mas vidas base
-class Armadura{
-    var property position = game.at(5, 10)
+class Armadura inherits Item{
     const property rareza
     const proteccion
-    const property image = "armadura.png"
+    override method image() = "armadura.png"
 
-    method esAtacable() = false
-
-    method alColisionarConPersonaje(){
+    override method aplicarEfecto() {
         personaje.agregarObjeto("Armadura " + rareza)
         personaje.aumentarVidaMaxima(proteccion)
-        game.removeVisual(self)
     }
 
 }
 
-class Arma{
-    var property position = game.at(5, 10)
+class Arma inherits Item{
     const property rareza
     const danioDelArma
     const distanciaDelArma
-    const property image = "arma.png"
+    override method image() = "arma.png"
 
-    method esAtacable() = false
-
-    method alColisionarConPersonaje(){
+    override method aplicarEfecto() {
         personaje.agregarObjeto("Arma " + rareza)
-        self.mejorarDanioPersonaje()
-        self.mejorarDistanciaPersonaje()
-        game.removeVisual(self)
-    }
-
-    method mejorarDanioPersonaje(){
         personaje.danioActual(danioDelArma)
-    }
-
-    method mejorarDistanciaPersonaje(){
         personaje.distanciaAtaque(distanciaDelArma)
     }
 }
@@ -80,16 +71,12 @@ object baulDePremios{
 
     method reiniciarPremios() { premios = self.premiosIniciales() }
 }
-class ItemMunicion{
-    var property position
+class ItemMunicion inherits Item{
     const bala
     const property image
 
-    method esAtacable() = false
-
-    method alColisionarConPersonaje() {
+    override method aplicarEfecto() {
         personaje.adquirirMunicion(bala)
-        game.removeVisual(self)
     }
 }
 
