@@ -253,12 +253,12 @@ object generadorDeSalas {
         new CharcoDeBarro(segundos = 6, position = game.at(2, 16))
       ] + trampas.pinchosVertical(10, 13, 16))
 
+  
     // NIVEL 15: encuentro final contra el jefe + puzzle de runas.
   method sala15() =
-    self.crearSala(90, "sala1.png",                  
+    self.crearSala(90, "sala15.png",
       generadorDeMonstruos.jefeEn(game.at(5, 12)),
       [],
-      puzzleFinal.crearRunas(),                      
-      [puzzleFinal.pista()])                         
-      
+      puzzleFinal.crearRunas(),     // las runas son los items de la sala
+      [puzzleFinal.pista()])        // el cartel con el orden
 }
