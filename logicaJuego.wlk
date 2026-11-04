@@ -29,7 +29,7 @@ object miJuego {
   method puedeJugar() = !temporizador.preparando() && !juegoTerminado
 
   method iniciar() {
-    nivelActual = 15
+    nivelActual = 1
     juegoTerminado = false
     
     self.entrarA(generadorDeSalas.generarSala(nivelActual))
