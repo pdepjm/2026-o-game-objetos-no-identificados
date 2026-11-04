@@ -254,11 +254,15 @@ object generadorDeSalas {
       ] + trampas.pinchosVertical(10, 13, 16))
 
   
-    // NIVEL 15: encuentro final contra el jefe + puzzle de runas.
+    // NIVEL 15: encuentro final contra el jefe + puzzle de laberinto de runas. El puzzle se resuelve pisando las runas en el orden correcto.
   method sala15() =
-    self.crearSala(90, "sala15.png",
-      generadorDeMonstruos.jefeEn(game.at(5, 12)),
-      [],
-      puzzleFinal.crearRunas(),     // las runas son los items de la sala
-      [puzzleFinal.pista()])        // el cartel con el orden
+    self.crearSala(110, "sala15.png",                          
+      generadorDeMonstruos.jefeEn(game.at(5, 9)),
+      paredes.horizontal(3, 5, 5) +                           
+        paredes.horizontal(6, 8, 12) +
+        paredes.horizontal(2, 3, 15) +
+        paredes.vertical(8, 2, 4) +                          
+        paredes.vertical(3, 8, 11),
+      puzzleFinal.crearRunas(),
+      [puzzleFinal.pista()])
 }

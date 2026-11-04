@@ -28,10 +28,10 @@ object puzzleFinal {
   method crearRunas() {
     pisadas.clear()
     bloqueado = false
-        runas = [
-      new Runa(nombre = "Sol", image = "runa_sol.png", position = game.at(2, 5)),               
-      new Runa(nombre = "Luna", image = "runa_luna.png", position = game.at(9, 5)),             
-      new Runa(nombre = "Estrella", image = "runa_estrella.png", position = game.at(5, 15))     
+      runas = [
+      new Runa(nombre = "Sol", image = "runa_sol.png", position = game.at(10, 10)),            
+      new Runa(nombre = "Luna", image = "runa_luna.png", position = game.at(1, 16)),           
+      new Runa(nombre = "Estrella", image = "runa_estrella.png", position = game.at(1, 2))     
     ]
     return runas
   }

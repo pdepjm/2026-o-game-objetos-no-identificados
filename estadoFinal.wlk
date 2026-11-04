@@ -11,14 +11,12 @@ class EstadoFinal {
     }
 }
 object pantallaFinal {
-    var mensaje = ""
-
-    method position() = game.center()
-    method text() = mensaje
+    method position() = game.at(1, 7)                  
+    method image() = "pantalla_derrota.png"            
     method esAtacable() = false
+    method alColisionarConPersonaje() {}              
 
-    method mostrar(texto) {
-        mensaje = texto
+    method mostrar() {                                 
         game.addVisual(self)
     }
 }
@@ -31,6 +29,6 @@ object victoria {
 
 object derrota {
     method ejecutar() {
-        pantallaFinal.mostrar("Has perdido. Presioná R para reiniciar")
+    pantallaFinal.mostrar() 
     }
 }
