@@ -6,6 +6,7 @@ import generadorDeMonstruos.*
 import paredes.*
 import obstaculos.*
 import items.*
+import puzzle.*
 
 object generadorDeSalas {
 
@@ -252,9 +253,12 @@ object generadorDeSalas {
         new CharcoDeBarro(segundos = 6, position = game.at(2, 16))
       ] + trampas.pinchosVertical(10, 13, 16))
 
-  // NIVEL 15: encuentro final contra el jefe.
+    // NIVEL 15: encuentro final contra el jefe + puzzle de runas.
   method sala15() =
-    self.crearSala(60, "sala1.png",
-      generadorDeMonstruos.jefeEn(game.at(5, 12)), [], [], [])
+    self.crearSala(90, "sala1.png",                  
+      generadorDeMonstruos.jefeEn(game.at(5, 12)),
+      [],
+      puzzleFinal.crearRunas(),                      
+      [puzzleFinal.pista()])                         
       
 }
