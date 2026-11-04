@@ -95,11 +95,12 @@ object miJuego {
 
     // reicia el juego si se perdió la partida
   method reiniciar() {
-   if (juegoTerminado) {
-     juegoTerminado = false
-     nivelActual = 1
+    if (juegoTerminado) {
+      juegoTerminado = false
+      nivelActual = 1
       personaje.reiniciar()
       baulDePremios.reiniciarPremios()
+      sonidos.iniciarMusica()
       self.entrarA(generadorDeSalas.generarSala(nivelActual))
     }
   }
@@ -126,11 +127,17 @@ object miJuego {
   }
 
   method ganarJuego() {
-    self.finalizarCon(victoria)
+    if (!juegoTerminado) {
+      sonidos.sonidoVictoria()
+      self.finalizarCon(victoria)
+    }
   }
 
   method terminarJuego() {
-    self.finalizarCon(derrota)
+    if (!juegoTerminado) {
+      sonidos.sonidoDerrota()
+      self.finalizarCon(derrota)
+    }
   }
 
   method eliminarEnemigo(enemigo) {

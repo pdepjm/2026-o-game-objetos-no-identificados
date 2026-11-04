@@ -1,5 +1,7 @@
 import wollok.game.*
 import personaje.*
+import sonidos.*
+
 
 class Item {
     var property position = game.at(5, 10)
@@ -9,6 +11,7 @@ class Item {
     method esAtacable() = false
 
     method alColisionarConPersonaje() {
+        sonidos.sonidoObjeto()
         self.aplicarEfecto()
         game.removeVisual(self)
     }

@@ -4,14 +4,17 @@ object sonidos {
   var musicaFondo = null
 
   method iniciarMusica() {
-    musicaFondo = game.sound("Musica.mp3")
-    musicaFondo.shouldLoop(true)
-    musicaFondo.play()
+    if (musicaFondo == null) {
+      musicaFondo = game.sound("Musica.mp3")
+      musicaFondo.shouldLoop(true)
+      musicaFondo.play()
+    }
   }
 
   method detenerMusica() {
     if (musicaFondo != null) {
       musicaFondo.stop()
+      musicaFondo = null
     }
   }
 
@@ -36,6 +39,6 @@ object sonidos {
   }
 
   method sonidoDerrota() {
-    self.reproducirSonido("derrota.wav")
+    self.reproducirSonido("Derrota.mp3")
   }
 }
