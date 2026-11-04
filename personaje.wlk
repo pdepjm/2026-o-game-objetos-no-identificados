@@ -31,6 +31,7 @@ object personaje {
 
   method perderVidaActual(cantidad) {
     vidaPersonaje.perder(cantidad)
+    miJuego.reaccionarAPerdidaDeVida()
   }
 
   // lo llama la Maldicion al ser pisada; dura la cantidad de segundos indicada

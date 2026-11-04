@@ -104,6 +104,18 @@ object miJuego {
     }
   }
 
+  method reaccionarAPerdidaDeVida() {
+    sonidos.sonidoDanio()
+
+    game.say(personaje, "Ahora, mi cantidad de vida es: " + personaje.vidaActual())
+
+    if (personaje.vidaActual() == 0) {
+        self.terminarJuego()
+    } else if (personaje.vidaActual() == 1) {
+        self.salaActual().aparecerPocionDeVida()
+    }
+  }
+
   method finalizarCon(estadoFinal) {
     if(!juegoTerminado) {
       juegoTerminado = true

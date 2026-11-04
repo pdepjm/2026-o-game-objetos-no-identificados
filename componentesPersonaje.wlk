@@ -58,15 +58,6 @@ object vidaPersonaje {
 
   method perder(cantidad) {
     vidaActual = (vidaActual - self.danioPorGolpe(cantidad)).max(0)
-    sonidos.sonidoDanio()
-
-    game.say(personaje, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
-
-    if (vidaActual == 0) {
-      miJuego.terminarJuego()
-    } else if (vidaActual == 1) {
-      miJuego.salaActual().aparecerPocionDeVida()
-    }
   }
 
   method danioPorGolpe(cantidad) =
@@ -74,7 +65,6 @@ object vidaPersonaje {
 
   method recuperar(cantidad) {
     vidaActual = (vidaActual + cantidad).min(vidaMaxima)
-    game.say(personaje, "Ahora, mi cantidad de vidaActual es: " + vidaActual)
   }
 
   method aumentarMaxima(cantidad) {
@@ -83,15 +73,10 @@ object vidaPersonaje {
 
   method maldecir(segundos) {
     maldiciones = maldiciones + 1
-    game.say(personaje, "¡Maldito! Recibo el doble de daño")
-    game.schedule(segundos * 1000, { self.terminarMaldicion() })
   }
 
   method terminarMaldicion() {
     maldiciones = (maldiciones - 1).max(0)
-    if (maldiciones == 0) {
-      game.say(personaje, "Se me pasó la maldición")
-    }
   }
 
   method reiniciar() {
