@@ -1,34 +1,24 @@
 import wollok.game.*
 
 class Pared {
-  var property position
+  const property position
+  const property image
 
-  method image()
   method esAtacable() = false
-
-  // el bloqueo lo resuelve paredes.bloquea() antes de moverse
   method alColisionarConPersonaje() {}
 }
 
-class ParedHorizontal inherits Pared {
-  override method image() = "paredHorizontal.png"
-}
-
-class ParedVertical inherits Pared {
-  override method image() = "paredVertical.png"
-}
-
 object paredes {
+  const imagenHorizontal = "paredHorizontal.png"
+  const imagenVertical = "paredVertical.png"
 
-  method horizontal(desdeX, hastaX, y) =
-  (desdeX..hastaX).map({ x =>
-    new ParedHorizontal(position = game.at(x, y))
-  })
+    method horizontal(desdeX, hastaX, y) =
+    (desdeX..hastaX).map({ x => self.paredEn(game.at(x, y), imagenHorizontal) })
 
   method vertical(x, desdeY, hastaY) =
-    (desdeY..hastaY).map({ y =>
-    new ParedVertical(position = game.at(x, y))
-  })
+    (desdeY..hastaY).map({ y => self.paredEn(game.at(x, y), imagenVertical) })
+
+  method paredEn(posicion, imagen) = new Pared(position = posicion, image = imagen)
   
   method ultimoX() = game.width() - 1
 
