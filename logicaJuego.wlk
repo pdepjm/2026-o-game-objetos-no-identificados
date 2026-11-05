@@ -25,9 +25,21 @@ object miJuego {
   }
   
   method puedeJugar() = (!temporizador.preparando()) && (!juegoTerminado)
+
+  method pasarSegundo() {
+  if (!juegoTerminado) {
+    self.avanzarReloj()
+    if (temporizador.seAcabo()) self.terminarJuego()
+    }
+  }
+
+  method avanzarReloj() {
+    if (temporizador.preparando()) temporizador.pasarSegundoDePreparacion()
+    else if (!salaActual.puedeSalir()) temporizador.descontarSegundo()
+  }
   
   method iniciar() {
-    nivelActual = 12
+    nivelActual = 1
     juegoTerminado = false
     
     self.entrarA(generadorDeSalas.generarSala(nivelActual))
@@ -40,7 +52,7 @@ object miJuego {
           ) }
     )
     
-    game.onTick(1000, "timerSala", { temporizador.pasarSegundo() })
+    game.onTick(1000, "timerSala", { self.pasarSegundo() }) 
     
     game.onCollideDo(
       personaje,
@@ -116,7 +128,6 @@ object miJuego {
   method finalizarCon(estadoFinal) {
     if (!juegoTerminado) {
       juegoTerminado = true
-      temporizador.detener()
       sonidos.detenerMusica()
       estadoFinal.ejecutar()
     }
@@ -139,13 +150,11 @@ object miJuego {
   method eliminarEnemigo(enemigo) {
     salaActual.eliminarEnemigo(enemigo)
     sonidos.muerteEnemigo()
-    if ((nivelActual == 15) && salaActual.estaLimpia()) self.ganarJuego()
   }
 }
 
 object finDelJuego {
   method inicializarse() {
-    temporizador.detener()
     game.addVisual(personaje)
     miJuego.ganarJuego()
   }

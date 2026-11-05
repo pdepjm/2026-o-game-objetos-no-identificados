@@ -1,57 +1,46 @@
 import wollok.game.*
-import logicaJuego.*
-import obstaculos.*
 
 object temporizador {
   var tiempoRestante = 0
-  var activo = false
-  var preparando = false
   var segundosDePreparacion = 0
 
-   // durante la preparacion el aviso va en el centro, despues vuelve abajo
-  method position() = if (preparando) game.center() else game.at(6, 0)
+  // durante la preparacion el aviso va en el centro, despues vuelve abajo
+  method position() = if (self.preparando()) game.center() else game.at(6, 0)
+
   method text() =
-    if (preparando) "¡Prepárate! " + segundosDePreparacion
+    if (self.preparando()) "¡Prepárate! " + segundosDePreparacion
     else "tiempo: " + tiempoRestante
+
   method esAtacable() = false
 
-  method preparando() = preparando
-
-  // lo llama miJuego una sola vez, al iniciar la partida
-  method iniciarPreparacion(segundos) {
-    segundosDePreparacion = segundos
-    preparando = segundos > 0 
-  }
+  method tiempoRestante() = tiempoRestante
+  method preparando() = segundosDePreparacion > 0
+  method seAcabo() = tiempoRestante == 0
 
   // lo llama cada sala al entrar
   method iniciar(segundos) {
     tiempoRestante = segundos
-    activo = true
   }
 
-  method detener() {
-    activo = false
+  // lo llama cada sala al entrar, para dar tiempo a mirar el mapa
+  method iniciarPreparacion(segundos) {
+    segundosDePreparacion = segundos
   }
 
-  // lo llama miJuego cada 1 segundo
-  method pasarSegundo() {
-    if (preparando) {
-     segundosDePreparacion = segundosDePreparacion - 1
-      if (segundosDePreparacion == 0) preparando = false
-    } else if (activo && !miJuego.salaActual().estaLimpia()) {
-      tiempoRestante = (tiempoRestante - 1).max(0)
-      if (tiempoRestante == 0) miJuego.terminarJuego()
-    }
+  method pasarSegundoDePreparacion() {
+    segundosDePreparacion = (segundosDePreparacion - 1).max(0)
   }
 
-// lo llaman los obstaculos al ser pisados
+  method descontarSegundo() {
+    tiempoRestante = (tiempoRestante - 1).max(0)
+  }
+
+  // lo llaman los obstaculos al ser pisados
   method sumarSegundos(segundos) {
     tiempoRestante = tiempoRestante + segundos
   }
 
   method restarSegundos(segundos) {
     tiempoRestante = (tiempoRestante - segundos).max(0)
-    if (tiempoRestante == 0) miJuego.terminarJuego()
   }
-
 }

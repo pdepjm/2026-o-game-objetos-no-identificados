@@ -60,8 +60,15 @@ object vidaPersonaje {
     vidaActual = (vidaActual - self.danioPorGolpe(cantidad)).max(0)
   }
 
+  method estaMaldito() = maldiciones > 0
+
   method danioPorGolpe(cantidad) =
-    if (maldiciones > 0) cantidad * 2 else cantidad
+    if (self.estaMaldito()) cantidad * 2 else cantidad
+
+
+  method maldecir() {
+    maldiciones = maldiciones + 1
+  }
 
   method recuperar(cantidad) {
     vidaActual = (vidaActual + cantidad).min(vidaMaxima)
@@ -71,9 +78,6 @@ object vidaPersonaje {
     vidaMaxima = vidaMaxima + cantidad
   }
 
-  method maldecir(segundos) {
-    maldiciones = maldiciones + 1
-  }
 
   method terminarMaldicion() {
     maldiciones = (maldiciones - 1).max(0)

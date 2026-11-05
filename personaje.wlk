@@ -6,7 +6,7 @@ import items.*
 import obstaculos.*
 import velocidad.*
 import componentesPersonaje.*
-// 
+
 object personaje {
   var property position = game.center()
   var ultimaPosicion = position
@@ -34,13 +34,16 @@ object personaje {
     miJuego.reaccionarAPerdidaDeVida()
   }
 
-  // lo llama la Maldicion al ser pisada; dura la cantidad de segundos indicada
+    // lo llama la Maldicion al ser pisada; dura la cantidad de segundos indicada
   method maldecir(segundos) {
-    vidaPersonaje.maldecir(segundos)
+    vidaPersonaje.maldecir()
+    game.say(self, "¡Maldito! Recibo el doble de daño")
+    game.schedule(segundos * 1000, { self.terminarMaldicion() })
   }
 
   method terminarMaldicion() {
     vidaPersonaje.terminarMaldicion()
+    if (!vidaPersonaje.estaMaldito()) game.say(self, "Se me pasó la maldición")
   }
 
   method recuperarVidaActual(cantidad){
@@ -76,10 +79,10 @@ object personaje {
   miJuego.puedeJugar() && self.estaAlAlcance(posicion) && self.veDesdeAqui(posicion)
 
   method atacarEn(posicion) {
-    if (self.puedeAtacarEn(posicion)) {
-      combate.atacarEn(posicion, self.municionActual())
-    }
+  if (miJuego.puedeJugar() && self.puedeAtacarEn(posicion)) {
+    combate.atacarEn(posicion, self.municionActual())
   }
+}
 
   method mover(nuevaPosicion) {
     if (miJuego.puedeJugar()) {

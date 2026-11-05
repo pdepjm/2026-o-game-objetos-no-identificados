@@ -33,7 +33,7 @@ class Sala {
     enemigosVivos.forEach(
       { enemigo =>
         game.addVisual(enemigo)
-        return game.onCollideDo(
+        game.onCollideDo(
           enemigo,
           { elemento => enemigo.reaccionarAColision(elemento) }
         )
@@ -74,6 +74,8 @@ class Sala {
   
   method itemsAgarrados() = itemsDeLaSala.all({ item => !game.hasVisual(item) })
   
+  method puedeSalir() = self.estaLimpia() && self.itemsAgarrados()
+
   method posicionesParaPocion() = [
     game.at(2, 2),
     game.at(10, 2),
