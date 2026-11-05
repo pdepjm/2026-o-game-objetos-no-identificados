@@ -72,7 +72,8 @@ object personaje {
 
   method estaAlAlcance(posicion) = position.distance(posicion) <= distanciaAtaque
   method veDesdeAqui(posicion) = lineaDeVision.despejada(position, posicion)
-  method puedeAtacarEn(posicion) = self.estaAlAlcance(posicion) && self.veDesdeAqui(posicion)
+  method puedeAtacarEn(posicion) =
+  miJuego.puedeJugar() && self.estaAlAlcance(posicion) && self.veDesdeAqui(posicion)
 
   method atacarEn(posicion) {
     if (self.puedeAtacarEn(posicion)) {

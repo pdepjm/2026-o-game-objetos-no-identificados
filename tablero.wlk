@@ -4,28 +4,36 @@ import paredes.*
 object tablero {
   var paredesActuales = []
 
+  method ultimoX() = game.width() - 1
+  method ultimoY() = game.height() - 1
+
+  method bordeInferior() = paredes.horizontal(0, self.ultimoX(), 0)
+  method bordeSuperior() = paredes.horizontal(0, self.ultimoX(), self.ultimoY())
+  method bordeIzquierdo() = paredes.vertical(0, 1, self.ultimoY() - 1)
+  method bordeDerecho() = paredes.vertical(self.ultimoX(), 1, self.ultimoY() - 1)
+
+  method borde() =
+    self.bordeInferior() + self.bordeSuperior() +
+    self.bordeIzquierdo() + self.bordeDerecho()
+
   method construir(listaDeParedes) {
     paredesActuales = listaDeParedes
-    const todas = paredes.borde() + listaDeParedes
+    const todas = self.borde() + listaDeParedes
 
-    todas.forEach({ pared =>
-      game.addVisual(pared)
-    })
+    todas.forEach({ pared => game.addVisual(pared) })
   }
 
   method paredesInternas() = paredesActuales
-  
+
   method bloqueada(unaPosicion) =
-    paredesActuales.any({ pared =>
-      pared.position() == unaPosicion
-    })
+    paredesActuales.any({ pared => pared.position() == unaPosicion })
 
   method esTransitable(unaPosicion) =
     self.dentroDeLimites(unaPosicion) && !self.bloqueada(unaPosicion)
 
   method dentroDeLimites(unaPosicion) =
-    unaPosicion.x().between(1, game.width() - 2) &&
-    unaPosicion.y().between(1, game.height() - 2)
+    unaPosicion.x().between(1, self.ultimoX() - 1) &&
+    unaPosicion.y().between(1, self.ultimoY() - 1)
 }
 
 object lineaDeVision {

@@ -24,4 +24,15 @@ object generadorDeMonstruos {
 
   method jefeEn(posicion) =
     [new HombreLoboJefe(position = posicion)]
+
+  method rarosEn(posiciones) =
+    posiciones.map({ posicion =>
+      new EnemigoRaro(position = posicion)
+    })
+
+  method espectrosEn(posiciones) =
+    posiciones.map({ posicion =>
+      new Espectro(position = posicion)
+    })
+  
 }
