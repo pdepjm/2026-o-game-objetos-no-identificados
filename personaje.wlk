@@ -6,7 +6,7 @@ import items.*
 import obstaculos.*
 import velocidad.*
 import componentesPersonaje.*
-
+// 
 object personaje {
   var property position = game.center()
   var ultimaPosicion = position
