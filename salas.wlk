@@ -9,7 +9,6 @@ import paredes.*
 import items.*
 import tablero.*
 
-
 class Sala {
   const property tiempo
   const property fondo
@@ -18,69 +17,63 @@ class Sala {
   const property itemsIniciales
   const property obstaculosIniciales
   const property entrada
-
   var enemigosVivos = []
   var puerta = null
   var itemsDeLaSala = []
-
+  
   method inicializarse() {
     temporizador.iniciar(self.tiempo())
     temporizador.iniciarPreparacion(5)
-
+    
     game.boardGround(self.fondo())
     tablero.construir(self.paredesInternas())
-
+    
     enemigosVivos = self.enemigosIniciales()
-
-    enemigosVivos.forEach({ enemigo =>
-      game.addVisual(enemigo)
-      game.onCollideDo(enemigo, {
-        elemento => enemigo.reaccionarAColision(elemento)
-      })
-    })
-
+    
+    enemigosVivos.forEach(
+      { enemigo =>
+        game.addVisual(enemigo)
+        return game.onCollideDo(
+          enemigo,
+          { elemento => enemigo.reaccionarAColision(elemento) }
+        )
+      }
+    )
+    
     itemsDeLaSala = self.itemsIniciales()
-    itemsDeLaSala.forEach({ item =>
-      game.addVisual(item)
-    })
-
-    self.obstaculosIniciales().forEach({ obstaculo =>
-      game.addVisual(obstaculo)
-    })
-
+    itemsDeLaSala.forEach({ item => game.addVisual(item) })
+    
+    self.obstaculosIniciales().forEach(
+      { obstaculo => game.addVisual(obstaculo) }
+    )
+    
     puerta = new Puerta()
     game.addVisual(puerta)
-
-    if (self.estaLimpia()) {
-      puerta.desbloquear()
-    }
-
+    
+    if (self.estaLimpia()) puerta.desbloquear()
+    
     game.addVisual(personaje)
     personaje.position(self.entrada())
-
-    if (personaje.vidaActual() == 1) {
-      self.aparecerPocionDeVida()
-    }
+    
+    if (personaje.vidaActual() == 1) self.aparecerPocionDeVida()
   }
-
+  
   method enemigosVivos() = enemigosVivos
-
+  
   method puerta() = puerta
-
+  
   method estaLimpia() = enemigosVivos.isEmpty()
-
+  
   method eliminarEnemigo(enemigo) {
     game.removeVisual(enemigo)
+    
     enemigosVivos.remove(enemigo)
-
-    if (self.estaLimpia()) {
-      puerta.desbloquear()
-    }
+    
+    if (self.estaLimpia()) puerta.desbloquear()
   }
-
-  method itemsAgarrados() =
-    itemsDeLaSala.all({ item => !game.hasVisual(item) })
-
+  
+  method itemsAgarrados() = itemsDeLaSala.all({ item => !game.hasVisual(item) })
+  
   method posicionesParaPocion() = [
     game.at(2, 2),
     game.at(10, 2),
@@ -88,16 +81,14 @@ class Sala {
     game.at(8, 16),
     game.at(10, 17)
   ]
-
+  
   method aparecerPocionDeVida() {
-    const libres = self.posicionesParaPocion().filter({
-      posicion => game.getObjectsIn(posicion).isEmpty()
-    })
-
-    if (!libres.isEmpty()) {
-      game.addVisual(
+    const libres = self.posicionesParaPocion().filter(
+      { posicion => game.getObjectsIn(posicion).isEmpty() }
+    )
+    
+    if (!libres.isEmpty()) game.addVisual(
         new PocionDeVida(position = libres.anyOne())
       )
-    }
   }
 }
