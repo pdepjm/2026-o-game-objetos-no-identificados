@@ -164,18 +164,18 @@ object finDelJuego {
 
 object vida {
   method position() = game.at(1, 0)
-  
+  method esAtacable() = false
   method text() = "te quedan: " + personaje.vidaActual()
 }
 
 object municionEquipada {
   method position() = game.at(8, 0)
-  
+  method esAtacable() = false
   method text() = "bala: " + personaje.municionActual().nombre()
 }
 
 object contadorEnemigos {
   method position() = game.at(3, 0)
-  
+  method esAtacable() = false
   method text() = "enemigos: " + miJuego.salaActual().enemigosVivos().size()
 }
