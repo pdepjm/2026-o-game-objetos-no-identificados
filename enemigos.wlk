@@ -51,8 +51,12 @@ class Enemigo {
     self.retroceder()
   }
   
+  method alColisionarConPersonaje(unPersonaje) {
+    unPersonaje.perderVidaActual(self.danioAlPersonaje())
+  }
+  
   method alColisionarConPersonaje() {
-    personaje.perderVidaActual(self.danioAlPersonaje())
+    self.alColisionarConPersonaje(personaje)
   }
   
   method recibirAtaque(bala) {
