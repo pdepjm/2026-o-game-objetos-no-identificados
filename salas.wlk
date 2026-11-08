@@ -30,6 +30,7 @@ class Sala {
     
     enemigosVivos = self.enemigosIniciales()
     
+<<<<<<< HEAD
  enemigosVivos.forEach({ enemigo =>
   game.addVisual(enemigo)
   game.onCollideDo(
@@ -37,6 +38,17 @@ class Sala {
     { elemento => enemigo.reaccionarAColision(elemento) }
   )
 })
+=======
+    enemigosVivos.forEach(
+      { enemigo =>
+        game.addVisual(enemigo)
+        game.onCollideDo(
+          enemigo,
+          { elemento => enemigo.reaccionarAColision(elemento) }
+        )
+      }
+    )
+>>>>>>> dff768b5d64d0d59583dec875ecd5360984ea8eb
     
     itemsDeLaSala = self.itemsIniciales()
     itemsDeLaSala.forEach({ item => game.addVisual(item) })
@@ -72,6 +84,8 @@ class Sala {
   
   method itemsAgarrados() = itemsDeLaSala.all({ item => !game.hasVisual(item) })
   
+  method puedeSalir() = self.estaLimpia() && self.itemsAgarrados()
+
   method posicionesParaPocion() = [
     game.at(2, 2),
     game.at(10, 2),

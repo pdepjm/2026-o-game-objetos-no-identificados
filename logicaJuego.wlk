@@ -25,6 +25,7 @@ object miJuego {
   }
   
   method puedeJugar() = (!temporizador.preparando()) && (!juegoTerminado)
+<<<<<<< HEAD
   var pasosDelPersonaje = 0
 
 method moverEnemigos() {
@@ -35,6 +36,21 @@ method moverEnemigos() {
     }
   }
 }
+=======
+
+  method pasarSegundo() {
+  if (!juegoTerminado) {
+    self.avanzarReloj()
+    if (temporizador.seAcabo()) self.terminarJuego()
+    }
+  }
+
+  method avanzarReloj() {
+    if (temporizador.preparando()) temporizador.pasarSegundoDePreparacion()
+    else if (!salaActual.puedeSalir()) temporizador.descontarSegundo()
+  }
+  
+>>>>>>> dff768b5d64d0d59583dec875ecd5360984ea8eb
   method iniciar() {
     nivelActual = 1
     juegoTerminado = false
@@ -49,8 +65,12 @@ method moverEnemigos() {
           ) }
     )
     
+<<<<<<< HEAD
     
     game.onTick(1000, "timerSala", { temporizador.pasarSegundo() })
+=======
+    game.onTick(1000, "timerSala", { self.pasarSegundo() }) 
+>>>>>>> dff768b5d64d0d59583dec875ecd5360984ea8eb
     
     game.onCollideDo(
       personaje,
@@ -126,7 +146,6 @@ method moverEnemigos() {
   method finalizarCon(estadoFinal) {
     if (!juegoTerminado) {
       juegoTerminado = true
-      temporizador.detener()
       sonidos.detenerMusica()
       estadoFinal.ejecutar()
     }
@@ -149,13 +168,11 @@ method moverEnemigos() {
   method eliminarEnemigo(enemigo) {
     salaActual.eliminarEnemigo(enemigo)
     sonidos.muerteEnemigo()
-    if ((nivelActual == 15) && salaActual.estaLimpia()) self.ganarJuego()
   }
 }
 
 object finDelJuego {
   method inicializarse() {
-    temporizador.detener()
     game.addVisual(personaje)
     miJuego.ganarJuego()
   }
@@ -165,18 +182,18 @@ object finDelJuego {
 
 object vida {
   method position() = game.at(1, 0)
-  
+  method esAtacable() = false
   method text() = "te quedan: " + personaje.vidaActual()
 }
 
 object municionEquipada {
   method position() = game.at(8, 0)
-  
+  method esAtacable() = false
   method text() = "bala: " + personaje.municionActual().nombre()
 }
 
 object contadorEnemigos {
   method position() = game.at(3, 0)
-  
+  method esAtacable() = false
   method text() = "enemigos: " + miJuego.salaActual().enemigosVivos().size()
 }

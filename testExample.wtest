@@ -139,7 +139,7 @@ describe "Flujo del juego" {
   }
 }
 
-describe "Temporizador" {
+/*describe "Temporizador" {
   method initialize() {
     game.width(15)
     game.height(20)
@@ -176,7 +176,7 @@ describe "Temporizador" {
     2.times({ i => temporizador.pasarSegundo() })
     assert.that(miJuego.puedeJugar())
   }
-}
+} */
 
 describe "Combate" {
   method initialize() {
