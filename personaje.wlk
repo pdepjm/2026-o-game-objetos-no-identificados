@@ -87,7 +87,7 @@ object personaje {
   method mover(nuevaPosicion) {
     if (miJuego.puedeJugar()) {
       self.guardarPosicion()
-      controlDeVelocidad.mover(self.direccionHacia(nuevaPosicion)) 
+      controlDeVelocidad.mover(self.direccionHacia(nuevaPosicion), self) 
     }
   }
 

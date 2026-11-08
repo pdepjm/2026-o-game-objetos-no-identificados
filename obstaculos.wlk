@@ -88,7 +88,7 @@ class CharcoDeBarro inherits Obstaculo {
   override method image() = "charcoDeBarro.png"
 
   override method aplicarEfecto(unPersonaje) {
-    controlDeVelocidad.ralentizar(segundos) 
+    controlDeVelocidad.ralentizar(segundos, unPersonaje) 
   }
 }
 
@@ -100,6 +100,6 @@ class PistaDeVelocidad inherits Obstaculo {
   override method image() = "pistaDeVelocidad.png"
 
   override method aplicarEfecto(unPersonaje) {
-    controlDeVelocidad.acelerar(segundos) 
+    controlDeVelocidad.acelerar(segundos, unPersonaje) 
   }
 }
