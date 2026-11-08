@@ -64,7 +64,7 @@ object personaje {
 
   // cada elemento sabe que le pasa al personaje cuando lo toca (enemigo, puerta, etc.)
   method reaccionarAColision(elemento) {
-    elemento.alColisionarConPersonaje()
+    elemento.alColisionarConPersonaje(self)
   }
 
   method esAtacable() = false
@@ -87,7 +87,7 @@ object personaje {
   method mover(nuevaPosicion) {
     if (miJuego.puedeJugar()) {
       self.guardarPosicion()
-      controlDeVelocidad.mover(self.direccionHacia(nuevaPosicion)) 
+      controlDeVelocidad.mover(self.direccionHacia(nuevaPosicion), self) 
     }
   }
 

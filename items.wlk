@@ -10,13 +10,13 @@ class Item {
 
     method esAtacable() = false
 
-    method alColisionarConPersonaje() {
+    method alColisionarConPersonaje(unPersonaje) {
         sonidos.sonidoObjeto()
-        self.aplicarEfecto()
+        self.aplicarEfecto(unPersonaje)
         game.removeVisual(self)
     }
 
-    method aplicarEfecto()
+    method aplicarEfecto(unPersonaje)
 }
 
 //los objetos como armas y armaduras tienen rarezas: Comun, Raro, Epico
@@ -25,8 +25,8 @@ class PocionDeVida inherits Item {
 
     override method image() = "pocionDeVida.png"
 
-    override method aplicarEfecto() {
-        personaje.recuperarVidaActual(cantidadDeRecuperacion)
+    override method aplicarEfecto(unPersonaje) {
+        unPersonaje.recuperarVidaActual(cantidadDeRecuperacion)
     }
 }
 
@@ -36,9 +36,9 @@ class Armadura inherits Item{
     const proteccion
     override method image() = "armadura.png"
 
-    override method aplicarEfecto() {
-        personaje.agregarObjeto("Armadura " + rareza)
-        personaje.aumentarVidaMaxima(proteccion)
+    override method aplicarEfecto(unPersonaje) {
+        unPersonaje.agregarObjeto("Armadura " + rareza)
+        unPersonaje.aumentarVidaMaxima(proteccion)
     }
 
 }
@@ -49,10 +49,10 @@ class Arma inherits Item{
     const distanciaDelArma
     override method image() = "arma.png"
 
-    override method aplicarEfecto() {
-        personaje.agregarObjeto("Arma " + rareza)
-        personaje.danioActual(danioDelArma)
-        personaje.distanciaAtaque(distanciaDelArma)
+    override method aplicarEfecto(unPersonaje) {
+        unPersonaje.agregarObjeto("Arma " + rareza)
+        unPersonaje.danioActual(danioDelArma)
+        unPersonaje.distanciaAtaque(distanciaDelArma)
     }
 }
 
@@ -78,8 +78,8 @@ class ItemMunicion inherits Item{
     const bala
     const property image
 
-    override method aplicarEfecto() {
-        personaje.adquirirMunicion(bala)
+    override method aplicarEfecto(unPersonaje) {
+        unPersonaje.adquirirMunicion(bala)
     }
 }
 
