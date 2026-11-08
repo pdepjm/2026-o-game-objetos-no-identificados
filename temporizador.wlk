@@ -1,4 +1,5 @@
 import wollok.game.*
+import logicaJuego.*
 
 object temporizador {
   var tiempoRestante = 0
@@ -33,6 +34,20 @@ object temporizador {
 
   method descontarSegundo() {
     tiempoRestante = (tiempoRestante - 1).max(0)
+  }
+
+  method pasarSegundo() {
+    if (self.preparando()) {
+      self.pasarSegundoDePreparacion()
+    } else {
+      self.descontarSegundo()
+      if (self.seAcabo()) {
+        miJuego.terminarJuego()
+      }
+    }
+  }
+
+  method detener() {
   }
 
   // lo llaman los obstaculos al ser pisados

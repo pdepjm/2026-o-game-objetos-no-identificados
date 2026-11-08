@@ -40,7 +40,7 @@ object pantallaControles {
   const lineas = [
     new LineaDeTexto(position = game.at(3, 15), text = "CONTROLES"),
     new LineaDeTexto(position = game.at(2, 12), text = "W A S D: moverse"),
-    new LineaDeTexto(position = game.at(2, 11), text = "Click: disparar"),
+    new LineaDeTexto(position = game.at(2, 11), text = "ESPACIO: disparar"),
     new LineaDeTexto(position = game.at(2, 10), text = "B: cambiar de bala"),
     new LineaDeTexto(position = game.at(2, 9), text = "R: reiniciar al perder"),
     new LineaDeTexto(position = game.at(2, 5), text = "ENTER: volver")

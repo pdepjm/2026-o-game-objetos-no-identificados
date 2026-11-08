@@ -6,11 +6,13 @@ import temporizador.*
 import items.*
 import generadorDeSalas.*
 import sonidos.*
+import direcciones.*
 
 object miJuego {
   var property nivelActual = 1
   var salaActual = null
   var juegoTerminado = false
+  var ticksIniciados = false
   
   method salaActual() = salaActual
   
@@ -25,89 +27,57 @@ object miJuego {
   }
   
   method puedeJugar() = (!temporizador.preparando()) && (!juegoTerminado)
-<<<<<<< HEAD
-  var pasosDelPersonaje = 0
-
-method moverEnemigos() {
-  if (self.puedeJugar()) {
-    pasosDelPersonaje += 1
-    if (pasosDelPersonaje % 3 == 0) {
-      salaActual.enemigosVivos().forEach({ enemigo => enemigo.perseguir() })
+  
+  method iniciarTicks() {
+    if (!ticksIniciados) {
+      ticksIniciados = true
+      game.onTick(
+        250,
+        "movimientoEnemigos",
+        { if (self.puedeJugar()) salaActual.enemigosVivos().forEach(
+              { enemigo => enemigo.perseguir() }
+            ) }
+      )
+      game.onTick(1000, "timerSala", { temporizador.pasarSegundo() })
     }
-  }
-}
-=======
-
-  method pasarSegundo() {
-  if (!juegoTerminado) {
-    self.avanzarReloj()
-    if (temporizador.seAcabo()) self.terminarJuego()
-    }
-  }
-
-  method avanzarReloj() {
-    if (temporizador.preparando()) temporizador.pasarSegundoDePreparacion()
-    else if (!salaActual.puedeSalir()) temporizador.descontarSegundo()
   }
   
->>>>>>> dff768b5d64d0d59583dec875ecd5360984ea8eb
+  method removerTicks() {
+    if (ticksIniciados) {
+      game.removeTickEvent("movimientoEnemigos")
+      game.removeTickEvent("timerSala")
+      ticksIniciados = false
+    }
+  }
+  
   method iniciar() {
     nivelActual = 1
     juegoTerminado = false
     
     self.entrarA(generadorDeSalas.generarSala(nivelActual))
-    
-    game.onTick(
-      300,
-      "movimientoEnemigos",
-      { if (self.puedeJugar()) salaActual.enemigosVivos().forEach(
-            { enemigo => enemigo.perseguir() }
-          ) }
-    )
-    
-<<<<<<< HEAD
-    
-    game.onTick(1000, "timerSala", { temporizador.pasarSegundo() })
-=======
-    game.onTick(1000, "timerSala", { self.pasarSegundo() }) 
->>>>>>> dff768b5d64d0d59583dec875ecd5360984ea8eb
+    self.iniciarTicks()
     
     game.onCollideDo(
       personaje,
       { elemento => personaje.reaccionarAColision(elemento) }
     )
     
-    keyboard.w().whilePressedDo(
-      { personaje.mover(personaje.position().up(1)) },
-      50
-    )
-    
-    keyboard.a().whilePressedDo(
-      { personaje.mover(personaje.position().left(1)) },
-      50
-    )
-    
-    keyboard.s().whilePressedDo(
-      { personaje.mover(personaje.position().down(1)) },
-      50
-    )
-    
-    keyboard.d().whilePressedDo(
-      { personaje.mover(personaje.position().right(1)) },
-      50
-    )
+    keyboard.w().whilePressedDo({ personaje.mover(arriba) }, 120)
+    keyboard.a().whilePressedDo({ personaje.mover(izquierda) }, 120)
+    keyboard.s().whilePressedDo({ personaje.mover(abajo) }, 120)
+    keyboard.d().whilePressedDo({ personaje.mover(derecha) }, 120)
     
     keyboard.b().onPressDo({ personaje.cambiarMunicion() })
     
     keyboard.r().onPressDo({ self.reiniciar() })
     
-    game.onClickDo({ posicion => personaje.atacarEn(posicion) })
+    keyboard.space().onPressDo({ personaje.atacar() })
   }
   
   // Avanza al siguiente nivel cuando se cruza la puerta.
   method avanzarSala() {
     if (((!juegoTerminado) && salaActual.estaLimpia()) && salaActual.itemsAgarrados()) {
-      if (nivelActual == 15) {
+      if (nivelActual == 1) {
         self.ganarJuego()
       } else {
         nivelActual += 1
@@ -116,7 +86,7 @@ method moverEnemigos() {
     }
   }
   
-  // reinicia el juego si se perdió la partida
+  // reicia el juego si se perdió la partida
   method reiniciar() {
     if (juegoTerminado) {
       juegoTerminado = false
@@ -124,6 +94,7 @@ method moverEnemigos() {
       personaje.reiniciar()
       baulDePremios.reiniciarPremios()
       sonidos.iniciarMusica()
+      self.iniciarTicks()
       self.entrarA(generadorDeSalas.generarSala(nivelActual))
     }
   }
@@ -146,6 +117,8 @@ method moverEnemigos() {
   method finalizarCon(estadoFinal) {
     if (!juegoTerminado) {
       juegoTerminado = true
+      self.removerTicks()
+      temporizador.detener()
       sonidos.detenerMusica()
       estadoFinal.ejecutar()
     }
@@ -168,11 +141,14 @@ method moverEnemigos() {
   method eliminarEnemigo(enemigo) {
     salaActual.eliminarEnemigo(enemigo)
     sonidos.muerteEnemigo()
+    if ((nivelActual == 15) && salaActual.estaLimpia()) self.ganarJuego()
   }
 }
 
 object finDelJuego {
   method inicializarse() {
+    miJuego.removerTicks()
+    temporizador.detener()
     game.addVisual(personaje)
     miJuego.ganarJuego()
   }
@@ -182,18 +158,18 @@ object finDelJuego {
 
 object vida {
   method position() = game.at(1, 0)
-  method esAtacable() = false
+  
   method text() = "te quedan: " + personaje.vidaActual()
 }
 
 object municionEquipada {
   method position() = game.at(8, 0)
-  method esAtacable() = false
+  
   method text() = "bala: " + personaje.municionActual().nombre()
 }
 
 object contadorEnemigos {
   method position() = game.at(3, 0)
-  method esAtacable() = false
+  
   method text() = "enemigos: " + miJuego.salaActual().enemigosVivos().size()
 }

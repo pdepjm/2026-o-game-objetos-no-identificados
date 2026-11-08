@@ -6,10 +6,13 @@ import items.*
 import obstaculos.*
 import velocidad.*
 import componentesPersonaje.*
+import direcciones.*
+import sonidos.*
 
 object personaje {
   var property position = game.center()
   var ultimaPosicion = position
+  var property direccion = abajo
   var property danioActual = 25
   const distanciaAtaqueInicial = 4
   var property distanciaAtaque = distanciaAtaqueInicial
@@ -79,24 +82,46 @@ object personaje {
   miJuego.puedeJugar() && self.estaAlAlcance(posicion) && self.veDesdeAqui(posicion)
 
   method atacarEn(posicion) {
-  if (miJuego.puedeJugar() && self.puedeAtacarEn(posicion)) {
-    combate.atacarEn(posicion, self.municionActual())
-  }
-}
-
-  method mover(nuevaPosicion) {
-    if (miJuego.puedeJugar()) {
-      self.guardarPosicion()
-      controlDeVelocidad.mover(self.direccionHacia(nuevaPosicion), self) 
+    if (miJuego.puedeJugar() && self.puedeAtacarEn(posicion)) {
+      combate.atacarEn(posicion, self.municionActual())
     }
   }
 
-  // diferencia entre donde estoy y el destino
-  method direccionHacia(destino) = game.at(destino.x() - position.x(), destino.y() - position.y())
+  method posicionesEnFrente() {
+    var pos = position
+    return (1..distanciaAtaque).map({ i =>
+      pos = direccion.siguiente(pos)
+      pos
+    })
+  }
+
+  method objetivoEnFrente() =
+    self.posicionesEnFrente()
+      .map({ pos => combate.encontrarObjetivoEn(pos) })
+      .findOrElse({ obj => obj != null }, { null })
+
+  method atacar() {
+    if (miJuego.puedeJugar()) {
+      const objetivo = self.objetivoEnFrente()
+      if (objetivo != null) {
+        self.atacarEn(objetivo.position())
+      } else {
+        sonidos.sonidoDisparo()
+      }
+    }
+  }
+
+  method mover(unaDireccion) {
+    if (miJuego.puedeJugar()) {
+      direccion = unaDireccion
+      self.guardarPosicion()
+      controlDeVelocidad.mover(unaDireccion, self) 
+    }
+  }
 
   // da un paso de una casilla en esa direccion, si nada lo bloquea
-  method avanzar(direccion) {
-    const destino = game.at(position.x() + direccion.x(), position.y() + direccion.y())
+  method avanzar(unaDireccion) {
+    const destino = unaDireccion.siguiente(position)
     if (tablero.esTransitable(destino)) {
       position = destino
     }
@@ -109,6 +134,7 @@ object personaje {
 // reinicia los atributos del personaje a los valores iniciales
   method reiniciar() {
     vidaPersonaje.reiniciar()
+    direccion = abajo
     danioActual = 25
     distanciaAtaque = distanciaAtaqueInicial
     controlDeVelocidad.reiniciar() 
