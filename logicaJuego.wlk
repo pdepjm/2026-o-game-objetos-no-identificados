@@ -62,10 +62,14 @@ object miJuego {
       { elemento => personaje.reaccionarAColision(elemento) }
     )
     
-    keyboard.w().whilePressedDo({ personaje.mover(arriba) }, 120)
-    keyboard.a().whilePressedDo({ personaje.mover(izquierda) }, 120)
-    keyboard.s().whilePressedDo({ personaje.mover(abajo) }, 120)
-    keyboard.d().whilePressedDo({ personaje.mover(derecha) }, 120)
+    keyboard.w().onPressDo({ personaje.mover(arriba) })
+    keyboard.w().whilePressedDo({ personaje.mover(arriba) }, 100)
+    keyboard.a().onPressDo({ personaje.mover(izquierda) })
+    keyboard.a().whilePressedDo({ personaje.mover(izquierda) }, 100)
+    keyboard.s().onPressDo({ personaje.mover(abajo) })
+    keyboard.s().whilePressedDo({ personaje.mover(abajo) }, 100)
+    keyboard.d().onPressDo({ personaje.mover(derecha) })
+    keyboard.d().whilePressedDo({ personaje.mover(derecha) }, 100)
     
     keyboard.b().onPressDo({ personaje.cambiarMunicion() })
     

@@ -30,15 +30,7 @@ class Sala {
     
     enemigosVivos = self.enemigosIniciales()
     
-    enemigosVivos.forEach(
-      { enemigo =>
-        game.addVisual(enemigo)
-        game.onCollideDo(
-          enemigo,
-          { elemento => enemigo.reaccionarAColision(elemento) }
-        )
-      }
-    )
+    enemigosVivos.forEach({ enemigo => game.addVisual(enemigo) })
     
     itemsDeLaSala = self.itemsIniciales()
     itemsDeLaSala.forEach({ item => game.addVisual(item) })
