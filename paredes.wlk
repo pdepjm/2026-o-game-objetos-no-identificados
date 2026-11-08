@@ -5,7 +5,7 @@ class Pared {
   const property image
 
   method esAtacable() = false
-  method alColisionarConPersonaje() {}
+  method alColisionarConPersonaje(unPersonaje) {}
 }
 
 object paredes {

@@ -9,7 +9,7 @@ class Runa {
 
   method esAtacable() = false
 
-  method alColisionarConPersonaje() {
+  method alColisionarConPersonaje(unPersonaje) {
     puzzleFinal.pisar(self)
   }
 }

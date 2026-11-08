@@ -15,7 +15,7 @@ class Puerta {
     desbloqueada = true
   }
 
-  method alColisionarConPersonaje() {
+  method alColisionarConPersonaje(unPersonaje) {
     if (desbloqueada && miJuego.salaActual().itemsAgarrados()) miJuego.avanzarSala()
   }
 }

@@ -64,7 +64,7 @@ object personaje {
 
   // cada elemento sabe que le pasa al personaje cuando lo toca (enemigo, puerta, etc.)
   method reaccionarAColision(elemento) {
-    elemento.alColisionarConPersonaje()
+    elemento.alColisionarConPersonaje(self)
   }
 
   method esAtacable() = false

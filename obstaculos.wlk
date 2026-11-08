@@ -16,15 +16,15 @@ class Obstaculo {
   method esAtacable() = false
 
   // lo llama personaje.reaccionarAColision() cuando el personaje pisa el obstaculo
-  method alColisionarConPersonaje() {
+  method alColisionarConPersonaje(unPersonaje) {
     // primero se saca del tablero, asi desaparece al pisarlo
     game.removeVisual(self)
     sonidos.sonidoObjeto()
-    self.aplicarEfecto()
+    self.aplicarEfecto(unPersonaje)
   }
 
   // cada subclase define que le hace al juego
-  method aplicarEfecto()
+  method aplicarEfecto(unPersonaje)
 }
 
 // Suma segundos al temporizador de la sala (efecto positivo)
@@ -33,7 +33,7 @@ class RelojDeArena inherits Obstaculo {
   const segundos
   override method image() = "relojDeArena.png"
 
-  override method aplicarEfecto() {
+  override method aplicarEfecto(unPersonaje) {
     temporizador.sumarSegundos(segundos)
   }
 }
@@ -43,7 +43,7 @@ class RelojRoto inherits Obstaculo {
   const segundos  // segundos que resta; lo define cada sala al crearlo
   override method image() = "relojRoto.png"
 
-  override method aplicarEfecto() {
+  override method aplicarEfecto(unPersonaje) {
     temporizador.restarSegundos(segundos)
   }
 }
@@ -52,8 +52,8 @@ class RelojRoto inherits Obstaculo {
 class Pinchos inherits Obstaculo {
   override method image() = "pinchos.png"
 
-  override method aplicarEfecto() {
-    personaje.perderVidaActual(self.danioAlPersonaje())
+  override method aplicarEfecto(unPersonaje) {
+    unPersonaje.perderVidaActual(self.danioAlPersonaje())
   }
 }
 
@@ -64,8 +64,8 @@ class Maldicion inherits Obstaculo {
 
   override method image() = "maldicion.png"
 
-  override method aplicarEfecto() {
-    personaje.maldecir(segundos)
+  override method aplicarEfecto(unPersonaje) {
+    unPersonaje.maldecir(segundos)
   }
 }
 
@@ -87,7 +87,7 @@ class CharcoDeBarro inherits Obstaculo {
 
   override method image() = "charcoDeBarro.png"
 
-  override method aplicarEfecto() {
+  override method aplicarEfecto(unPersonaje) {
     controlDeVelocidad.ralentizar(segundos) 
   }
 }
@@ -99,7 +99,7 @@ class PistaDeVelocidad inherits Obstaculo {
 
   override method image() = "pistaDeVelocidad.png"
 
-  override method aplicarEfecto() {
+  override method aplicarEfecto(unPersonaje) {
     controlDeVelocidad.acelerar(segundos) 
   }
 }
