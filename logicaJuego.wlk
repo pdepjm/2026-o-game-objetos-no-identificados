@@ -25,20 +25,30 @@ object miJuego {
   }
   
   method puedeJugar() = (!temporizador.preparando()) && (!juegoTerminado)
-  
+  var pasosDelPersonaje = 0
+
+method moverEnemigos() {
+  if (self.puedeJugar()) {
+    pasosDelPersonaje += 1
+    if (pasosDelPersonaje % 3 == 0) {
+      salaActual.enemigosVivos().forEach({ enemigo => enemigo.perseguir() })
+    }
+  }
+}
   method iniciar() {
-    nivelActual = 12
+    nivelActual = 1
     juegoTerminado = false
     
     self.entrarA(generadorDeSalas.generarSala(nivelActual))
     
     game.onTick(
-      500,
+      300,
       "movimientoEnemigos",
       { if (self.puedeJugar()) salaActual.enemigosVivos().forEach(
             { enemigo => enemigo.perseguir() }
           ) }
     )
+    
     
     game.onTick(1000, "timerSala", { temporizador.pasarSegundo() })
     
@@ -49,22 +59,22 @@ object miJuego {
     
     keyboard.w().whilePressedDo(
       { personaje.mover(personaje.position().up(1)) },
-      75
+      50
     )
     
     keyboard.a().whilePressedDo(
       { personaje.mover(personaje.position().left(1)) },
-      75
+      50
     )
     
     keyboard.s().whilePressedDo(
       { personaje.mover(personaje.position().down(1)) },
-      75
+      50
     )
     
     keyboard.d().whilePressedDo(
       { personaje.mover(personaje.position().right(1)) },
-      75
+      50
     )
     
     keyboard.b().onPressDo({ personaje.cambiarMunicion() })

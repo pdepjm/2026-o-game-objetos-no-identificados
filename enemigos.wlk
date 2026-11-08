@@ -11,7 +11,10 @@ class Enemigo {
   
   method danioAlPersonaje() = 1
   
-  method danioBase(base) = base
+  method danioBase(base) = base 
+
+  method danioReducido(base) = base / 2
+  method danioAumentado(base) = base * 2
   
   method danioDeBalaComun(base) = self.danioBase(base)
   
@@ -82,7 +85,7 @@ object persecucion {
 class EnemigoComun inherits Enemigo {
   override method vidaInicial() = 100
   
-  override method danioDeBalaPlata(base) = base / 2
+  override method danioDeBalaPlata(base) = self.danioReducido(base)
   
   override method image() = "enemigoComun.png"
 }
@@ -100,7 +103,7 @@ class ClonMalvado inherits Enemigo {
   
   override method danioAlPersonaje() = personaje.danioActual()
   
-  override method danioDeBalaComun(base) = base / 2
+  override method danioDeBalaComun(base) = self.danioReducido(base)
 }
 
 class HombreLobo inherits Enemigo {
@@ -108,9 +111,8 @@ class HombreLobo inherits Enemigo {
   
   override method image() = "hombreLobo.png"
   
-  override method danioDeBalaComun(base) = base / 2
-  
-  override method danioDeBalaPlata(base) = base * 2
+  override method danioDeBalaComun(base) = self.danioReducido(base)
+  override method danioDeBalaPlata(base) = self.danioAumentado(base)
 }
 
 class Fantasma inherits Enemigo {
@@ -145,4 +147,5 @@ class Espectro inherits Fantasma {
   override method danioAlPersonaje() = 3
   
   override method image() = "espectro.png"
+   override method danioDeBalaCazaFantasmas(base) = super(base)*2
 }
