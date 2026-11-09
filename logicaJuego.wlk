@@ -32,7 +32,7 @@ object miJuego {
     if (!ticksIniciados) {
       ticksIniciados = true
       game.onTick(
-        250,
+        700,
         "movimientoEnemigos",
         { if (self.puedeJugar()) salaActual.enemigosVivos().forEach(
               { enemigo => enemigo.perseguir() }
@@ -62,13 +62,13 @@ object miJuego {
       { elemento => personaje.reaccionarAColision(elemento) }
     )
     
-    keyboard.w().onPressDo({ personaje.mover(arriba) })
+    
     keyboard.w().whilePressedDo({ personaje.mover(arriba) }, 100)
-    keyboard.a().onPressDo({ personaje.mover(izquierda) })
+    
     keyboard.a().whilePressedDo({ personaje.mover(izquierda) }, 100)
-    keyboard.s().onPressDo({ personaje.mover(abajo) })
+    
     keyboard.s().whilePressedDo({ personaje.mover(abajo) }, 100)
-    keyboard.d().onPressDo({ personaje.mover(derecha) })
+    
     keyboard.d().whilePressedDo({ personaje.mover(derecha) }, 100)
     
     keyboard.b().onPressDo({ personaje.cambiarMunicion() })
