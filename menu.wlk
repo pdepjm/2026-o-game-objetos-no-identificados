@@ -58,91 +58,91 @@ object pantallaControles {
 object menu {
   const opciones = [
     new OpcionDeMenu(
-      orden = 0,
-      imagen = "btn_jugar.png",
-      imagenSeleccionada = "btn_jugar_sel.png",
-      accion = { self.jugar() }
-    ),
-    new OpcionDeMenu(
-      orden = 1,
-      imagen = "btn_controles.png",
-      imagenSeleccionada = "btn_controles_sel.png",
-      accion = { self.verControles() }
-    ),
-    new OpcionDeMenu(
-      orden = 2,
-      imagen = "btn_salir.png",
-      imagenSeleccionada = "btn_salir_sel.png",
-      accion = { game.stop() }
-    )
+    orden = 0,
+    imagen = "btn_jugar.png",
+    imagenSeleccionada = "btn_jugar_sel.png",
+    accion = { self.jugar() }
+  ),
+  new OpcionDeMenu(
+    orden = 1,
+    imagen = "btn_controles.png",
+    imagenSeleccionada = "btn_controles_sel.png",
+    accion = { self.verControles() }
+  ),
+  new OpcionDeMenu(
+    orden = 2,
+    imagen = "btn_salir.png",
+    imagenSeleccionada = "btn_salir_sel.png",
+    accion = { game.stop() }
+  )
   ]
   var indice = 0
-  var activo = false
-  var viendoControles = false
-  
+  var estado = estadoOpciones
+
   method seleccionada() = opciones.get(indice)
-  
+
   method iniciar() {
     self.configurarTeclas()
     self.mostrar()
   }
-  
+
+  // las teclas no preguntan nada: le avisan al estado actual y el estado decide
   method configurarTeclas() {
-    keyboard.w().onPressDo({ self.subir() })
-    keyboard.s().onPressDo({ self.bajar() })
-    keyboard.enter().onPressDo({ self.confirmar() })
+    keyboard.w().onPressDo({ estado.subir(self) })
+    keyboard.s().onPressDo({ estado.bajar(self) })
+    keyboard.enter().onPressDo({ estado.confirmar(self) })
   }
-  
+
   method mostrar() {
-    activo = true
     game.addVisual(menuFondo)
     self.mostrarOpciones()
   }
-  
+
   method mostrarOpciones() {
     game.addVisual(titulo)
     opciones.forEach({ opcion => game.addVisual(opcion) })
   }
-  
+
   method ocultarOpciones() {
     game.removeVisual(titulo)
     opciones.forEach({ opcion => game.removeVisual(opcion) })
   }
-  
-  method subir() {
-    if (self.puedeNavegar()) {
-      indice = (indice - 1).max(0)
-    }
-  }
-  
-  method bajar() {
-    if (self.puedeNavegar()) {
-      indice = (indice + 1).min(opciones.size() - 1)
-    }
-  }
-  
-  method puedeNavegar() = activo && (!viendoControles)
-  
-  method confirmar() {
-    if (activo) {
-      if (viendoControles) self.volver() else self.seleccionada().ejecutar()
-    }
-  }
-  
+
+  method subir() { indice = (indice - 1).max(0) }
+  method bajar() { indice = (indice + 1).min(opciones.size() - 1) }
+
   method verControles() {
-    viendoControles = true
     self.ocultarOpciones()
     pantallaControles.mostrar()
+    estado = estadoControles
   }
-  
+
   method volver() {
-    viendoControles = false
     pantallaControles.ocultar()
     self.mostrarOpciones()
+    estado = estadoOpciones
   }
-  
+
   method jugar() {
-    activo = false
+    estado = estadoJugando
     miJuego.iniciar()
   }
+}
+
+object estadoOpciones {
+  method subir(unMenu) { unMenu.subir() }
+  method bajar(unMenu) { unMenu.bajar() }
+  method confirmar(unMenu) { unMenu.seleccionada().ejecutar() }
+}
+
+object estadoControles {
+  method subir(unMenu) {}
+  method bajar(unMenu) {}
+  method confirmar(unMenu) { unMenu.volver() }
+}
+
+object estadoJugando {
+  method subir(unMenu) {}
+  method bajar(unMenu) {}
+  method confirmar(unMenu) {}
 }
