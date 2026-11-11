@@ -5,7 +5,7 @@ En <nombre de juego> , el jugador controla un personaje que comienza la partida 
 El personaje puede desplazarse libremente por la sala en cuatro direcciones, incluyendo movimiento  horizontal, vertical y diagonal. Además, puede realizar ataques a distancia mediante el uso del mouse.
 La partida comienza en la primera sala del nivel. En cada sala aparecerá una determinada cantidad de enemigos que deberán ser eliminados para poder avanzar hacia la siguiente.
 Los enemigos podrán presentar diferentes comportamientos y formas de ataque. Algunos podrán atacar al jugador a distancia, mientras que otros deberán acercarse para realizar ataques cuerpo a cuerpo. El daño recibido por el jugador dependerá del tipo de enemigo que lo ataque.
-Durante el recorrido, el jugador también encontrará diferentes obstáculos y elementos). Estos podrán modificar temporalmente sus características, que benefician al jugador o que le apliquen un defecto.  
+Durante el recorrido, el jugador también encontrará diferentes obstáculos y elementos. Estos podrán modificar temporalmente sus características, que benefician al jugador o que le apliquen un defecto.  
 Por ejemplo, algunos elementos podrán aumentar su velocidad de movimiento, mientras que otros podrán hacer que reciba una cantidad mayor de daño. 
 
 # Avance entre salas:
