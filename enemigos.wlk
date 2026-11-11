@@ -8,6 +8,8 @@ class Enemigo {
   var property position
   var ultimaPosicion = position
   var vida = self.vidaInicial()
+  const velocidadBase = 700
+  var tiempoAcumulado = 0
   
   method danioAlPersonaje() = 1
   
@@ -23,11 +25,14 @@ class Enemigo {
   method danioDeBalaCazaFantasmas(base) = 0
   
   method vida() = vida
-  
+  method velocidad() = velocidadBase
+
   method image()
   
   method vidaInicial()
   
+  method comportamiento()
+
   method retroceder() {
     position = ultimaPosicion
   }
@@ -36,19 +41,33 @@ class Enemigo {
     ultimaPosicion = position
   }
   
-  method perseguir() {
-    persecucion.perseguir(self, personaje.position())
+  method pasarTiempo(milisegundos) {
+    tiempoAcumulado += milisegundos
+    if (tiempoAcumulado >= self.velocidad()) {
+      tiempoAcumulado -= self.velocidad()
+      self.moverse()
+    }
   }
+  
+  method moverse() {
+    self.comportamiento().mover(self)
+  }
+  
   
 
   
   method moverA(destino) {
-    if (tablero.esTransitable(destino)) {
-      self.guardarPosicion()
-      position = destino
-    }
+    if (tablero.esTransitable(destino)) self.desplazarA(destino)
   }
-  
+
+  method flotarA(destino) {
+    if (tablero.dentroDeLimites(destino)) self.desplazarA(destino)
+  }
+  method desplazarA(destino) {
+    self.guardarPosicion()
+    position = destino
+  }
+
   method reaccionarAColision(elemento) {
     self.retroceder()
   }
@@ -78,8 +97,8 @@ class Enemigo {
 }
 
 object persecucion {
-  method perseguir(enemigo, objetivo) {
-    enemigo.moverA(self.proximaPosicion(enemigo.position(), objetivo))
+  method mover(enemigo) {
+    enemigo.moverA(self.proximaPosicion(enemigo.position(), personaje.position()))
   }
   
   method proximaPosicion(actual, objetivo) = game.at(
@@ -88,8 +107,37 @@ object persecucion {
   )
 }
 
+object persecucionEterea {
+  method mover(enemigo) {
+    enemigo.flotarA(persecucion.proximaPosicion(enemigo.position(), personaje.position()))
+  }
+}
+
+class ConDescanso {
+  const comportamientoBase
+  var descansando = false
+  
+  method mover(enemigo) {
+    if (!descansando) comportamientoBase.mover(enemigo)
+    descansando = !descansando
+  }
+}
+
+// persigue y, si despues del paso el personaje esta cerca, da un segundo paso en el mismo turno
+object persecucionConArremetida {
+  method mover(enemigo) {
+    persecucion.mover(enemigo)
+    if (self.personajeCerca(enemigo)) persecucion.mover(enemigo)
+  }
+  
+  method personajeCerca(enemigo) = enemigo.position().distance(personaje.position()) <= 3
+}
+
 class EnemigoComun inherits Enemigo {
   override method vidaInicial() = 100
+
+  override method comportamiento() = persecucion
+
   
   override method danioDeBalaPlata(base) = self.danioReducido(base)
   
@@ -99,19 +147,16 @@ class EnemigoComun inherits Enemigo {
 class EnemigoRaro inherits EnemigoComun {
   override method vidaInicial() = 150
 
-  var descansando = false
+  const comportamiento = new ConDescanso(comportamientoBase = persecucion)
 
-  override method perseguir() {
-    if (!descansando) super()
-    descansando = !descansando
-  }
-  
+  override method comportamiento() = comportamiento
   override method image() = "enemigoRaro.png"
 }
 
 class ClonMalvado inherits Enemigo {
   override method vidaInicial() = personaje.vidaActual() * personaje.danioActual()
-  
+  override method comportamiento() = persecucion
+
   override method image() = "clonMalvado.png"
   
   override method danioAlPersonaje() = super() + 1
@@ -122,6 +167,8 @@ class ClonMalvado inherits Enemigo {
 class HombreLobo inherits Enemigo {
   override method vidaInicial() = 150
   
+  override method comportamiento() = persecucion
+
   override method image() = "hombreLobo.png"
   
   override method danioDeBalaComun(base) = self.danioReducido(base)
@@ -131,6 +178,8 @@ class HombreLobo inherits Enemigo {
 class Fantasma inherits Enemigo {
   override method vidaInicial() = 50
   
+  override method comportamiento() = persecucionEterea
+
   override method image() = "fantasma.png"
   
   override method danioDeBalaComun(base) = 0
@@ -139,30 +188,20 @@ class Fantasma inherits Enemigo {
   
   override method danioDeBalaCazaFantasmas(base) = base
 
-  override method moverA(destino) {
-    if (tablero.dentroDeLimites(destino)) {
-      self.guardarPosicion()
-      position = destino
-    }
-  } 
 } //JEFES
 
 class HombreLoboJefe inherits HombreLobo {
   override method vidaInicial() = 250
   
+  override method comportamiento() = persecucionConArremetida
+
+
   override method danioAlPersonaje() {
     if (vida <= 125) {
       return 3
     } else {
       return 2
     }
-  }
-  
-  method personajeCerca() = position.distance(personaje.position()) <= 3
-
-  override method perseguir() {
-    super()
-    if (self.personajeCerca()) super()
   }
   
   override method image() = "hombreLoboJefe.png"

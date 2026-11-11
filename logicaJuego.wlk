@@ -13,7 +13,8 @@ object miJuego {
   var salaActual = null
   var juegoTerminado = false
   var ticksIniciados = false
-  
+    const latidoEnemigos = 100
+
   method salaActual() = salaActual
   
   method entrarA(sala) {
@@ -32,10 +33,10 @@ object miJuego {
     if (!ticksIniciados) {
       ticksIniciados = true
       game.onTick(
-        800,
+        latidoEnemigos,
         "movimientoEnemigos",
         { if (self.puedeJugar()) salaActual.enemigosVivos().forEach(
-              { enemigo => enemigo.perseguir() }
+              { enemigo => enemigo.pasarTiempo(latidoEnemigos) }
             ) }
       )
       game.onTick(1000, "timerSala", { temporizador.pasarSegundo() })
