@@ -63,13 +63,13 @@ object miJuego {
     )
     
     
-    keyboard.w().whilePressedDo({ personaje.mover(arriba) }, 400)
+    keyboard.w().whilePressedDo({ personaje.mover(arriba) }, 350)
     
-    keyboard.a().whilePressedDo({ personaje.mover(izquierda) }, 400)
+    keyboard.a().whilePressedDo({ personaje.mover(izquierda) }, 350)
     
-    keyboard.s().whilePressedDo({ personaje.mover(abajo) }, 400)
+    keyboard.s().whilePressedDo({ personaje.mover(abajo) }, 350)
     
-    keyboard.d().whilePressedDo({ personaje.mover(derecha) }, 400)
+    keyboard.d().whilePressedDo({ personaje.mover(derecha) }, 100)
     
     keyboard.b().onPressDo({ personaje.cambiarMunicion() })
     
@@ -81,7 +81,7 @@ object miJuego {
   // Avanza al siguiente nivel cuando se cruza la puerta.
   method avanzarSala() {
     if (((!juegoTerminado) && salaActual.estaLimpia()) && salaActual.itemsAgarrados()) {
-      if (nivelActual == 1) {
+      if (nivelActual == 12) {
         self.ganarJuego()
       } else {
         nivelActual += 1

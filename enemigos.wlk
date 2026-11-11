@@ -40,6 +40,8 @@ class Enemigo {
     persecucion.perseguir(self, personaje.position())
   }
   
+
+  
   method moverA(destino) {
     if (tablero.esTransitable(destino)) {
       self.guardarPosicion()
@@ -96,6 +98,13 @@ class EnemigoComun inherits Enemigo {
 
 class EnemigoRaro inherits EnemigoComun {
   override method vidaInicial() = 150
+
+  var descansando = false
+
+  override method perseguir() {
+    if (!descansando) super()
+    descansando = !descansando
+  }
   
   override method image() = "enemigoRaro.png"
 }
@@ -105,7 +114,7 @@ class ClonMalvado inherits Enemigo {
   
   override method image() = "clonMalvado.png"
   
-  override method danioAlPersonaje() = personaje.danioActual()
+  override method danioAlPersonaje() = super() + 1
   
   override method danioDeBalaComun(base) = self.danioReducido(base)
 }
@@ -129,6 +138,13 @@ class Fantasma inherits Enemigo {
   override method danioDeBalaPlata(base) = 0
   
   override method danioDeBalaCazaFantasmas(base) = base
+
+  override method moverA(destino) {
+    if (tablero.dentroDeLimites(destino)) {
+      self.guardarPosicion()
+      position = destino
+    }
+  } 
 } //JEFES
 
 class HombreLoboJefe inherits HombreLobo {
@@ -142,6 +158,13 @@ class HombreLoboJefe inherits HombreLobo {
     }
   }
   
+  method personajeCerca() = position.distance(personaje.position()) <= 3
+
+  override method perseguir() {
+    super()
+    if (self.personajeCerca()) super()
+  }
+  
   override method image() = "hombreLoboJefe.png"
 }
 
@@ -151,5 +174,5 @@ class Espectro inherits Fantasma {
   override method danioAlPersonaje() = 3
   
   override method image() = "espectro.png"
-   override method danioDeBalaCazaFantasmas(base) = super(base)*2
+  override method danioDeBalaCazaFantasmas(base) = super(base)*2
 }
