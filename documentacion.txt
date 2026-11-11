@@ -35,8 +35,17 @@ Hombre Lobo: El hombre lobo tiene una piel resistente, por lo cual las balas com
 Fantasma: Los fantasmas son incorpóreos y no son afectados por ningún tipo de munición que no sean las balas Caza Fantasmas.
 Clon Malvado: Este enemigo es una copia oscura del jugador. Tiene la misma cantidad de vida y de daño que el jugador en ese momento.
 
+# Obstaculos
+Hay obstaculos esparcidos por el tablero que perjudicaran al personaje
+
+# Bonos
+Habra bonos esparcidos por el tablero como mas tiempo o aumento de velocidad
+
 # Objetos
 ## Poción De Vida
+
+# Premios
+En un punto del juego, el personaje entrara a una sala en la que se le otorgara un premio para que se le facilite su travesia, el cual puede ser una armadura o un arma
 
 ## Armadura
 le da mas vida maxima al personaje
