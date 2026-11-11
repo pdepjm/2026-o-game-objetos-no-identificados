@@ -14,7 +14,7 @@ object personaje {
   var ultimaPosicion = position
   var property direccion = abajo
   var property danioActual = 25
-  const distanciaAtaqueInicial = 4
+  const distanciaAtaqueInicial = 8
   var property distanciaAtaque = distanciaAtaqueInicial
   
   method image() = "personaje.png"

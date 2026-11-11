@@ -62,7 +62,7 @@ object baulDePremios{
     method premiosIniciales() = [
         new Armadura(rareza = "Comun", proteccion = 4), 
         new Arma(rareza = "Comun", danioDelArma = 50, distanciaDelArma = 4),
-        new Arma(rareza = "Comun", danioDelArma = 25, distanciaDelArma = 6)
+        new Arma(rareza = "Comun", danioDelArma = 35, distanciaDelArma = 16)
     ]
 
     // por ahora los objetos se otorgaran una vez por cada rareza, asi que no hay riesgo a que la lista este vacia cuando quiera otorgar un objeto

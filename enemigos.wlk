@@ -10,6 +10,8 @@ class Enemigo {
   var vida = self.vidaInicial()
   const velocidadBase = 700
   var tiempoAcumulado = 0
+
+  var potenciado = false // lo activa un Hechicero
   
   method danioAlPersonaje() = 1
   
@@ -71,9 +73,20 @@ class Enemigo {
   method reaccionarAColision(elemento) {
     self.retroceder()
   }
+
+    method potenciar() {
+    potenciado = true
+  }
+  
+  method quitarPotencia() {
+    potenciado = false
+  }
+  
+  method bonoDePotencia() = if (potenciado) 1 else 0
+  
   
   method alColisionarConPersonaje(unPersonaje) {
-    unPersonaje.perderVidaActual(self.danioAlPersonaje())
+    unPersonaje.perderVidaActual(self.danioAlPersonaje() + self.bonoDePotencia())
   }
   
   method alColisionarConPersonaje() {
@@ -147,6 +160,8 @@ class EnemigoComun inherits Enemigo {
 class EnemigoRaro inherits EnemigoComun {
   override method vidaInicial() = 150
 
+  override method velocidad() = velocidadBase * 0.8
+
   const comportamiento = new ConDescanso(comportamientoBase = persecucion)
 
   override method comportamiento() = comportamiento
@@ -159,13 +174,15 @@ class ClonMalvado inherits Enemigo {
 
   override method image() = "clonMalvado.png"
   
-  override method danioAlPersonaje() = super() + 1
+  override method danioAlPersonaje() = personaje.danioActual()
   
   override method danioDeBalaComun(base) = self.danioReducido(base)
 }
 
 class HombreLobo inherits Enemigo {
   override method vidaInicial() = 150
+
+  override method velocidad() = velocidadBase * 0.7
   
   override method comportamiento() = persecucion
 
@@ -188,7 +205,37 @@ class Fantasma inherits Enemigo {
   
   override method danioDeBalaCazaFantasmas(base) = base
 
-} //JEFES
+} 
+
+// enemigo comun que potencia al resto de la sala mientras este vivo
+class Hechicero inherits EnemigoComun {
+  override method moverse() {
+    super()
+    self.potenciarAliados()
+  }
+  
+  method aliados() = miJuego.salaActual().enemigosVivos().filter(
+    { enemigo => enemigo != self }
+  )
+  
+  method potenciarAliados() {
+    self.aliados().forEach({ aliado => aliado.potenciar() })
+  }
+  
+  method quitarPotenciaAAliados() {
+    self.aliados().forEach({ aliado => aliado.quitarPotencia() })
+  }
+  
+  override method recibirAtaque(bala) {
+    super(bala)
+    if (self.estaMuerto()) self.quitarPotenciaAAliados()
+  }
+  
+  
+  override method image() = "hechicero.png"
+}
+
+//JEFES
 
 class HombreLoboJefe inherits HombreLobo {
   override method vidaInicial() = 250
@@ -209,6 +256,8 @@ class HombreLoboJefe inherits HombreLobo {
 
 class Espectro inherits Fantasma {
   override method vidaInicial() = 150
+
+  override method velocidad() = velocidadBase * 0.6
   
   override method danioAlPersonaje() = 3
   
