@@ -1,4 +1,4 @@
-### [Nombre del juego]
+### La ultima instancia
 
 * Lumbrera Joaquin
 * Graziano Lorenzo
