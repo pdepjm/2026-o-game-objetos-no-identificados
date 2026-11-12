@@ -1,7 +1,7 @@
-Nombre a definir
+La ultima instancia
 # Estado Inicial:
 
-En <nombre de juego> , el jugador controla un personaje que comienza la partida con una cantidad determinada de vida, inicialmente en 100.
+En "La ultima instancia" , el jugador controla un personaje que comienza la partida con una cantidad determinada de vida, inicialmente en 100.
 El personaje puede desplazarse libremente por la sala en cuatro direcciones, incluyendo movimiento  horizontal, vertical y diagonal. Además, puede realizar ataques a distancia mediante el uso del mouse.
 La partida comienza en la primera sala del nivel. En cada sala aparecerá una determinada cantidad de enemigos que deberán ser eliminados para poder avanzar hacia la siguiente.
 Los enemigos podrán presentar diferentes comportamientos y formas de ataque. Algunos podrán atacar al jugador a distancia, mientras que otros deberán acercarse para realizar ataques cuerpo a cuerpo. El daño recibido por el jugador dependerá del tipo de enemigo que lo ataque.
