@@ -58,6 +58,7 @@ class Arma inherits Item{
 
 object baulDePremios{
     var premios = self.premiosIniciales()
+    var entregado = false
 
     method premiosIniciales() = [
         new Armadura(rareza = "Comun", proteccion = 4), 
@@ -72,7 +73,17 @@ object baulDePremios{
     return premioDeLaSala
     }
 
-    method reiniciarPremios() { premios = self.premiosIniciales() }
+    // el baul entrega un solo premio por partida, aunque se reintente la sala
+    method premiosDeLaSala(rareza) {
+        if (entregado) return []
+        entregado = true
+        return [self.otorgarPremio(rareza)]
+    }
+
+    method reiniciarPremios() {
+        premios = self.premiosIniciales()
+        entregado = false
+    }
 }
 class ItemMunicion inherits Item{
     const bala

@@ -12,6 +12,7 @@ object miJuego {
   var property nivelActual = 1
   var salaActual = null
   var juegoTerminado = false
+  var partidaGanada = false
   var ticksIniciados = false
     const latidoEnemigos = 100
 
@@ -56,6 +57,7 @@ object miJuego {
   method iniciar() {
     nivelActual = 1
     juegoTerminado = false
+    partidaGanada = false
     
     self.entrarA(generadorDeSalas.generarSala(nivelActual))
     self.iniciarTicks()
@@ -73,6 +75,11 @@ object miJuego {
     keyboard.s().whilePressedDo({ personaje.mover(abajo) }, 350)
     
     keyboard.d().whilePressedDo({ personaje.mover(derecha) }, 100)
+    
+    keyboard.up().onPressDo({ personaje.mirarHacia(arriba) })
+    keyboard.down().onPressDo({ personaje.mirarHacia(abajo) })
+    keyboard.left().onPressDo({ personaje.mirarHacia(izquierda) })
+    keyboard.right().onPressDo({ personaje.mirarHacia(derecha) })
     
     keyboard.b().onPressDo({ personaje.cambiarMunicion() })
     
@@ -93,17 +100,22 @@ object miJuego {
     }
   }
   
-  // reicia el juego si se perdió la partida
+  // al perder se reintenta la sala donde se murió (checkpoint); al ganar se empieza de cero
   method reiniciar() {
     if (juegoTerminado) {
       juegoTerminado = false
-      nivelActual = 1
-      personaje.reiniciar()
-      baulDePremios.reiniciarPremios()
+      if (partidaGanada) self.empezarDeCero() else personaje.revivir()
       sonidos.iniciarMusica()
       self.iniciarTicks()
       self.entrarA(generadorDeSalas.generarSala(nivelActual))
     }
+  }
+  
+  method empezarDeCero() {
+    partidaGanada = false
+    nivelActual = 1
+    personaje.reiniciar()
+    baulDePremios.reiniciarPremios()
   }
   
   method reaccionarAPerdidaDeVida() {
@@ -133,6 +145,7 @@ object miJuego {
   
   method ganarJuego() {
     if (!juegoTerminado) {
+      partidaGanada = true
       sonidos.sonidoVictoria()
       self.finalizarCon(victoria)
     }

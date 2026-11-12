@@ -17,7 +17,8 @@ object personaje {
   const distanciaAtaqueInicial = 8
   var property distanciaAtaque = distanciaAtaqueInicial
   
-  method image() = "personaje.png"
+  // la imagen cambia segun hacia donde mira (personaje_arriba.png, personaje_abajo.png, etc.)
+  method image() = "personaje_" + direccion.nombre() + ".png"
 
   method vidaActual() = vidaPersonaje.actual()
   method vidaMaxima() = vidaPersonaje.maxima()
@@ -111,6 +112,11 @@ object personaje {
     }
   }
 
+  // las flechas solo cambian hacia donde mira (apunta), sin caminar
+  method mirarHacia(unaDireccion) {
+    if (miJuego.puedeJugar()) direccion = unaDireccion
+  }
+
   method mover(unaDireccion) {
     if (miJuego.puedeJugar()) {
       direccion = unaDireccion
@@ -129,6 +135,13 @@ object personaje {
 
   method agregarObjeto(objeto){
     inventarioPersonaje.agregar(objeto)
+  }
+
+  // vuelve a la partida con la vida completa, conservando arma, armadura y municion
+  method revivir() {
+    vidaPersonaje.restaurar()
+    direccion = abajo
+    controlDeVelocidad.reiniciar()
   }
 
 // reinicia los atributos del personaje a los valores iniciales

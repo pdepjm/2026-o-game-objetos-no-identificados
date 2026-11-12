@@ -83,6 +83,12 @@ object vidaPersonaje {
     maldiciones = (maldiciones - 1).max(0)
   }
 
+  // vuelve a la vida maxima actual (la armadura se conserva)
+  method restaurar() {
+    vidaActual = vidaMaxima
+    maldiciones = 0
+  }
+
   method reiniciar() {
     vidaMaxima = 3
     vidaActual = 3

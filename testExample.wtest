@@ -13,6 +13,7 @@ import generadorDeMonstruos.*
 import obstaculos.*
 import velocidad.*
 import generadorDeSalas.*
+import direcciones.*
 
 describe "Personaje" {
   test "Pierde una vida cuando recibe un ataque" {
@@ -137,6 +138,32 @@ describe "Flujo del juego" {
     assert.equals(3, personaje.vidaActual())
     assert.that(temporizador.preparando())
   }
+
+  test "Tras perder, reiniciar reintenta la sala donde se murió y conserva la munición" {
+    miJuego.nivelActual(3)
+    miJuego.entrarA(generadorDeSalas.generarSala(3))
+    personaje.adquirirMunicion(balaPlata)
+    miJuego.terminarJuego()
+    miJuego.reiniciar()
+    assert.equals(3, miJuego.nivelActual())
+    assert.equals(3, personaje.vidaActual())
+    personaje.cambiarMunicion()
+    assert.equals(balaPlata, personaje.municionActual())
+  }
+
+  test "Tras ganar, reiniciar empieza de cero" {
+    miJuego.nivelActual(9)
+    miJuego.entrarA(generadorDeSalas.generarSala(9))
+    miJuego.ganarJuego()
+    miJuego.reiniciar()
+    assert.equals(1, miJuego.nivelActual())
+  }
+
+  test "El baúl entrega un solo premio aunque se reintente la sala" {
+    baulDePremios.reiniciarPremios()
+    assert.equals(1, baulDePremios.premiosDeLaSala("Comun").size())
+    assert.that(baulDePremios.premiosDeLaSala("Comun").isEmpty())
+  }
 }
 
 /*describe "Temporizador" {
@@ -210,6 +237,13 @@ describe "Personaje: municiones, vida y movimiento" {
     assert.equals(balaPlata, personaje.municionActual())
     personaje.cambiarMunicion()
     assert.equals(balaComun, personaje.municionActual())
+  }
+
+  test "La imagen del personaje cambia segun hacia donde mira" {
+    personaje.direccion(izquierda)
+    assert.equals("personaje_izquierda.png", personaje.image())
+    personaje.direccion(arriba)
+    assert.equals("personaje_arriba.png", personaje.image())
   }
 
   test "Adquirir dos veces la misma municion no la duplica" {
@@ -422,37 +456,40 @@ describe "Tablero" {
 describe "Salas con hechicero, espectro y baúl" {
   method cantidadDe(sala, clase) = sala.enemigosIniciales().count({ enemigo => enemigo.className() == clase })
 
-  test "Hay 18 salas y la última es la del jefe con puzzle" {
-    assert.equals(18, generadorDeSalas.cantidadDeSalas())
-    assert.equals("sala15.png", generadorDeSalas.generarSala(18).fondo())
+  test "Hay 9 salas y la última es la del jefe con puzzle" {
+    assert.equals(9, generadorDeSalas.cantidadDeSalas())
+    assert.equals("sala15.png", generadorDeSalas.generarSala(9).fondo())
   }
 
-  test "Sala 8: dos enemigos raros y un hechicero" {
-    const sala = generadorDeSalas.generarSala(8)
+  test "Sala 2: dos enemigos raros y un hechicero" {
+    const sala = generadorDeSalas.generarSala(2)
     assert.equals(3, sala.enemigosIniciales().size())
     assert.equals(2, self.cantidadDe(sala, "enemigos.EnemigoRaro"))
     assert.equals(1, self.cantidadDe(sala, "enemigos.Hechicero"))
   }
 
-  test "Sala 11: dos comunes, un hombre lobo y un hechicero" {
-    const sala = generadorDeSalas.generarSala(11)
+  test "Sala 3: dos comunes, un hombre lobo y un hechicero" {
+    const sala = generadorDeSalas.generarSala(3)
     assert.equals(4, sala.enemigosIniciales().size())
     assert.equals(2, self.cantidadDe(sala, "enemigos.EnemigoComun"))
     assert.equals(1, self.cantidadDe(sala, "enemigos.HombreLobo"))
     assert.equals(1, self.cantidadDe(sala, "enemigos.Hechicero"))
   }
 
-  test "Sala 15: un espectro y cuatro fantasmas" {
-    const sala = generadorDeSalas.generarSala(15)
+  test "Sala 8: un espectro y cuatro fantasmas" {
+    const sala = generadorDeSalas.generarSala(8)
     assert.equals(5, sala.enemigosIniciales().size())
     assert.equals(1, self.cantidadDe(sala, "enemigos.Espectro"))
     assert.equals(4, self.cantidadDe(sala, "enemigos.Fantasma"))
   }
 
-  test "El baúl de premios está en la sala 9, la intermedia, y solo ahí" {
+  test "El baúl de premios está en la sala 5, la intermedia" {
     baulDePremios.reiniciarPremios()
-    const salaDelBaul = generadorDeSalas.generarSala(9)
-    assert.equals(1, salaDelBaul.itemsIniciales().size())
-    assert.that([4, 5, 12, 14, 15].all({ n => generadorDeSalas.generarSala(n).itemsIniciales().isEmpty() }))
+    assert.equals(1, generadorDeSalas.generarSala(5).itemsIniciales().size())
+  }
+
+  test "La munición de plata llega antes del primer hombre lobo y la cazafantasmas antes de los fantasmas" {
+    assert.equals("itemPlata.png", generadorDeSalas.generarSala(2).itemsIniciales().first().image())
+    assert.equals("itemCazaFantasmas.png", generadorDeSalas.generarSala(6).itemsIniciales().first().image())
   }
 }
