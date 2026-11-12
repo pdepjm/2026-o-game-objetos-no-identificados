@@ -27,6 +27,8 @@ object miJuego {
     game.addVisual(contadorEnemigos)
   }
   
+  method esUltimaSala() = nivelActual == generadorDeSalas.cantidadDeSalas()
+  
   method puedeJugar() = (!temporizador.preparando()) && (!juegoTerminado)
   
   method iniciarTicks() {
@@ -82,7 +84,7 @@ object miJuego {
   // Avanza al siguiente nivel cuando se cruza la puerta.
   method avanzarSala() {
     if (((!juegoTerminado) && salaActual.estaLimpia()) && salaActual.itemsAgarrados()) {
-      if (nivelActual == 12) {
+      if (self.esUltimaSala()) {
         self.ganarJuego()
       } else {
         nivelActual += 1
@@ -146,7 +148,7 @@ object miJuego {
   method eliminarEnemigo(enemigo) {
     salaActual.eliminarEnemigo(enemigo)
     sonidos.muerteEnemigo()
-    if ((nivelActual == 15) && salaActual.estaLimpia()) self.ganarJuego()
+    if (self.esUltimaSala() && salaActual.estaLimpia()) self.ganarJuego()
   }
 }
 

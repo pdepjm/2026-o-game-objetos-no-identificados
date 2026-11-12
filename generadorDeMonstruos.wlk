@@ -34,5 +34,10 @@ object generadorDeMonstruos {
     posiciones.map({ posicion =>
       new Espectro(position = posicion)
     })
+
+  method hechicerosEn(posiciones) =
+    posiciones.map({ posicion =>
+      new Hechicero(position = posicion)
+    })
   
 }

@@ -24,7 +24,7 @@ object puzzleFinal {
   method runas() = runas
   method pista() = pistaPuzzle
   
-  // lo llama generadorDeSalas.sala15(); cada vez deja el puzzle en estado inicial
+  // lo llama generadorDeSalas.sala18(); cada vez deja el puzzle en estado inicial
   method crearRunas() {
     pisadas.clear()
     bloqueado = false

@@ -95,7 +95,7 @@ describe "Movimiento" {
     tablero.construir(paredes.horizontal(6, 6, 5))
     const enemigo = new EnemigoComun(position = game.at(5, 5))
     personaje.position(game.at(8, 5))
-    enemigo.perseguir()
+    enemigo.moverse()
     assert.notEquals(game.at(6, 5), enemigo.position())
   }
 }
@@ -113,8 +113,8 @@ describe "Flujo del juego" {
 
     const sala = miJuego.salaActual()
     sala.enemigosVivos().copy().forEach({ e => miJuego.eliminarEnemigo(e) })
-    sala.puerta().alColisionarConPersonaje()
-    assert.equals(2, miJuego.salaActual())
+    sala.puerta().alColisionarConPersonaje(personaje)
+    assert.equals(2, miJuego.nivelActual())
   }
 
   // puerta bloqueada
@@ -123,8 +123,8 @@ describe "Flujo del juego" {
     miJuego.entrarA(generadorDeSalas.generarSala(1))
 
     const sala = miJuego.salaActual()
-    sala.puerta().alColisionarConPersonaje()
-    assert.equals(1, miJuego.salaActual())
+    sala.puerta().alColisionarConPersonaje(personaje)
+    assert.equals(1, miJuego.nivelActual())
   }
 
   // derrota + reinicio
@@ -133,7 +133,7 @@ describe "Flujo del juego" {
     miJuego.terminarJuego()
     assert.notThat(miJuego.puedeJugar())
     miJuego.reiniciar()
-    assert.equals(1, miJuego.salaActual())
+    assert.equals(1, miJuego.nivelActual())
     assert.equals(3, personaje.vidaActual())
     assert.that(temporizador.preparando())
   }
@@ -182,7 +182,7 @@ describe "Combate" {
   method initialize() {
     game.width(15)
     game.height(20)
-    game.addVisual(personaje)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
   }
 
   // derrota por vidas
@@ -201,7 +201,7 @@ describe "Personaje: municiones, vida y movimiento" {
   method initialize() {
     game.width(15)
     game.height(20)
-    game.addVisual(personaje)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
   }
 
   test "Cambiar de municion recorre las balas que tiene de forma ciclica" {
@@ -235,7 +235,7 @@ describe "Items" {
   method initialize() {
     game.width(15)
     game.height(20)
-    game.addVisual(personaje)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
   }
 
   test "La pocion de vida recupera vida al colisionar" {
@@ -320,12 +320,12 @@ describe "Tipos de enemigos" {
     assert.equals(125, lobo.vida())
   }
 
-  test "El hombre lobo recibe danio completo con bala de plata" {
+  test "El hombre lobo recibe el doble de danio con bala de plata" {
     const lobo = new HombreLobo(position = game.at(5, 5))
     game.addVisual(lobo)
     lobo.recibirDanio(balaPlata)
-    // bala plata contra lobo = 25, vida = 150 - 25 = 125
-    assert.equals(125, lobo.vida())
+    // bala plata contra lobo = 25 * 2 = 50, vida = 150 - 50 = 100
+    assert.equals(100, lobo.vida())
   }
 
   test "El clon malvado tiene vida basada en las estadisticas del personaje" {
@@ -342,14 +342,14 @@ describe "Obstaculos" {
   method initialize() {
     game.width(15)
     game.height(20)
-    game.addVisual(personaje)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
     personaje.reiniciar()
   }
 
   test "Los pinchos le quitan una vida al personaje" {
     const pincho = new Pinchos(position = game.at(3, 3))
     game.addVisual(pincho)
-    pincho.aplicarEfecto()
+    pincho.aplicarEfecto(personaje)
     assert.equals(2, personaje.vidaActual())
   }
 
@@ -363,7 +363,7 @@ describe "Obstaculos" {
   test "Un obstaculo desaparece del tablero al ser pisado" {
     const reloj = new RelojDeArena(segundos = 5, position = game.at(3, 3))
     game.addVisual(reloj)
-    reloj.alColisionarConPersonaje()
+    reloj.alColisionarConPersonaje(personaje)
     assert.notThat(game.allVisuals().contains(reloj))
   }
 }
@@ -417,4 +417,42 @@ describe "Tablero" {
 
 
   
+}
+
+describe "Salas con hechicero, espectro y baúl" {
+  method cantidadDe(sala, clase) = sala.enemigosIniciales().count({ enemigo => enemigo.className() == clase })
+
+  test "Hay 18 salas y la última es la del jefe con puzzle" {
+    assert.equals(18, generadorDeSalas.cantidadDeSalas())
+    assert.equals("sala15.png", generadorDeSalas.generarSala(18).fondo())
+  }
+
+  test "Sala 8: dos enemigos raros y un hechicero" {
+    const sala = generadorDeSalas.generarSala(8)
+    assert.equals(3, sala.enemigosIniciales().size())
+    assert.equals(2, self.cantidadDe(sala, "enemigos.EnemigoRaro"))
+    assert.equals(1, self.cantidadDe(sala, "enemigos.Hechicero"))
+  }
+
+  test "Sala 11: dos comunes, un hombre lobo y un hechicero" {
+    const sala = generadorDeSalas.generarSala(11)
+    assert.equals(4, sala.enemigosIniciales().size())
+    assert.equals(2, self.cantidadDe(sala, "enemigos.EnemigoComun"))
+    assert.equals(1, self.cantidadDe(sala, "enemigos.HombreLobo"))
+    assert.equals(1, self.cantidadDe(sala, "enemigos.Hechicero"))
+  }
+
+  test "Sala 15: un espectro y cuatro fantasmas" {
+    const sala = generadorDeSalas.generarSala(15)
+    assert.equals(5, sala.enemigosIniciales().size())
+    assert.equals(1, self.cantidadDe(sala, "enemigos.Espectro"))
+    assert.equals(4, self.cantidadDe(sala, "enemigos.Fantasma"))
+  }
+
+  test "El baúl de premios está en la sala 9, la intermedia, y solo ahí" {
+    baulDePremios.reiniciarPremios()
+    const salaDelBaul = generadorDeSalas.generarSala(9)
+    assert.equals(1, salaDelBaul.itemsIniciales().size())
+    assert.that([4, 5, 12, 14, 15].all({ n => generadorDeSalas.generarSala(n).itemsIniciales().isEmpty() }))
+  }
 }

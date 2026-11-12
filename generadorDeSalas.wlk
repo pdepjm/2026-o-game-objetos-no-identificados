@@ -25,8 +25,13 @@ object generadorDeSalas {
     { self.sala12() },
     { self.sala13() },
     { self.sala14() },
-    { self.sala15() }
+    { self.sala15() },
+    { self.sala16() },
+    { self.sala17() },
+    { self.sala18() }
   ]
+
+  method cantidadDeSalas() = self.salas().size()
 
   method generarSala(numero) =
     self.salas().get(numero - 1).apply()
@@ -149,12 +154,27 @@ object generadorDeSalas {
         trampas.pinchosHorizontal(1, 2, 12)
     )
 
-  // NIVEL 8: baúl de premios.
+  // NIVEL 8: dos enemigos raros y un hechicero que los potencia.
   method sala8() =
+    self.crearSala(60, "sala2.png",
+      generadorDeMonstruos.rarosEn([game.at(3, 6), game.at(8, 6)]) +
+        generadorDeMonstruos.hechicerosEn([game.at(5, 14)]),
+      paredes.horizontal(1, 3, 10) + paredes.horizontal(7, 9, 10),
+      [],
+      [
+        new RelojDeArena(segundos = 6, position = game.at(9, 3)),
+        new CharcoDeBarro(segundos = 5, position = game.at(2, 8)),
+        new Maldicion(segundos = 6, position = game.at(5, 11)),
+        new RelojRoto(segundos = 5, position = game.at(9, 15))
+      ]
+    )
+
+  // NIVEL 9: baúl de premios.
+  method sala9() =
     self.crearSala(30, "sala2.png", [], [], [baulDePremios.otorgarPremio("Comun")], [])
 
-    // NIVEL 9: dos comunes, un raro y dos hombres lobo.
-  method sala9() =
+    // NIVEL 10: dos comunes, un raro y dos hombres lobo.
+  method sala10() =
     self.crearSala(65, "sala1.png",
       generadorDeMonstruos.generarEnemigosEn([
         game.at(3, 4),
@@ -177,8 +197,24 @@ object generadorDeSalas {
       ]
     )
 
-  // NIVEL 10: dos comunes y un clon malvado.
-  method sala10() =
+  // NIVEL 11: dos enemigos comunes, un hombre lobo y un hechicero.
+  method sala11() =
+    self.crearSala(65, "sala1.png",
+      generadorDeMonstruos.generarEnemigosEn([game.at(3, 5), game.at(8, 5)]) +
+        generadorDeMonstruos.lobosEn([game.at(2, 13)]) +
+        generadorDeMonstruos.hechicerosEn([game.at(8, 15)]),
+      paredes.vertical(5, 5, 9) + paredes.horizontal(6, 9, 11),
+      [],
+      [
+        new RelojDeArena(segundos = 6, position = game.at(2, 3)),
+        new PistaDeVelocidad(segundos = 5, position = game.at(9, 8)),
+        new CharcoDeBarro(segundos = 5, position = game.at(4, 12)),
+        new Maldicion(segundos = 6, position = game.at(3, 16))
+      ]
+    )
+
+  // NIVEL 12: dos comunes y un clon malvado.
+  method sala12() =
     self.crearSala(45, "sala2.png",
       generadorDeMonstruos.generarEnemigosEn([
         game.at(3, 8),
@@ -188,8 +224,8 @@ object generadorDeSalas {
           game.at(5, 14)
         ]), [], [], [])
 
-  // NIVEL 11: recompensa de munición cazafantasmas.
-  method sala11() =
+  // NIVEL 13: recompensa de munición cazafantasmas.
+  method sala13() =
     self.crearSala(30, "sala1.png", [], [],
       [
         new ItemMunicion(
@@ -199,8 +235,8 @@ object generadorDeSalas {
         )
       ],  [])
 
-    // NIVEL 12: tres fantasmas y un espectro.
-  method sala12() =
+    // NIVEL 14: tres fantasmas y un espectro.
+  method sala14() =
     self.crearSala(50, "sala2.png",
       generadorDeMonstruos.fantasmasEn([
         game.at(3, 6),
@@ -210,8 +246,20 @@ object generadorDeSalas {
         generadorDeMonstruos.espectrosEn([game.at(9, 14)]),
       [], [], [])
 
-  // NIVEL 13: dos comunes y dos fantasmas.
-  method sala13() =
+  // NIVEL 15: un espectro y cuatro fantasmas.
+  method sala15() =
+    self.crearSala(75, "sala2.png",
+      generadorDeMonstruos.fantasmasEn([
+        game.at(2, 6),
+        game.at(9, 6),
+        game.at(3, 12),
+        game.at(8, 12)
+      ]) +
+        generadorDeMonstruos.espectrosEn([game.at(5, 15)]),
+      [], [], [])
+
+  // NIVEL 16: dos comunes y dos fantasmas.
+  method sala16() =
     self.crearSala(55, "sala1.png",
       generadorDeMonstruos.generarEnemigosEn([
         game.at(3, 4),
@@ -231,8 +279,8 @@ object generadorDeSalas {
         new PistaDeVelocidad(segundos = 5, position = game.at(10, 16))
       ] + trampas.pinchosHorizontal(1, 1, 11))
 
-  // NIVEL 14: dos comunes, un fantasma y un hombre lobo.
-  method sala14() =
+  // NIVEL 17: dos comunes, un fantasma y un hombre lobo.
+  method sala17() =
     self.crearSala(70, "sala2.png",
       generadorDeMonstruos.generarEnemigosEn([
         game.at(6, 4),
@@ -256,8 +304,8 @@ object generadorDeSalas {
       ] + trampas.pinchosVertical(10, 13, 16))
 
   
-    // NIVEL 15: encuentro final contra el jefe + puzzle de laberinto de runas. El puzzle se resuelve pisando las runas en el orden correcto.
-  method sala15() =
+    // NIVEL 18: encuentro final contra el jefe + puzzle de laberinto de runas. El puzzle se resuelve pisando las runas en el orden correcto.
+  method sala18() =
     self.crearSala(110, "sala15.png",                          
       generadorDeMonstruos.jefeEn(game.at(5, 9)),
       paredes.horizontal(3, 5, 5) +                           
