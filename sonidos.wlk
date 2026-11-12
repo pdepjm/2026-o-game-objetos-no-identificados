@@ -1,0 +1,52 @@
+import wollok.game.*
+
+object sonidos {
+  var musicaFondo = null
+  
+  method iniciarMusica() {
+    if (musicaFondo == null) {
+      musicaFondo = game.sound("Musica.mp3")
+      musicaFondo.shouldLoop(true)
+      musicaFondo.play()
+    }
+  }
+  
+  method detenerMusica() {
+    if (musicaFondo != null) {
+      musicaFondo.stop()
+      musicaFondo = null
+    }
+  }
+  
+  method reproducirSonido(archivo) {
+    game.sound(archivo).play()
+  }
+  
+  method sonidoDisparo() {
+    self.reproducirSonido("Disparo.mp3")
+  }
+  
+  method sonidoDanio() {
+    self.reproducirSonido("Recibir daño.mp3")
+  }
+  
+  method sonidoObjeto() {
+    self.reproducirSonido("Recoger objetos.mp3")
+  }
+  
+  method sonidoVictoria() {
+    self.reproducirSonido("Victoria.mp3")
+  }
+  
+  method sonidoDerrota() {
+    self.reproducirSonido("Derrota.mp3")
+  }
+  
+  method muerteEnemigo() {
+    self.reproducirSonido("muerte_enemigo.mp3")
+  }
+  
+  method danioEnemigo() {
+    self.reproducirSonido("danio_enemigo.mp3")
+  }
+}

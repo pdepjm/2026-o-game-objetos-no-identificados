@@ -1,0 +1,16 @@
+import wollok.game.*
+import sonidos.*
+import menu.*
+
+program main {
+  // Nombre del juego
+  game.title("La ultima instancia")
+  
+  game.height(20)
+  game.width(12)
+  game.cellSize(50)
+  game.schedule(500, { sonidos.iniciarMusica() })
+  menu.iniciar()
+  
+  game.start()
+}

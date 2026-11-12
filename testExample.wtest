@@ -1,9 +1,495 @@
-import example.pepita
+import wollok.game.*
+import salas.*
+import personaje.*
+import enemigos.*
+import puerta.*
+import paredes.*
+import logicaJuego.*
+import temporizador.*
+import items.*
+import tablero.*
+import estadoFinal.*
+import generadorDeMonstruos.*
+import obstaculos.*
+import velocidad.*
+import generadorDeSalas.*
+import direcciones.*
 
-describe "group of tests for pepita" {
-
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+describe "Personaje" {
+  test "Pierde una vida cuando recibe un ataque" {
+    game.addVisual(personaje)
+    personaje.perderVidaActual(1)
+    assert.equals(2, personaje.vidaActual())
   }
 
+  test "Al recuperar vida no supera la vida máxima" {
+    game.addVisual(personaje)
+    personaje.perderVidaActual(1)
+    personaje.recuperarVidaActual(5)
+    assert.equals(3, personaje.vidaActual())
+  }
+}
+
+describe "Enemigo" {
+  test "Recibe daño" {
+    const enemigo = new EnemigoComun(position = game.at(5, 5))
+    game.addVisual(enemigo)
+    enemigo.recibirDanio(balaComun)
+    assert.equals(75, enemigo.vida())
+  }
+
+  test "Muere cuando su vida llega a cero" {
+    const enemigo = new EnemigoComun(position = game.at(5, 5))
+    game.addVisual(enemigo)
+
+    4.times({ i => enemigo.recibirDanio(balaComun) })
+
+    assert.that(enemigo.estaMuerto())
+  }
+}
+
+describe "Puerta" {
+  test "La puerta comienza bloqueada" {
+    const puerta = new Puerta()
+    assert.notThat(puerta.desbloqueada())
+  }
+}
+
+describe "Sala" {
+  test "La sala comienza con enemigos" {
+    const sala = generadorDeSalas.generarSala(1)
+    sala.inicializarse()
+    assert.notThat(sala.estaLimpia())
+  }
+}
+
+describe "Paredes" {
+  method initialize() {
+game.width(15)
+    game.height(20)
+  }
+
+  // el bloqueo de celdas
+  test "Una pared interna bloquea su celda y no las vecinas" {
+    tablero.construir(paredes.horizontal(3, 5, 9))
+    assert.that(tablero.bloqueada(game.at(4, 9)))
+    assert.notThat(tablero.bloqueada(game.at(4, 10)))
+  }
+}
+
+describe "Movimiento" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    personaje.position(game.at(5, 5))
+  }
+
+  // el personaje contra una pared
+  /*test "El personaje no atraviesa una pared interna" {
+    paredes.construir(paredes.horizontal(6, 6, 5))
+    personaje.mover(game.at(6, 5))
+    assert.equals(game.at(5, 5), personaje.position())
+  }*/
+
+  // el enemigo contra una pared
+  test "El enemigo no atraviesa una pared interna" {
+    tablero.construir(paredes.horizontal(6, 6, 5))
+    const enemigo = new EnemigoComun(position = game.at(5, 5))
+    personaje.position(game.at(8, 5))
+    enemigo.moverse()
+    assert.notEquals(game.at(6, 5), enemigo.position())
+  }
+}
+
+describe "Flujo del juego" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+  }
+
+  // puerta + sala limpia
+  test "Al limpiar la sala la puerta lleva a la sala siguiente" {
+    miJuego.nivelActual(1)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
+
+    const sala = miJuego.salaActual()
+    sala.enemigosVivos().copy().forEach({ e => miJuego.eliminarEnemigo(e) })
+    sala.puerta().alColisionarConPersonaje(personaje)
+    assert.equals(2, miJuego.nivelActual())
+  }
+
+  // puerta bloqueada
+  test "La puerta bloqueada no cambia de sala" {
+    miJuego.nivelActual(1)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
+
+    const sala = miJuego.salaActual()
+    sala.puerta().alColisionarConPersonaje(personaje)
+    assert.equals(1, miJuego.nivelActual())
+  }
+
+  // derrota + reinicio
+  test "Tras perder, reiniciar vuelve a sala1 con el personaje restaurado" {
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
+    miJuego.terminarJuego()
+    assert.notThat(miJuego.puedeJugar())
+    miJuego.reiniciar()
+    assert.equals(1, miJuego.nivelActual())
+    assert.equals(3, personaje.vidaActual())
+    assert.that(temporizador.preparando())
+  }
+
+  test "Tras perder, reiniciar reintenta la sala donde se murió y conserva la munición" {
+    miJuego.nivelActual(3)
+    miJuego.entrarA(generadorDeSalas.generarSala(3))
+    personaje.adquirirMunicion(balaPlata)
+    miJuego.terminarJuego()
+    miJuego.reiniciar()
+    assert.equals(3, miJuego.nivelActual())
+    assert.equals(3, personaje.vidaActual())
+    personaje.cambiarMunicion()
+    assert.equals(balaPlata, personaje.municionActual())
+  }
+
+  test "Tras ganar, reiniciar empieza de cero" {
+    miJuego.nivelActual(9)
+    miJuego.entrarA(generadorDeSalas.generarSala(9))
+    miJuego.ganarJuego()
+    miJuego.reiniciar()
+    assert.equals(1, miJuego.nivelActual())
+  }
+
+  test "El baúl entrega un solo premio aunque se reintente la sala" {
+    baulDePremios.reiniciarPremios()
+    assert.equals(1, baulDePremios.premiosDeLaSala("Comun").size())
+    assert.that(baulDePremios.premiosDeLaSala("Comun").isEmpty())
+  }
+}
+
+/*describe "Temporizador" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+  }
+
+  // el reloj de la sala
+  test "Cada segundo descuenta uno del tiempo mientras hay enemigos" {
+    const sala = generadorDeSalas.generarSala(1)
+    miJuego.entrarA(sala)
+
+    5.times({ i => temporizador.pasarSegundo() })
+
+    const tiempoInicial = temporizador.tiempoRestante
+    temporizador.pasarSegundo()
+    assert.equals("tiempo: " + (tiempoInicial - 1), temporizador.text())
+  }
+
+  // derrota por tiempo
+  test "Al llegar el tiempo a cero el juego termina" {
+    const sala = generadorDeSalas.generarSala(1)
+    miJuego.entrarA(sala)
+
+    5.times({ i => temporizador.pasarSegundo() })
+    const tiempoInicial = temporizador.tiempoRestante
+    tiempoInicial.times({ i => temporizador.pasarSegundo() })
+    assert.notThat(miJuego.puedeJugar())
+  }
+
+  // cuenta regresiva inicial
+  test "Durante la preparacion no se puede jugar y al terminar si" {
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
+    temporizador.iniciarPreparacion(2)
+    assert.notThat(miJuego.puedeJugar())
+    2.times({ i => temporizador.pasarSegundo() })
+    assert.that(miJuego.puedeJugar())
+  }
+} */
+
+describe "Combate" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
+  }
+
+  // derrota por vidas
+  test "Si los enemigos le quitan todas las vidas el juego termina" {
+    const enemigo = new EnemigoComun(position = game.at(5, 5))
+    3.times({ i => enemigo.alColisionarConPersonaje() })
+    assert.equals(0, personaje.vidaActual())
+    assert.notThat(miJuego.puedeJugar())
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Personaje: municiones, vida y movimiento
+// ---------------------------------------------------------------------------
+describe "Personaje: municiones, vida y movimiento" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
+  }
+
+  test "Cambiar de municion recorre las balas que tiene de forma ciclica" {
+    personaje.adquirirMunicion(balaPlata)
+    personaje.cambiarMunicion()
+    assert.equals(balaPlata, personaje.municionActual())
+    personaje.cambiarMunicion()
+    assert.equals(balaComun, personaje.municionActual())
+  }
+
+  test "La imagen del personaje cambia segun hacia donde mira" {
+    personaje.direccion(izquierda)
+    assert.equals("personaje_izquierda.png", personaje.image())
+    personaje.direccion(arriba)
+    assert.equals("personaje_arriba.png", personaje.image())
+  }
+
+  test "Adquirir dos veces la misma municion no la duplica" {
+    personaje.adquirirMunicion(balaPlata)
+    personaje.adquirirMunicion(balaPlata)
+    personaje.cambiarMunicion()
+    personaje.cambiarMunicion()
+    // si estuviera duplicada, la actual seguiria siendo la de plata
+    assert.equals(balaComun, personaje.municionActual())
+  }
+
+  test "La vida del personaje nunca baja de cero" {
+    5.times({ i => personaje.perderVidaActual(1) })
+    assert.equals(0, personaje.vidaActual())
+  }
+
+}
+
+// ---------------------------------------------------------------------------
+// Items: cada uno reacciona distinto al colisionar con el personaje (polimorfismo)
+// ---------------------------------------------------------------------------
+describe "Items" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
+  }
+
+  test "La pocion de vida recupera vida al colisionar" {
+    2.times({ i => personaje.perderVidaActual(1) })
+    personaje.reaccionarAColision(new PocionDeVida())
+    assert.equals(2, personaje.vidaActual())
+  }
+
+  test "La armadura aumenta la vida maxima y permite curarse por encima de la original" {
+    personaje.reaccionarAColision(new Armadura(rareza = "Comun", proteccion = 4))
+    assert.equals(7, personaje.vidaMaxima())
+    personaje.recuperarVidaActual(10)
+    assert.equals(7, personaje.vidaActual())
+  }
+
+  test "El arma mejorada aumenta el danio que le hace el personaje a los enemigos" {
+    const enemigo = new EnemigoComun(position = game.at(5, 5))
+    personaje.reaccionarAColision(new Arma(rareza = "Comun", danioDelArma = 50, distanciaDelArma = 4))
+    assert.equals(50, personaje.danioActual())
+    enemigo.recibirDanio(balaComun)
+    assert.equals(50, enemigo.vida())
+  }
+
+  test "Un item de municion le da la bala al personaje y desaparece del tablero" {
+    const item = new ItemMunicion(bala = balaPlata, image = "itemPlata.png", position = game.at(3, 3))
+    game.addVisual(item)
+    personaje.reaccionarAColision(item)
+    assert.notThat(game.allVisuals().contains(item))
+    personaje.cambiarMunicion()
+    assert.equals(balaPlata, personaje.municionActual())
+  }
+
+  test "Al quedar con 1 vida aparece una pocion en la sala" {
+    personaje.reiniciar()
+    const sala = generadorDeSalas.generarSala(1)
+    miJuego.entrarA(sala)
+    const antes = game.allVisuals().size()
+    2.times({ i => personaje.perderVidaActual(1) })
+    assert.equals(antes + 1, game.allVisuals().size())
+  }
+
+}
+
+// ---------------------------------------------------------------------------
+// Tipos de enemigos: polimorfismo en recibir daño según tipo de bala
+// ---------------------------------------------------------------------------
+describe "Tipos de enemigos" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    game.addVisual(personaje)
+    personaje.reiniciar()
+  }
+
+  test "El fantasma es inmune a la bala comun" {
+    const fantasma = new Fantasma(position = game.at(5, 5))
+    game.addVisual(fantasma)
+    fantasma.recibirDanio(balaComun)
+    assert.equals(50, fantasma.vida())
+  }
+
+  test "El fantasma es inmune a la bala de plata" {
+    const fantasma = new Fantasma(position = game.at(5, 5))
+    game.addVisual(fantasma)
+    fantasma.recibirDanio(balaPlata)
+    assert.equals(50, fantasma.vida())
+  }
+
+  test "El fantasma recibe danio de la bala cazafantasmas" {
+    const fantasma = new Fantasma(position = game.at(5, 5))
+    game.addVisual(fantasma)
+    fantasma.recibirDanio(balaCazaFantasmas)
+    assert.equals(25, fantasma.vida())
+  }
+
+  test "El hombre lobo recibe menos danio con bala comun" {
+    personaje.danioActual(50)
+    const lobo = new HombreLobo(position = game.at(5, 5))
+    game.addVisual(lobo)
+    lobo.recibirDanio(balaComun)
+    // bala comun contra lobo = 50 / 2 = 25, vida = 150 - 25 = 125
+    assert.equals(125, lobo.vida())
+  }
+
+  test "El hombre lobo recibe el doble de danio con bala de plata" {
+    const lobo = new HombreLobo(position = game.at(5, 5))
+    game.addVisual(lobo)
+    lobo.recibirDanio(balaPlata)
+    // bala plata contra lobo = 25 * 2 = 50, vida = 150 - 50 = 100
+    assert.equals(100, lobo.vida())
+  }
+
+  test "El clon malvado tiene vida basada en las estadisticas del personaje" {
+    const clon = new ClonMalvado(position = game.at(5, 5))
+    // vida = personaje.vidaActual() * personaje.danioActual() = 3 * 25 = 75
+    assert.equals(75, clon.vida())
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Obstáculos: cada tipo aplica un efecto distinto (polimorfismo)
+// ---------------------------------------------------------------------------
+describe "Obstaculos" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    miJuego.entrarA(generadorDeSalas.generarSala(1))
+    personaje.reiniciar()
+  }
+
+  test "Los pinchos le quitan una vida al personaje" {
+    const pincho = new Pinchos(position = game.at(3, 3))
+    game.addVisual(pincho)
+    pincho.aplicarEfecto(personaje)
+    assert.equals(2, personaje.vidaActual())
+  }
+
+  test "La maldicion hace que el personaje reciba el doble de danio" {
+    personaje.maldecir(10)
+    personaje.perderVidaActual(1)
+    // danioPorGolpe = 2 cuando esta maldito, vida = 3 - 2 = 1
+    assert.equals(1, personaje.vidaActual())
+  }
+
+  test "Un obstaculo desaparece del tablero al ser pisado" {
+    const reloj = new RelojDeArena(segundos = 5, position = game.at(3, 3))
+    game.addVisual(reloj)
+    reloj.alColisionarConPersonaje(personaje)
+    assert.notThat(game.allVisuals().contains(reloj))
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Efectos de velocidad del personaje
+// ---------------------------------------------------------------------------
+
+// ---------------------------------------------------------------------------
+// Ataque del personaje
+// ---------------------------------------------------------------------------
+describe "Ataque del personaje" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    game.addVisual(personaje)
+    personaje.reiniciar()
+  }
+
+  test "El personaje ataca a un enemigo en la posicion indicada" {
+    const enemigo = new EnemigoComun(position = game.at(6, 5))
+    game.addVisual(enemigo)
+    personaje.atacarEn(game.at(6, 5))
+    assert.equals(75, enemigo.vida())
+  }
+
+  test "Atacar una posicion sin enemigo no produce efecto" {
+    personaje.atacarEn(game.at(10, 10))
+    assert.equals(3, personaje.vidaActual())
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Tablero: limites del area de juego
+// ---------------------------------------------------------------------------
+describe "Tablero" {
+  method initialize() {
+    game.width(15)
+    game.height(20)
+    game.addVisual(personaje)
+    personaje.reiniciar()
+  }
+
+  test "Una posicion central es transitable" {
+    assert.that(tablero.esTransitable(game.at(5, 5)))
+  }
+
+  test "El borde del tablero no es transitable" {
+    assert.notThat(tablero.esTransitable(game.at(0, 0)))
+  }
+
+
+  
+}
+
+describe "Salas con hechicero, espectro y baúl" {
+  method cantidadDe(sala, clase) = sala.enemigosIniciales().count({ enemigo => enemigo.className() == clase })
+
+  test "Hay 9 salas y la última es la del jefe con puzzle" {
+    assert.equals(9, generadorDeSalas.cantidadDeSalas())
+    assert.equals("sala15.png", generadorDeSalas.generarSala(9).fondo())
+  }
+
+  test "Sala 2: dos enemigos raros y un hechicero" {
+    const sala = generadorDeSalas.generarSala(2)
+    assert.equals(3, sala.enemigosIniciales().size())
+    assert.equals(2, self.cantidadDe(sala, "enemigos.EnemigoRaro"))
+    assert.equals(1, self.cantidadDe(sala, "enemigos.Hechicero"))
+  }
+
+  test "Sala 3: dos comunes, un hombre lobo y un hechicero" {
+    const sala = generadorDeSalas.generarSala(3)
+    assert.equals(4, sala.enemigosIniciales().size())
+    assert.equals(2, self.cantidadDe(sala, "enemigos.EnemigoComun"))
+    assert.equals(1, self.cantidadDe(sala, "enemigos.HombreLobo"))
+    assert.equals(1, self.cantidadDe(sala, "enemigos.Hechicero"))
+  }
+
+  test "Sala 8: un espectro y cuatro fantasmas" {
+    const sala = generadorDeSalas.generarSala(8)
+    assert.equals(5, sala.enemigosIniciales().size())
+    assert.equals(1, self.cantidadDe(sala, "enemigos.Espectro"))
+    assert.equals(4, self.cantidadDe(sala, "enemigos.Fantasma"))
+  }
+
+  test "El baúl de premios está en la sala 5, la intermedia" {
+    baulDePremios.reiniciarPremios()
+    assert.equals(1, generadorDeSalas.generarSala(5).itemsIniciales().size())
+  }
+
+  test "La munición de plata llega antes del primer hombre lobo y la cazafantasmas antes de los fantasmas" {
+    assert.equals("itemPlata.png", generadorDeSalas.generarSala(2).itemsIniciales().first().image())
+    assert.equals("itemCazaFantasmas.png", generadorDeSalas.generarSala(6).itemsIniciales().first().image())
+  }
 }
